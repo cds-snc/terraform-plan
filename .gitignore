@@ -1,0 +1,4 @@
+node_modules
+.husky/_
+.terraform
+.terraform.lock.hcl
