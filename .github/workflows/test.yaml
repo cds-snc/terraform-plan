@@ -1,12 +1,36 @@
 name: Test action
-on: 
+on:
   pull_request:
 
 env:
   TERRAFORM_VERSION: 1.0.0
 
 jobs:
+  cleanup-bot-comments:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v2
+    - uses: actions/github-script@v4
+      with:
+        script: |
+          // Get the existing comments.
+          const {data: comments} = await github.issues.listComments({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            issue_number: context.payload.number,
+          })
+          // Find comments made by the bot.
+          const botComments = comments.filter(comment => comment.user.type === "Bot")
+          for(let comment of botBomments){
+              await github.issues.deleteComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id
+              })
+          }
+
   test:
+    needs: cleanup-bot-comments
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -14,24 +38,18 @@ jobs:
         include:
           - test: changes
             allow-failure: false
-
           - test: no-changes
             allow-failure: false
-
           - test: format-error
             allow-failure: true
-
           - test: invalid
             allow-failure: true
-  
-    steps: 
-      - uses: actions/checkout@v1
-
+    steps:
+      - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
           terraform_wrapper: false
-
       - name: Test ${{ matrix.test }}
         uses: ./
         with:
