@@ -1,6 +1,6 @@
 name: 'Terraform Plan'
 description: 'Terraform init, validate, format check and plan'
-author: 'Pat Heard'
+author: 'Canadian Digital Service'
 
 inputs:
   allow-failure:

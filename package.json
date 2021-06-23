@@ -2,7 +2,7 @@
   "name": "action-terraform-plan",
   "description": "A GitHub action to run Terraform validate and plan",
   "version": "1.0.0",
-  "author": "Pat Heard",
+  "author": "Canadian Digital Service",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
