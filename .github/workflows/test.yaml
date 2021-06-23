@@ -22,7 +22,7 @@ jobs:
             })
             // Find comments made by the bot.
             const botComments = comments.filter(comment => comment.user.type === "Bot")
-            for(let comment of botBomments){
+            for(let comment of botComments){
                 await github.issues.deleteComment({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
