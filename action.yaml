@@ -1,0 +1,32 @@
+name: 'Terraform Plan'
+description: 'Terraform init, validate, format check and plan'
+author: 'Pat Heard'
+
+inputs:
+  allow-failure:
+    description: 'Allow the action to fail'
+    required: false
+    default: 'false'
+  comment:
+    description: 'Add comment with changes to the PR'
+    required: false
+    default: 'true'
+  comment-title:
+    description: 'The title to give the PR comment'
+    required: false
+    default: 'Plan changes'    
+  directory:
+    description: 'Directory with the *.tf files to validate'
+    required: false
+    default: '.'    
+  github-token:
+    description: 'GitHub Token used to add comment to PR'
+    required: false
+  terragrunt:
+    description: 'Use Terragrunt instead of Terraform'
+    required: false
+    default: 'false'  
+
+runs:
+  using: 'node12'
+  main: 'dist/index.js'

@@ -1,0 +1,21 @@
+{
+  "name": "action-terraform-plan",
+  "description": "A GitHub action to run Terraform validate and plan",
+  "version": "1.0.0",
+  "author": "Pat Heard",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.js --license licenses.txt",
+    "prepare": "husky install",
+    "pre-commit": "npm run build"
+  },
+  "dependencies": {
+    "@actions/core": "^1.4.0",
+    "@actions/github": "^5.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.28.6",
+    "husky": "^6.0.0"
+  }
+}

@@ -1,0 +1,41 @@
+name: Test action
+on: 
+  pull_request:
+
+env:
+  TERRAFORM_VERSION: 1.0.0
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: changes
+            allow-failure: false
+
+          - test: no-changes
+            allow-failure: false
+
+          - test: format-error
+            allow-failure: true
+
+          - test: invalid
+            allow-failure: true
+  
+    steps: 
+      - uses: actions/checkout@v1
+
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: Test ${{ matrix.test }}
+        uses: ./
+        with:
+          directory: test/${{ matrix.test }}
+          allow-failure: ${{ matrix.allow-failure }}
+          comment-title: Test ${{ matrix.test }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
