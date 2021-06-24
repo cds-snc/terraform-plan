@@ -75,19 +75,19 @@ jobs:
             const testComments = [
               {
                 exist: true,
-                title: /## Test changes/g,
-                state: /`success`.*`success/g
+                title: /Test changes/g,
+                state: /`success`[^`]+`success`/g
               },{
                 exist: true,
-                title: /## Test format-error/g,
-                state: /`failed`.*`success`/g
+                title: /Test format-error/g,
+                state: /`failed`[^`]+`success`/g
               },{
                 exist: true,
-                title: /## Test invalid/g,
-                state: /`failed`.*`failed`/g
+                title: /Test invalid/g,
+                state: /`failed`[^`]+`failed`/g
               },{
                 exist: false,
-                title: /## Test no-changes/g,
+                title: /Test no-changes/g,
                 state: /./g
               }
             ];
@@ -102,13 +102,7 @@ jobs:
             // Run through the tests
             let botComment;
             for(let test of testComments){
-              botComment = comments.find(comment => {
-                return
-                  comment.user.type === 'Bot' &&
-                  comment.body.match(test.title) &&
-                  comment.body.match(test.state);
-              });
-
+              botComment = comments.find(comment => comment.body.match(test.title) && comment.body.match(test.state));
               if((botComment && !test.exist) || (!botComment && test.exist)){
                 console.log(`Failed '${test.title}'`);
                 isFailed = true;
@@ -116,5 +110,5 @@ jobs:
             }
 
             if(isFailed){
-              throw 'PR comments did not match...';
+              core.setFailed('PR comments did not match');
             }
