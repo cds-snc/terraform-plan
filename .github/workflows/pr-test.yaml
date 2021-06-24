@@ -33,7 +33,7 @@ jobs:
             }
 
   terraform-plan:
-    needs: cleanup-bot-comments
+    needs: delete-action-comments
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
