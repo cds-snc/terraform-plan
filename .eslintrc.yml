@@ -4,6 +4,6 @@ env:
 plugins: 
   - security
 extends:
-  - prettier
   - eslint:recommended
   - plugin:security/recommended
+  - prettier
