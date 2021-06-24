@@ -8,6 +8,19 @@ terraform plan
 ```
 This action **does not** install Terraform or Terragrunt.  You can see how it's used in the [test.yaml workflow](.github/workflows/test.yaml).
 
+# Settings
+Use the following to control the action:
+
+| Setting          |      Description                                   |  Default     |
+|------------------|----------------------------------------------------|--------------|
+| `allow-failure`  | Allow the action to fail                           | false        |
+| `comment`        | Add comment with changes to the PR                 | true         |
+| `comment-delete` | Delete previous comments made by the bot on the PR | false        |
+| `comment-title`  | The title to give the PR comment                   | Plan changes |
+| `directory`      | Directory with the *.tf files to validate          | .            |
+| `github-token`   | GitHub Token used to add comment to PR             |              |
+| `terragrunt`     | Use Terragrunt instead of Terraform                | false        |
+
 # Examples
 ```yaml
 # Run Terraform plan and add a comment with changes on the PR
@@ -25,11 +38,12 @@ This action **does not** install Terraform or Terragrunt.  You can see how it's 
     github-token: ${{ secrets.GITHUB_TOKEN }}
     terragrunt: true
 
-# Run on a sub project folder
+# Run on a sub project folder, deleting previous PR comments made by the action
 - name: Terraform plan
   uses: cds-snc/action-terraform-plan
   with:
     directory: ./infra
+    comment-delete: true
     github-token: ${{ secrets.GITHUB_TOKEN }}
 
 # Run Terraform plan with no PR comment

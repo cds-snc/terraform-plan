@@ -11,6 +11,10 @@ inputs:
     description: 'Add comment with changes to the PR'
     required: false
     default: 'true'
+  comment-delete:
+    description: 'Delete previous comments made by the bot on the PR'
+    required: false
+    default: 'false'    
   comment-title:
     description: 'The title to give the PR comment'
     required: false
@@ -22,6 +26,7 @@ inputs:
   github-token:
     description: 'GitHub Token used to add comment to PR'
     required: false
+    default: 'false'
   terragrunt:
     description: 'Use Terragrunt instead of Terraform'
     required: false
