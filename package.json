@@ -7,8 +7,11 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.js --license licenses.txt",
+    "format:check": "prettier --check src",
+    "format:write": "prettier --write src",
+    "lint": "eslint src",
     "prepare": "husky install",
-    "pre-commit": "npm run build"
+    "pre-commit": "npm run format:write & npm run build"
   },
   "dependencies": {
     "@actions/core": "^1.4.0",
@@ -16,6 +19,10 @@
   },
   "devDependencies": {
     "@vercel/ncc": "^0.28.6",
-    "husky": "^6.0.0"
+    "eslint": "^7.29.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-security": "^1.4.0",
+    "husky": "^6.0.0",
+    "prettier": "^2.3.1"
   }
 }
