@@ -1,0 +1,114 @@
+name: Test action
+on: pull_request
+
+env:
+  TERRAFORM_VERSION: 1.0.0
+
+jobs:
+  delete-action-comments:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Delete action comments
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Get the existing comments.
+            const {data: comments} = await github.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.number,
+            })
+
+            // Find comments made by the bot.
+            const botComments = comments.filter(comment => comment.user.type === 'Bot')
+            for(let comment of botComments){
+                console.log(`Deleting comment ${comment.id}`)
+                await github.issues.deleteComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  comment_id: comment.id
+                })
+            }
+
+  terraform-plan:
+    needs: delete-action-comments
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - test: changes
+            allow-failure: false
+          - test: no-changes
+            allow-failure: false
+          - test: format-error
+            allow-failure: true
+          - test: invalid
+            allow-failure: true
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+      - name: Test ${{ matrix.test }}
+        uses: ./
+        with:
+          directory: test/${{ matrix.test }}
+          allow-failure: ${{ matrix.allow-failure }}
+          comment-title: Test ${{ matrix.test }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  test-action-comments:
+    needs: terraform-plan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Test action comments
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            let isFailed = false;
+            const testComments = [
+              {
+                exist: true,
+                title: /Test changes/g,
+                state: /`success`[^`]+`success`/g
+              },{
+                exist: true,
+                title: /Test format-error/g,
+                state: /`failed`[^`]+`success`/g
+              },{
+                exist: true,
+                title: /Test invalid/g,
+                state: /`failed`[^`]+`failed`/g
+              },{
+                exist: false,
+                title: /Test no-changes/g,
+                state: /./g
+              }
+            ];
+
+            // Get the existing comments.
+            const {data: comments} = await github.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.number,
+            });
+
+            // Run through the tests
+            let botComment;
+            for(let test of testComments){
+              botComment = comments.find(comment => comment.body.match(test.title) && comment.body.match(test.state));
+              if((botComment && !test.exist) || (!botComment && test.exist)){
+                console.log(`Failed '${test.title}'`);
+                isFailed = true;
+              }
+            }
+
+            if(isFailed){
+              core.setFailed('PR comments did not match');
+            }
