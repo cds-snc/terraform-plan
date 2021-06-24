@@ -1,0 +1,9 @@
+env:
+  node: true
+  es2021: true
+plugins: 
+  - security
+extends:
+  - prettier
+  - eslint:recommended
+  - plugin:security/recommended
