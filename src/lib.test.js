@@ -1,6 +1,7 @@
 "use strict";
 
 const { addComment, deleteComment, execCommand } = require("./lib.js");
+global.console = { log: jest.fn() };
 
 // Mock octokit object and return values
 const octomock = {
