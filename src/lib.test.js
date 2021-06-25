@@ -1,4 +1,6 @@
-const { addComment, deleteComment, execCommand } = require("../src/lib.js");
+"use strict";
+
+const { addComment, deleteComment, execCommand } = require("./lib.js");
 
 // Mock octokit object and return values
 const octomock = {
@@ -38,7 +40,7 @@ const context = {
   payload: { pull_request: { number: 42 } },
 };
 
-afterEach(() => {
+beforeEach(() => {
   jest.clearAllMocks();
 });
 

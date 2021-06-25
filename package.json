@@ -7,9 +7,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.js --license licenses.txt",
-    "format:check": "prettier --check src test",
-    "format:write": "prettier --write src test",
-    "lint": "eslint src test",
+    "format:check": "prettier --check src",
+    "format:write": "prettier --write src",
+    "lint": "eslint src",
     "prepare": "husky install",
     "pre-commit": "npm run format:write & npm run build",
     "test": "jest"
@@ -25,6 +25,7 @@
     "eslint-plugin-security": "^1.4.0",
     "husky": "^6.0.0",
     "jest": "^27.0.5",
+    "jest-when": "^3.3.1",
     "prettier": "^2.3.1"
   }
 }
