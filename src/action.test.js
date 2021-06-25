@@ -16,10 +16,7 @@ describe("action", () => {
   });
 
   test("default flow", async () => {
-    execCommand.mockReturnValue({
-      isSuccess: true,
-      output: "foo",
-    });
+    execCommand.mockReturnValue({ isSuccess: true, output: "" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
 
     await action();
@@ -36,11 +33,27 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
+  test("terragrunt flow", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "" });
+    when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput).calledWith("terragrunt").mockReturnValue("true");
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(5);
+    expect(execCommand.mock.calls).toEqual([
+      ["terragrunt init", "bar"],
+      ["terragrunt validate", "bar"],
+      ["terragrunt fmt --check", "bar"],
+      ["terragrunt plan -json -out=plan.tfplan", "bar"],
+      ["terragrunt show plan.tfplan -no-color", "bar"],
+    ]);
+    expect(addComment.mock.calls.length).toBe(0);
+    expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
   test("delete comment", async () => {
-    execCommand.mockReturnValue({
-      isSuccess: true,
-      output: "bar",
-    });
+    execCommand.mockReturnValue({ isSuccess: true, output: "" });
     when(core.getInput).calledWith("comment-delete").mockReturnValue("true");
     when(core.getInput)
       .calledWith("comment-title")
@@ -92,10 +105,7 @@ describe("action", () => {
   });
 
   test("failed command", async () => {
-    execCommand.mockReturnValue({
-      isSuccess: false,
-      output: "meh",
-    });
+    execCommand.mockReturnValue({ isSuccess: false, output: "" });
 
     await action();
 
@@ -104,10 +114,7 @@ describe("action", () => {
   });
 
   test("allowed to fail", async () => {
-    execCommand.mockReturnValue({
-      isSuccess: false,
-      output: "meh",
-    });
+    execCommand.mockReturnValue({ isSuccess: false, output: "" });
     when(core.getInput).calledWith("allow-failure").mockReturnValue("true");
     when(core.getInput).calledWith("comment").mockReturnValue("false");
     when(core.getInput).calledWith("comment-delete").mockReturnValue("false");
