@@ -1,0 +1,23 @@
+"use strict";
+
+const { execCommand } = require("./command.js");
+global.console = { log: jest.fn() };
+
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+
+describe("execCommand", () => {
+  test("show command output", () => {
+    expect(execCommand("ls", "./test/changes")).toEqual({
+      isSuccess: true,
+      output: "changes.tf\n",
+    });
+  });
+  test("show error message", () => {
+    expect(execCommand("cat foo", ".")).toEqual({
+      isSuccess: false,
+      output: "cat: foo: No such file or directory\n",
+    });
+  });
+});

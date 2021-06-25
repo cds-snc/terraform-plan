@@ -3,12 +3,14 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { when } = require("jest-when");
-const { addComment, deleteComment, execCommand } = require("./lib.js");
+const { addComment, deleteComment } = require("./github.js");
+const { execCommand } = require("./command.js");
 const { action } = require("./action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
-jest.mock("./lib.js");
+jest.mock("./command.js");
+jest.mock("./github.js");
 
 describe("action", () => {
   beforeEach(() => {

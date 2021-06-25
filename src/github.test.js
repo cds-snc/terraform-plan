@@ -1,6 +1,6 @@
 "use strict";
 
-const { addComment, deleteComment, execCommand } = require("./lib.js");
+const { addComment, deleteComment } = require("./github.js");
 global.console = { log: jest.fn() };
 
 // Mock octokit object and return values
@@ -103,20 +103,5 @@ describe("deleteComment", () => {
     await deleteComment(octomock, context, "Bort");
     expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(0);
-  });
-});
-
-describe("execCommand", () => {
-  test("show command output", () => {
-    expect(execCommand("ls", "./test/changes")).toEqual({
-      isSuccess: true,
-      output: "changes.tf\n",
-    });
-  });
-  test("show error message", () => {
-    expect(execCommand("cat foo", ".")).toEqual({
-      isSuccess: false,
-      output: "cat: foo: No such file or directory\n",
-    });
   });
 });

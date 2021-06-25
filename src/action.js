@@ -2,7 +2,8 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { addComment, deleteComment, execCommand } = require("./lib.js");
+const { addComment, deleteComment } = require("./github.js");
+const { execCommand } = require("./command.js");
 
 /**
  * Runs the action

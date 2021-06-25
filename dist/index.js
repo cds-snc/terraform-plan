@@ -6133,7 +6133,8 @@ function wrappy (fn, cb) {
 
 const core = __nccwpck_require__(186);
 const github = __nccwpck_require__(438);
-const { addComment, deleteComment, execCommand } = __nccwpck_require__(804);
+const { addComment, deleteComment } = __nccwpck_require__(396);
+const { execCommand } = __nccwpck_require__(134);
 
 /**
  * Runs the action
@@ -6195,14 +6196,52 @@ module.exports = {
 
 /***/ }),
 
-/***/ 804:
+/***/ 134:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-/* eslint security/detect-child-process: "off" */
 
+/* eslint security/detect-child-process: "off" */
 const proc = __nccwpck_require__(129);
+
+/**
+ * Executes a command in a given directory
+ * @param {String} command The command (and args) to execute
+ * @param {String} directory The directory to execute the command in
+ * @returns {Object} Results object with the command output and if the command was successful
+ */
+const execCommand = (command, directory) => {
+  let output,
+    exitCode = 0;
+
+  try {
+    console.log("🧪 \x1b[36m%s\x1b[0m\n", command);
+    output = proc.execSync(command, { cwd: directory }).toString("utf8");
+    console.log(output);
+  } catch (error) {
+    exitCode = error.exitCode;
+    output = error.stderr.toString("utf8");
+  }
+
+  return {
+    isSuccess: exitCode === 0,
+    output: output,
+  };
+};
+
+module.exports = {
+  execCommand: execCommand,
+};
+
+
+/***/ }),
+
+/***/ 396:
+/***/ ((module) => {
+
+"use strict";
+
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
@@ -6261,35 +6300,9 @@ const deleteComment = async (octokit, context, title) => {
   }
 };
 
-/**
- * Executes a command in a given directory
- * @param {String} command The command (and args) to execute
- * @param {String} directory The directory to execute the command in
- * @returns {Object} Results object with the command output and if the command was successful
- */
-const execCommand = (command, directory) => {
-  let output,
-    exitCode = 0;
-
-  try {
-    console.log("🧪 \x1b[36m%s\x1b[0m\n", command);
-    output = proc.execSync(command, { cwd: directory }).toString("utf8");
-    console.log(output);
-  } catch (error) {
-    exitCode = error.exitCode;
-    output = error.stderr.toString("utf8");
-  }
-
-  return {
-    isSuccess: exitCode === 0,
-    output: output,
-  };
-};
-
 module.exports = {
   addComment: addComment,
   deleteComment: deleteComment,
-  execCommand: execCommand,
 };
 
 
