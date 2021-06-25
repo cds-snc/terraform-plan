@@ -1,7 +1,7 @@
 "use strict";
 
 const core = require("@actions/core");
-const { main } = require("./lib.js");
+const { action } = require("./action.js");
 
 /**
  * Logs an error and sets the action as failed.
@@ -13,4 +13,4 @@ const handleError = (err) => {
 };
 
 process.on("unhandledRejection", handleError);
-main().catch(handleError);
+action().catch(handleError);
