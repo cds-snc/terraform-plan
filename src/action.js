@@ -2,8 +2,9 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { addComment, deleteComment } = require("./github.js");
 const { execCommand } = require("./command.js");
+const { addComment, deleteComment } = require("./github.js");
+const { getPlanChanges } = require("./opa.js");
 
 /**
  * Runs the action
@@ -24,8 +25,8 @@ const action = async () => {
     { key: "init", exec: `${binary} init` },
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
-    { key: "plan", exec: `${binary} plan -json -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show plan.tfplan -no-color` },
+    { key: "plan", exec: `${binary} plan -out=plan.tfplan` },
+    { key: "show", exec: `${binary} show -json plan.tfplan > tfplan.json` },
   ];
   let results = {};
   let isError = false;
@@ -47,10 +48,15 @@ const action = async () => {
     await deleteComment(octokit, github.context, commentTitle);
   }
 
+  // Check for changes
+  let changes = { isChanges: false };
+  if (results.plan.isSuccess) {
+    changes = await getPlanChanges("tfplan.json");
+  }
+
   // Comment on PR if changes or errors
-  const isChanges = results.plan.output.indexOf('"type":"planned_change"') > -1;
-  if (isComment && (isChanges || isError)) {
-    await addComment(octokit, github.context, commentTitle, results);
+  if (isComment && (changes.isChanges || isError)) {
+    await addComment(octokit, github.context, commentTitle, results, changes);
   }
 
   if (isError && !isAllowFailure) {

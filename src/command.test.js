@@ -9,9 +9,9 @@ beforeEach(() => {
 
 describe("execCommand", () => {
   test("show command output", () => {
-    expect(execCommand("ls", "./test/changes")).toEqual({
+    expect(execCommand("ls", "./test/format-error")).toEqual({
       isSuccess: true,
-      output: "changes.tf\n",
+      output: "format-error.tf\n",
     });
   });
   test("show error message", () => {

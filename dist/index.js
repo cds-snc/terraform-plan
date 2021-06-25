@@ -1,7 +1,7 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 241:
+/***/ 7351:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -27,8 +27,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.issue = exports.issueCommand = void 0;
-const os = __importStar(__nccwpck_require__(87));
-const utils_1 = __nccwpck_require__(278);
+const os = __importStar(__nccwpck_require__(2087));
+const utils_1 = __nccwpck_require__(5278);
 /**
  * Commands
  *
@@ -100,7 +100,7 @@ function escapeProperty(s) {
 
 /***/ }),
 
-/***/ 186:
+/***/ 2186:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -135,11 +135,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
-const command_1 = __nccwpck_require__(241);
+const command_1 = __nccwpck_require__(7351);
 const file_command_1 = __nccwpck_require__(717);
-const utils_1 = __nccwpck_require__(278);
-const os = __importStar(__nccwpck_require__(87));
-const path = __importStar(__nccwpck_require__(622));
+const utils_1 = __nccwpck_require__(5278);
+const os = __importStar(__nccwpck_require__(2087));
+const path = __importStar(__nccwpck_require__(5622));
 /**
  * The code to exit an action
  */
@@ -430,9 +430,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.issueCommand = void 0;
 // We use any as a valid input type
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const fs = __importStar(__nccwpck_require__(747));
-const os = __importStar(__nccwpck_require__(87));
-const utils_1 = __nccwpck_require__(278);
+const fs = __importStar(__nccwpck_require__(5747));
+const os = __importStar(__nccwpck_require__(2087));
+const utils_1 = __nccwpck_require__(5278);
 function issueCommand(command, message) {
     const filePath = process.env[`GITHUB_${command}`];
     if (!filePath) {
@@ -450,7 +450,7 @@ exports.issueCommand = issueCommand;
 
 /***/ }),
 
-/***/ 278:
+/***/ 5278:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -477,15 +477,15 @@ exports.toCommandValue = toCommandValue;
 
 /***/ }),
 
-/***/ 53:
+/***/ 4087:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.Context = void 0;
-const fs_1 = __nccwpck_require__(747);
-const os_1 = __nccwpck_require__(87);
+const fs_1 = __nccwpck_require__(5747);
+const os_1 = __nccwpck_require__(2087);
 class Context {
     /**
      * Hydrate the context from the environment
@@ -538,7 +538,7 @@ exports.Context = Context;
 
 /***/ }),
 
-/***/ 438:
+/***/ 5438:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -564,8 +564,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokit = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(53));
-const utils_1 = __nccwpck_require__(30);
+const Context = __importStar(__nccwpck_require__(4087));
+const utils_1 = __nccwpck_require__(3030);
 exports.context = new Context.Context();
 /**
  * Returns a hydrated octokit ready to use for GitHub Actions
@@ -581,7 +581,7 @@ exports.getOctokit = getOctokit;
 
 /***/ }),
 
-/***/ 914:
+/***/ 7914:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -607,7 +607,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getApiBaseUrl = exports.getProxyAgent = exports.getAuthString = void 0;
-const httpClient = __importStar(__nccwpck_require__(925));
+const httpClient = __importStar(__nccwpck_require__(9925));
 function getAuthString(token, options) {
     if (!token && !options.auth) {
         throw new Error('Parameter token or opts.auth is required');
@@ -631,7 +631,7 @@ exports.getApiBaseUrl = getApiBaseUrl;
 
 /***/ }),
 
-/***/ 30:
+/***/ 3030:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -657,12 +657,12 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getOctokitOptions = exports.GitHub = exports.context = void 0;
-const Context = __importStar(__nccwpck_require__(53));
-const Utils = __importStar(__nccwpck_require__(914));
+const Context = __importStar(__nccwpck_require__(4087));
+const Utils = __importStar(__nccwpck_require__(7914));
 // octokit + plugins
-const core_1 = __nccwpck_require__(762);
-const plugin_rest_endpoint_methods_1 = __nccwpck_require__(44);
-const plugin_paginate_rest_1 = __nccwpck_require__(193);
+const core_1 = __nccwpck_require__(6762);
+const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3044);
+const plugin_paginate_rest_1 = __nccwpck_require__(4193);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
 const defaults = {
@@ -692,15 +692,15 @@ exports.getOctokitOptions = getOctokitOptions;
 
 /***/ }),
 
-/***/ 925:
+/***/ 9925:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const http = __nccwpck_require__(605);
-const https = __nccwpck_require__(211);
-const pm = __nccwpck_require__(443);
+const http = __nccwpck_require__(8605);
+const https = __nccwpck_require__(7211);
+const pm = __nccwpck_require__(6443);
 let tunnel;
 var HttpCodes;
 (function (HttpCodes) {
@@ -1119,7 +1119,7 @@ class HttpClient {
         if (useProxy) {
             // If using proxy, need tunnel
             if (!tunnel) {
-                tunnel = __nccwpck_require__(294);
+                tunnel = __nccwpck_require__(4294);
             }
             const agentOptions = {
                 maxSockets: maxSockets,
@@ -1237,7 +1237,7 @@ exports.HttpClient = HttpClient;
 
 /***/ }),
 
-/***/ 443:
+/***/ 6443:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -1359,7 +1359,7 @@ exports.createTokenAuth = createTokenAuth;
 
 /***/ }),
 
-/***/ 762:
+/***/ 6762:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -1367,10 +1367,10 @@ exports.createTokenAuth = createTokenAuth;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var universalUserAgent = __nccwpck_require__(429);
-var beforeAfterHook = __nccwpck_require__(682);
-var request = __nccwpck_require__(234);
-var graphql = __nccwpck_require__(668);
+var universalUserAgent = __nccwpck_require__(5030);
+var beforeAfterHook = __nccwpck_require__(3682);
+var request = __nccwpck_require__(6234);
+var graphql = __nccwpck_require__(8467);
 var authToken = __nccwpck_require__(334);
 
 function _objectWithoutPropertiesLoose(source, excluded) {
@@ -1543,7 +1543,7 @@ exports.Octokit = Octokit;
 
 /***/ }),
 
-/***/ 440:
+/***/ 9440:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -1551,8 +1551,8 @@ exports.Octokit = Octokit;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var isPlainObject = __nccwpck_require__(287);
-var universalUserAgent = __nccwpck_require__(429);
+var isPlainObject = __nccwpck_require__(3287);
+var universalUserAgent = __nccwpck_require__(5030);
 
 function lowercaseKeys(object) {
   if (!object) {
@@ -1941,7 +1941,7 @@ exports.endpoint = endpoint;
 
 /***/ }),
 
-/***/ 668:
+/***/ 8467:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -1949,8 +1949,8 @@ exports.endpoint = endpoint;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 
-var request = __nccwpck_require__(234);
-var universalUserAgent = __nccwpck_require__(429);
+var request = __nccwpck_require__(6234);
+var universalUserAgent = __nccwpck_require__(5030);
 
 const VERSION = "4.6.4";
 
@@ -2065,7 +2065,7 @@ exports.withCustomRequest = withCustomRequest;
 
 /***/ }),
 
-/***/ 193:
+/***/ 4193:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -2290,7 +2290,7 @@ exports.paginatingEndpoints = paginatingEndpoints;
 
 /***/ }),
 
-/***/ 44:
+/***/ 3044:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -3565,8 +3565,8 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var deprecation = __nccwpck_require__(932);
-var once = _interopDefault(__nccwpck_require__(223));
+var deprecation = __nccwpck_require__(8932);
+var once = _interopDefault(__nccwpck_require__(1223));
 
 const logOnceCode = once(deprecation => console.warn(deprecation));
 const logOnceHeaders = once(deprecation => console.warn(deprecation));
@@ -3637,7 +3637,7 @@ exports.RequestError = RequestError;
 
 /***/ }),
 
-/***/ 234:
+/***/ 6234:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
@@ -3647,9 +3647,9 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var endpoint = __nccwpck_require__(440);
-var universalUserAgent = __nccwpck_require__(429);
-var isPlainObject = __nccwpck_require__(287);
+var endpoint = __nccwpck_require__(9440);
+var universalUserAgent = __nccwpck_require__(5030);
+var isPlainObject = __nccwpck_require__(3287);
 var nodeFetch = _interopDefault(__nccwpck_require__(467));
 var requestError = __nccwpck_require__(537);
 
@@ -3822,12 +3822,683 @@ exports.request = request;
 
 /***/ }),
 
-/***/ 682:
+/***/ 9552:
+/***/ ((__unused_webpack_module, exports) => {
+
+var __webpack_unused_export__;
+/* global window, exports, define */
+
+!function() {
+    'use strict'
+
+    var re = {
+        not_string: /[^s]/,
+        not_bool: /[^t]/,
+        not_type: /[^T]/,
+        not_primitive: /[^v]/,
+        number: /[diefg]/,
+        numeric_arg: /[bcdiefguxX]/,
+        json: /[j]/,
+        not_json: /[^j]/,
+        text: /^[^\x25]+/,
+        modulo: /^\x25{2}/,
+        placeholder: /^\x25(?:([1-9]\d*)\$|\(([^)]+)\))?(\+)?(0|'[^$])?(-)?(\d+)?(?:\.(\d+))?([b-gijostTuvxX])/,
+        key: /^([a-z_][a-z_\d]*)/i,
+        key_access: /^\.([a-z_][a-z_\d]*)/i,
+        index_access: /^\[(\d+)\]/,
+        sign: /^[+-]/
+    }
+
+    function sprintf(key) {
+        // `arguments` is not an array, but should be fine for this call
+        return sprintf_format(sprintf_parse(key), arguments)
+    }
+
+    function vsprintf(fmt, argv) {
+        return sprintf.apply(null, [fmt].concat(argv || []))
+    }
+
+    function sprintf_format(parse_tree, argv) {
+        var cursor = 1, tree_length = parse_tree.length, arg, output = '', i, k, ph, pad, pad_character, pad_length, is_positive, sign
+        for (i = 0; i < tree_length; i++) {
+            if (typeof parse_tree[i] === 'string') {
+                output += parse_tree[i]
+            }
+            else if (typeof parse_tree[i] === 'object') {
+                ph = parse_tree[i] // convenience purposes only
+                if (ph.keys) { // keyword argument
+                    arg = argv[cursor]
+                    for (k = 0; k < ph.keys.length; k++) {
+                        if (arg == undefined) {
+                            throw new Error(sprintf('[sprintf] Cannot access property "%s" of undefined value "%s"', ph.keys[k], ph.keys[k-1]))
+                        }
+                        arg = arg[ph.keys[k]]
+                    }
+                }
+                else if (ph.param_no) { // positional argument (explicit)
+                    arg = argv[ph.param_no]
+                }
+                else { // positional argument (implicit)
+                    arg = argv[cursor++]
+                }
+
+                if (re.not_type.test(ph.type) && re.not_primitive.test(ph.type) && arg instanceof Function) {
+                    arg = arg()
+                }
+
+                if (re.numeric_arg.test(ph.type) && (typeof arg !== 'number' && isNaN(arg))) {
+                    throw new TypeError(sprintf('[sprintf] expecting number but found %T', arg))
+                }
+
+                if (re.number.test(ph.type)) {
+                    is_positive = arg >= 0
+                }
+
+                switch (ph.type) {
+                    case 'b':
+                        arg = parseInt(arg, 10).toString(2)
+                        break
+                    case 'c':
+                        arg = String.fromCharCode(parseInt(arg, 10))
+                        break
+                    case 'd':
+                    case 'i':
+                        arg = parseInt(arg, 10)
+                        break
+                    case 'j':
+                        arg = JSON.stringify(arg, null, ph.width ? parseInt(ph.width) : 0)
+                        break
+                    case 'e':
+                        arg = ph.precision ? parseFloat(arg).toExponential(ph.precision) : parseFloat(arg).toExponential()
+                        break
+                    case 'f':
+                        arg = ph.precision ? parseFloat(arg).toFixed(ph.precision) : parseFloat(arg)
+                        break
+                    case 'g':
+                        arg = ph.precision ? String(Number(arg.toPrecision(ph.precision))) : parseFloat(arg)
+                        break
+                    case 'o':
+                        arg = (parseInt(arg, 10) >>> 0).toString(8)
+                        break
+                    case 's':
+                        arg = String(arg)
+                        arg = (ph.precision ? arg.substring(0, ph.precision) : arg)
+                        break
+                    case 't':
+                        arg = String(!!arg)
+                        arg = (ph.precision ? arg.substring(0, ph.precision) : arg)
+                        break
+                    case 'T':
+                        arg = Object.prototype.toString.call(arg).slice(8, -1).toLowerCase()
+                        arg = (ph.precision ? arg.substring(0, ph.precision) : arg)
+                        break
+                    case 'u':
+                        arg = parseInt(arg, 10) >>> 0
+                        break
+                    case 'v':
+                        arg = arg.valueOf()
+                        arg = (ph.precision ? arg.substring(0, ph.precision) : arg)
+                        break
+                    case 'x':
+                        arg = (parseInt(arg, 10) >>> 0).toString(16)
+                        break
+                    case 'X':
+                        arg = (parseInt(arg, 10) >>> 0).toString(16).toUpperCase()
+                        break
+                }
+                if (re.json.test(ph.type)) {
+                    output += arg
+                }
+                else {
+                    if (re.number.test(ph.type) && (!is_positive || ph.sign)) {
+                        sign = is_positive ? '+' : '-'
+                        arg = arg.toString().replace(re.sign, '')
+                    }
+                    else {
+                        sign = ''
+                    }
+                    pad_character = ph.pad_char ? ph.pad_char === '0' ? '0' : ph.pad_char.charAt(1) : ' '
+                    pad_length = ph.width - (sign + arg).length
+                    pad = ph.width ? (pad_length > 0 ? pad_character.repeat(pad_length) : '') : ''
+                    output += ph.align ? sign + arg + pad : (pad_character === '0' ? sign + pad + arg : pad + sign + arg)
+                }
+            }
+        }
+        return output
+    }
+
+    var sprintf_cache = Object.create(null)
+
+    function sprintf_parse(fmt) {
+        if (sprintf_cache[fmt]) {
+            return sprintf_cache[fmt]
+        }
+
+        var _fmt = fmt, match, parse_tree = [], arg_names = 0
+        while (_fmt) {
+            if ((match = re.text.exec(_fmt)) !== null) {
+                parse_tree.push(match[0])
+            }
+            else if ((match = re.modulo.exec(_fmt)) !== null) {
+                parse_tree.push('%')
+            }
+            else if ((match = re.placeholder.exec(_fmt)) !== null) {
+                if (match[2]) {
+                    arg_names |= 1
+                    var field_list = [], replacement_field = match[2], field_match = []
+                    if ((field_match = re.key.exec(replacement_field)) !== null) {
+                        field_list.push(field_match[1])
+                        while ((replacement_field = replacement_field.substring(field_match[0].length)) !== '') {
+                            if ((field_match = re.key_access.exec(replacement_field)) !== null) {
+                                field_list.push(field_match[1])
+                            }
+                            else if ((field_match = re.index_access.exec(replacement_field)) !== null) {
+                                field_list.push(field_match[1])
+                            }
+                            else {
+                                throw new SyntaxError('[sprintf] failed to parse named argument key')
+                            }
+                        }
+                    }
+                    else {
+                        throw new SyntaxError('[sprintf] failed to parse named argument key')
+                    }
+                    match[2] = field_list
+                }
+                else {
+                    arg_names |= 2
+                }
+                if (arg_names === 3) {
+                    throw new Error('[sprintf] mixing positional and named placeholders is not (yet) supported')
+                }
+
+                parse_tree.push(
+                    {
+                        placeholder: match[0],
+                        param_no:    match[1],
+                        keys:        match[2],
+                        sign:        match[3],
+                        pad_char:    match[4],
+                        align:       match[5],
+                        width:       match[6],
+                        precision:   match[7],
+                        type:        match[8]
+                    }
+                )
+            }
+            else {
+                throw new SyntaxError('[sprintf] unexpected placeholder')
+            }
+            _fmt = _fmt.substring(match[0].length)
+        }
+        return sprintf_cache[fmt] = parse_tree
+    }
+
+    /**
+     * export to either browser or node.js
+     */
+    /* eslint-disable quote-props */
+    if (true) {
+        __webpack_unused_export__ = sprintf
+        exports.q = vsprintf
+    }
+    if (typeof window !== 'undefined') {
+        window['sprintf'] = sprintf
+        window['vsprintf'] = vsprintf
+
+        if (typeof define === 'function' && define['amd']) {
+            define(function() {
+                return {
+                    'sprintf': sprintf,
+                    'vsprintf': vsprintf
+                }
+            })
+        }
+    }
+    /* eslint-enable quote-props */
+}(); // eslint-disable-line
+
+
+/***/ }),
+
+/***/ 8334:
+/***/ ((module) => {
+
+count = (arr) => arr.length;
+sum = (arr) => arr.reduce((a, b) => a + b, 0);
+product = (arr) => arr.reduce((total, num) => total * num, 1);
+max = (arr) => Math.max(arr);
+min = (arr) => Math.min(arr);
+sort = (arr) => [...arr].sort();
+all = (arr) => (arr.length === 0 ? true : arr.every((v) => v === true));
+any = (arr) => (arr.length === 0 ? false : arr.includes(true));
+
+module.exports = { count, sum, product, min, sort, all, any };
+
+
+/***/ }),
+
+/***/ 2893:
+/***/ ((module) => {
+
+arrayConcat = (arr1, arr2) => arr1.concat(arr2);
+arraySlice = (arr, startIndex, stopIndex) => arr.slice(startIndex, stopIndex);
+
+module.exports = { "array.concat": arrayConcat, "array.slice": arraySlice };
+
+
+/***/ }),
+
+/***/ 6951:
+/***/ ((module) => {
+
+to_number = (x) => Number(x);
+
+module.exports = { to_number };
+
+
+/***/ }),
+
+/***/ 1671:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var register = __nccwpck_require__(670)
-var addHook = __nccwpck_require__(549)
-var removeHook = __nccwpck_require__(819)
+const numbers = __nccwpck_require__(9364);
+const aggregates = __nccwpck_require__(8334);
+const arrays = __nccwpck_require__(2893);
+const strings = __nccwpck_require__(6967);
+const regex = __nccwpck_require__(3745);
+const types = __nccwpck_require__(9117);
+const conversions = __nccwpck_require__(6951);
+
+module.exports = {
+  ...numbers,
+  ...aggregates,
+  ...arrays,
+  ...strings,
+  ...regex,
+  ...types,
+  ...conversions,
+};
+
+
+/***/ }),
+
+/***/ 9364:
+/***/ ((module) => {
+
+plus = (a, b) => a + b;
+minus = (a, b) => a - b;
+mul = (a, b) => a * b;
+div = (a, b) => a / b;
+rem = (a, b) => a % b;
+round = (x) => Math.round(x);
+abs = (x) => Math.abs(x);
+
+module.exports = { plus, minus, mul, div, rem, round, abs };
+
+
+/***/ }),
+
+/***/ 3745:
+/***/ ((module) => {
+
+re_match = (pattern, value) => RegExp(pattern).test(value);
+regexSplit = (pattern, s) => s.split(RegExp(pattern));
+
+module.exports = { "regex.split": regexSplit, re_match };
+
+
+/***/ }),
+
+/***/ 6967:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var vsprintf = __nccwpck_require__(9552)/* .vsprintf */ .q
+
+contains = (s, search) => s.includes(search);
+endswith = (s, search) => s.endsWith(search);
+indexof = (s, search) => s.indexOf(search);
+lower = (s) => s.toLowerCase();
+replace = (s, searchValue, newValue) => s.replace(searchValue, newValue);
+split = (s, delimiter) => s.split(delimiter);
+sprintf = (s, values) => vsprintf(s, values);
+startswith = (s, search) => s.startsWith(search);
+substring = (s, start, length) => s.substr(start, length);
+concat = (delimiter, arr) => arr.join(delimiter);
+
+module.exports = {
+  contains,
+  endswith,
+  indexof,
+  lower,
+  replace,
+  split,
+  sprintf,
+  startswith,
+  substring,
+  concat,
+};
+
+
+/***/ }),
+
+/***/ 9117:
+/***/ ((module) => {
+
+// Types
+is_number = (x) => !isNaN(x);
+is_string = (x) => typeof x == "string";
+is_boolean = (x) => typeof x == "boolean";
+is_array = (x) => Array.isArray(x);
+is_set = (x) => x instanceof Set;
+is_object = (x) => typeof x == "object";
+is_null = (x) => x === null;
+type_name = (x) => typeof x;
+
+module.exports = {
+  is_number,
+  is_string,
+  is_boolean,
+  is_array,
+  is_set,
+  is_object,
+  is_null,
+  type_name,
+};
+
+
+/***/ }),
+
+/***/ 1535:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+// Copyright 2018 The OPA Authors.  All rights reserved.
+// Use of this source code is governed by an Apache2
+// license that can be found in the LICENSE file.
+const builtIns = __nccwpck_require__(1671);
+const utf8 = __nccwpck_require__(8971);
+
+/**
+ * @param {WebAssembly.Memory} mem
+ */
+function stringDecoder(mem) {
+  return function (addr) {
+    const i8 = new Int8Array(mem.buffer);
+    let s = "";
+    while (i8[addr] !== 0) {
+      s += String.fromCharCode(i8[addr++]);
+    }
+    return s;
+  };
+}
+
+/**
+ * Stringifies and loads an object into OPA's Memory
+ * @param {WebAssembly.Instance} wasmInstance
+ * @param {WebAssembly.Memory} memory
+ * @param {any} value
+ * @returns {number}
+ */
+function _loadJSON(wasmInstance, memory, value) {
+  if (value === undefined) {
+    throw "unable to load undefined value into memory";
+  }
+
+  const str = utf8.encode(JSON.stringify(value));
+  const rawAddr = wasmInstance.exports.opa_malloc(str.length);
+  const buf = new Uint8Array(memory.buffer);
+
+  for (let i = 0; i < str.length; i++) {
+    buf[rawAddr + i] = str.charCodeAt(i);
+  }
+
+  const parsedAddr = wasmInstance.exports.opa_json_parse(rawAddr, str.length);
+
+  if (parsedAddr === 0) {
+    throw "failed to parse json value";
+  }
+  return parsedAddr;
+}
+
+/**
+ * Dumps and parses a JSON object from OPA's Memory
+ * @param {WebAssembly.Instance} wasmInstance
+ * @param {WebAssembly.Memory} memory
+ * @param {number} addr
+ * @returns {object}
+ */
+function _dumpJSON(wasmInstance, memory, addr) {
+  const rawAddr = wasmInstance.exports.opa_json_dump(addr);
+  const buf = new Uint8Array(memory.buffer);
+
+  let s = "";
+  let idx = rawAddr;
+
+  while (buf[idx] !== 0) {
+    s += String.fromCharCode(buf[idx++]);
+  }
+
+  return JSON.parse(utf8.decode(s));
+}
+
+const builtinFuncs = builtIns;
+
+/**
+ * _builtinCall dispatches the built-in function. The built-in function
+ * arguments are loaded from Wasm and back in using JSON serialization.
+ * @param {WebAssembly.Instance} wasmInstance
+ * @param {WebAssembly.Memory} memory
+ * @param {{ [builtinId: number]: string }} builtins
+ * @param {string} builtin_id
+ */
+function _builtinCall(wasmInstance, memory, builtins, builtin_id) {
+  const builtInName = builtins[builtin_id];
+  const impl = builtinFuncs[builtInName];
+
+  if (impl === undefined) {
+    throw {
+      message:
+        "not implemented: built-in function " +
+        builtin_id +
+        ": " +
+        builtins[builtin_id],
+    };
+  }
+
+  var argArray = Array.prototype.slice.apply(arguments);
+  let args = [];
+
+  for (let i = 4; i < argArray.length; i++) {
+    const jsArg = _dumpJSON(wasmInstance, memory, argArray[i]);
+    args.push(jsArg);
+  }
+
+  const result = impl(...args);
+
+  return _loadJSON(wasmInstance, memory, result);
+}
+
+/**
+ * _loadPolicy can take in either an ArrayBuffer or WebAssembly.Module
+ * as its first argument, and a WebAssembly.Memory for the second parameter.
+ * It will return a Promise, depending on the input type the promise
+ * resolves to both a compiled WebAssembly.Module and its first WebAssembly.Instance
+ * or to the WebAssemblyInstance.
+ * @param {BufferSource | WebAssembly.Module} policy_wasm
+ * @param {WebAssembly.Memory} memory
+ * @returns {Promise<WebAssembly.WebAssemblyInstantiatedSource | WebAssembly.Instance>}
+ */
+async function _loadPolicy(policy_wasm, memory) {
+  const addr2string = stringDecoder(memory);
+
+  let env = {};
+
+  const wasm = await WebAssembly.instantiate(policy_wasm, {
+    env: {
+      memory: memory,
+      opa_abort: function (addr) {
+        throw addr2string(addr);
+      },
+      opa_println: function (addr) {
+        console.log(addr2string(addr))
+      },
+      opa_builtin0: function (builtin_id, ctx) {
+        return _builtinCall(env.instance, memory, env.builtins, builtin_id);
+      },
+      opa_builtin1: function (builtin_id, ctx, _1) {
+        return _builtinCall(env.instance, memory, env.builtins, builtin_id, _1);
+      },
+      opa_builtin2: function (builtin_id, ctx, _1, _2) {
+        return _builtinCall(
+          env.instance,
+          memory,
+          env.builtins,
+          builtin_id,
+          _1,
+          _2,
+        );
+      },
+      opa_builtin3: function (builtin_id, ctx, _1, _2, _3) {
+        return _builtinCall(
+          env.instance,
+          memory,
+          env.builtins,
+          builtin_id,
+          _1,
+          _2,
+          _3,
+        );
+      },
+      opa_builtin4: function (builtin_id, ctx, _1, _2, _3, _4) {
+        return _builtinCall(
+          env.instance,
+          memory,
+          env.builtins,
+          builtin_id,
+          _1,
+          _2,
+          _3,
+          _4,
+        );
+      },
+    },
+  });
+
+  env.instance = wasm.instance ? wasm.instance : wasm;
+
+  const builtins = _dumpJSON(
+    env.instance,
+    memory,
+    env.instance.exports.builtins(),
+  );
+
+  /** @type {typeof builtIns} */
+  env.builtins = {};
+
+  for (var key of Object.keys(builtins)) {
+    env.builtins[builtins[key]] = key;
+  }
+
+  return wasm;
+}
+
+/**
+ * LoadedPolicy is a wrapper around a WebAssembly.Instance and WebAssembly.Memory
+ * for a compiled Rego policy. There are helpers to run the wasm instance and
+ * handle the output from the policy wasm.
+ */
+class LoadedPolicy {
+  /**
+   * Loads and initializes a compiled Rego policy.
+   * @param {WebAssembly.WebAssemblyInstantiatedSource} policy
+   * @param {WebAssembly.Memory} memory
+   */
+  constructor(policy, memory) {
+    this.mem = memory;
+
+    // Depending on how the wasm was instantiated "policy" might be a
+    // WebAssembly Instance or be a wrapper around the Module and
+    // Instance. We only care about the Instance.
+    this.wasmInstance = policy.instance ? policy.instance : policy;
+
+    this.dataAddr = _loadJSON(this.wasmInstance, this.mem, {});
+    this.baseHeapPtr = this.wasmInstance.exports.opa_heap_ptr_get();
+    this.dataHeapPtr = this.baseHeapPtr;
+  }
+
+  /**
+   * Evaluates the loaded policy with the given input and
+   * return the result set. This should be re-used for multiple evaluations
+   * of the same policy with different inputs.
+   * @param {object} input
+   */
+  evaluate(input) {
+    // Reset the heap pointer before each evaluation
+    this.wasmInstance.exports.opa_heap_ptr_set(this.dataHeapPtr);
+
+    // Load the input data
+    const inputAddr = _loadJSON(this.wasmInstance, this.mem, input);
+
+    // Setup the evaluation context
+    const ctxAddr = this.wasmInstance.exports.opa_eval_ctx_new();
+    this.wasmInstance.exports.opa_eval_ctx_set_input(ctxAddr, inputAddr);
+    this.wasmInstance.exports.opa_eval_ctx_set_data(ctxAddr, this.dataAddr);
+
+    // Actually evaluate the policy
+    this.wasmInstance.exports.eval(ctxAddr);
+
+    // Retrieve the result
+    const resultAddr = this.wasmInstance.exports.opa_eval_ctx_get_result(
+      ctxAddr,
+    );
+    return _dumpJSON(this.wasmInstance, this.mem, resultAddr);
+  }
+
+  /**
+   * eval_bool will evaluate the policy and return a boolean answer
+   * depending on the return code from the policy evaluation.
+   * @deprecated Use `evaluate` instead.
+   * @param {object} input
+   */
+  evalBool(input) {
+    const rs = this.evaluate(input);
+    return rs && rs.length === 1 && rs[0] === true;
+  }
+
+  /**
+   * Loads data for use in subsequent evaluations.
+   * @param {object} data
+   */
+  setData(data) {
+    this.wasmInstance.exports.opa_heap_ptr_set(this.baseHeapPtr);
+    this.dataAddr = _loadJSON(this.wasmInstance, this.mem, data);
+    this.dataHeapPtr = this.wasmInstance.exports.opa_heap_ptr_get();
+  }
+}
+
+module.exports = {
+  /**
+   * Takes in either an ArrayBuffer or WebAssembly.Module
+   * and will return a LoadedPolicy object which can be used to evaluate
+   * the policy.
+   * @param {BufferSource | WebAssembly.Module} regoWasm
+   */
+  async loadPolicy(regoWasm) {
+    const memory = new WebAssembly.Memory({ initial: 5 });
+    const policy = await _loadPolicy(regoWasm, memory);
+    return new LoadedPolicy(policy, memory);
+  }
+}
+
+
+/***/ }),
+
+/***/ 3682:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var register = __nccwpck_require__(4670)
+var addHook = __nccwpck_require__(5549)
+var removeHook = __nccwpck_require__(6819)
 
 // bind with array of arguments: https://stackoverflow.com/a/21792913
 var bind = Function.bind
@@ -3886,7 +4557,7 @@ module.exports.Collection = Hook.Collection
 
 /***/ }),
 
-/***/ 549:
+/***/ 5549:
 /***/ ((module) => {
 
 module.exports = addHook;
@@ -3939,7 +4610,7 @@ function addHook(state, kind, name, hook) {
 
 /***/ }),
 
-/***/ 670:
+/***/ 4670:
 /***/ ((module) => {
 
 module.exports = register;
@@ -3973,7 +4644,7 @@ function register(state, name, method, options) {
 
 /***/ }),
 
-/***/ 819:
+/***/ 6819:
 /***/ ((module) => {
 
 module.exports = removeHook;
@@ -3999,7 +4670,7 @@ function removeHook(state, name, method) {
 
 /***/ }),
 
-/***/ 932:
+/***/ 8932:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -4027,7 +4698,7 @@ exports.Deprecation = Deprecation;
 
 /***/ }),
 
-/***/ 287:
+/***/ 3287:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -4083,11 +4754,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var Stream = _interopDefault(__nccwpck_require__(413));
-var http = _interopDefault(__nccwpck_require__(605));
-var Url = _interopDefault(__nccwpck_require__(835));
-var https = _interopDefault(__nccwpck_require__(211));
-var zlib = _interopDefault(__nccwpck_require__(761));
+var Stream = _interopDefault(__nccwpck_require__(2413));
+var http = _interopDefault(__nccwpck_require__(8605));
+var Url = _interopDefault(__nccwpck_require__(8835));
+var https = _interopDefault(__nccwpck_require__(7211));
+var zlib = _interopDefault(__nccwpck_require__(8761));
 
 // Based on https://github.com/tmpvar/jsdom/blob/aa85b2abf07766ff7bf5c1f6daafb3726f2f2db5/lib/jsdom/living/blob.js
 
@@ -4238,7 +4909,7 @@ FetchError.prototype.name = 'FetchError';
 
 let convert;
 try {
-	convert = __nccwpck_require__(877).convert;
+	convert = __nccwpck_require__(2877).convert;
 } catch (e) {}
 
 const INTERNALS = Symbol('Body internals');
@@ -5730,10 +6401,10 @@ exports.FetchError = FetchError;
 
 /***/ }),
 
-/***/ 223:
+/***/ 1223:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-var wrappy = __nccwpck_require__(940)
+var wrappy = __nccwpck_require__(2940)
 module.exports = wrappy(once)
 module.exports.strict = wrappy(onceStrict)
 
@@ -5779,27 +6450,27 @@ function onceStrict (fn) {
 
 /***/ }),
 
-/***/ 294:
+/***/ 4294:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
-module.exports = __nccwpck_require__(219);
+module.exports = __nccwpck_require__(4219);
 
 
 /***/ }),
 
-/***/ 219:
+/***/ 4219:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-var net = __nccwpck_require__(631);
-var tls = __nccwpck_require__(16);
-var http = __nccwpck_require__(605);
-var https = __nccwpck_require__(211);
-var events = __nccwpck_require__(614);
-var assert = __nccwpck_require__(357);
-var util = __nccwpck_require__(669);
+var net = __nccwpck_require__(1631);
+var tls = __nccwpck_require__(4016);
+var http = __nccwpck_require__(8605);
+var https = __nccwpck_require__(7211);
+var events = __nccwpck_require__(8614);
+var assert = __nccwpck_require__(2357);
+var util = __nccwpck_require__(1669);
 
 
 exports.httpOverHttp = httpOverHttp;
@@ -6059,7 +6730,7 @@ exports.debug = debug; // for test
 
 /***/ }),
 
-/***/ 429:
+/***/ 5030:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -6085,7 +6756,216 @@ exports.getUserAgent = getUserAgent;
 
 /***/ }),
 
-/***/ 940:
+/***/ 8971:
+/***/ ((__unused_webpack_module, exports) => {
+
+/*! https://mths.be/utf8js v3.0.0 by @mathias */
+;(function(root) {
+
+	var stringFromCharCode = String.fromCharCode;
+
+	// Taken from https://mths.be/punycode
+	function ucs2decode(string) {
+		var output = [];
+		var counter = 0;
+		var length = string.length;
+		var value;
+		var extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	// Taken from https://mths.be/punycode
+	function ucs2encode(array) {
+		var length = array.length;
+		var index = -1;
+		var value;
+		var output = '';
+		while (++index < length) {
+			value = array[index];
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+		}
+		return output;
+	}
+
+	function checkScalarValue(codePoint) {
+		if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
+			throw Error(
+				'Lone surrogate U+' + codePoint.toString(16).toUpperCase() +
+				' is not a scalar value'
+			);
+		}
+	}
+	/*--------------------------------------------------------------------------*/
+
+	function createByte(codePoint, shift) {
+		return stringFromCharCode(((codePoint >> shift) & 0x3F) | 0x80);
+	}
+
+	function encodeCodePoint(codePoint) {
+		if ((codePoint & 0xFFFFFF80) == 0) { // 1-byte sequence
+			return stringFromCharCode(codePoint);
+		}
+		var symbol = '';
+		if ((codePoint & 0xFFFFF800) == 0) { // 2-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 6) & 0x1F) | 0xC0);
+		}
+		else if ((codePoint & 0xFFFF0000) == 0) { // 3-byte sequence
+			checkScalarValue(codePoint);
+			symbol = stringFromCharCode(((codePoint >> 12) & 0x0F) | 0xE0);
+			symbol += createByte(codePoint, 6);
+		}
+		else if ((codePoint & 0xFFE00000) == 0) { // 4-byte sequence
+			symbol = stringFromCharCode(((codePoint >> 18) & 0x07) | 0xF0);
+			symbol += createByte(codePoint, 12);
+			symbol += createByte(codePoint, 6);
+		}
+		symbol += stringFromCharCode((codePoint & 0x3F) | 0x80);
+		return symbol;
+	}
+
+	function utf8encode(string) {
+		var codePoints = ucs2decode(string);
+		var length = codePoints.length;
+		var index = -1;
+		var codePoint;
+		var byteString = '';
+		while (++index < length) {
+			codePoint = codePoints[index];
+			byteString += encodeCodePoint(codePoint);
+		}
+		return byteString;
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	function readContinuationByte() {
+		if (byteIndex >= byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		var continuationByte = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		if ((continuationByte & 0xC0) == 0x80) {
+			return continuationByte & 0x3F;
+		}
+
+		// If we end up here, it’s not a continuation byte
+		throw Error('Invalid continuation byte');
+	}
+
+	function decodeSymbol() {
+		var byte1;
+		var byte2;
+		var byte3;
+		var byte4;
+		var codePoint;
+
+		if (byteIndex > byteCount) {
+			throw Error('Invalid byte index');
+		}
+
+		if (byteIndex == byteCount) {
+			return false;
+		}
+
+		// Read first byte
+		byte1 = byteArray[byteIndex] & 0xFF;
+		byteIndex++;
+
+		// 1-byte sequence (no continuation bytes)
+		if ((byte1 & 0x80) == 0) {
+			return byte1;
+		}
+
+		// 2-byte sequence
+		if ((byte1 & 0xE0) == 0xC0) {
+			byte2 = readContinuationByte();
+			codePoint = ((byte1 & 0x1F) << 6) | byte2;
+			if (codePoint >= 0x80) {
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 3-byte sequence (may include unpaired surrogates)
+		if ((byte1 & 0xF0) == 0xE0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			codePoint = ((byte1 & 0x0F) << 12) | (byte2 << 6) | byte3;
+			if (codePoint >= 0x0800) {
+				checkScalarValue(codePoint);
+				return codePoint;
+			} else {
+				throw Error('Invalid continuation byte');
+			}
+		}
+
+		// 4-byte sequence
+		if ((byte1 & 0xF8) == 0xF0) {
+			byte2 = readContinuationByte();
+			byte3 = readContinuationByte();
+			byte4 = readContinuationByte();
+			codePoint = ((byte1 & 0x07) << 0x12) | (byte2 << 0x0C) |
+				(byte3 << 0x06) | byte4;
+			if (codePoint >= 0x010000 && codePoint <= 0x10FFFF) {
+				return codePoint;
+			}
+		}
+
+		throw Error('Invalid UTF-8 detected');
+	}
+
+	var byteArray;
+	var byteCount;
+	var byteIndex;
+	function utf8decode(byteString) {
+		byteArray = ucs2decode(byteString);
+		byteCount = byteArray.length;
+		byteIndex = 0;
+		var codePoints = [];
+		var tmp;
+		while ((tmp = decodeSymbol()) !== false) {
+			codePoints.push(tmp);
+		}
+		return ucs2encode(codePoints);
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	root.version = '3.0.0';
+	root.encode = utf8encode;
+	root.decode = utf8decode;
+
+}( false ? 0 : exports));
+
+
+/***/ }),
+
+/***/ 2940:
 /***/ ((module) => {
 
 // Returns a wrapper function that returns a wrapped callback
@@ -6125,16 +7005,17 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 348:
+/***/ 3348:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
 
-const core = __nccwpck_require__(186);
-const github = __nccwpck_require__(438);
-const { addComment, deleteComment } = __nccwpck_require__(396);
-const { execCommand } = __nccwpck_require__(134);
+const core = __nccwpck_require__(2186);
+const github = __nccwpck_require__(5438);
+const { execCommand } = __nccwpck_require__(9134);
+const { addComment, deleteComment } = __nccwpck_require__(8396);
+const { getPlanChanges } = __nccwpck_require__(4624);
 
 /**
  * Runs the action
@@ -6155,8 +7036,8 @@ const action = async () => {
     { key: "init", exec: `${binary} init` },
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
-    { key: "plan", exec: `${binary} plan -json -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show plan.tfplan -no-color` },
+    { key: "plan", exec: `${binary} plan -out=plan.tfplan` },
+    { key: "show", exec: `${binary} show -json plan.tfplan > tfplan.json` },
   ];
   let results = {};
   let isError = false;
@@ -6178,10 +7059,15 @@ const action = async () => {
     await deleteComment(octokit, github.context, commentTitle);
   }
 
+  // Check for changes
+  let changes = { isChanges: false };
+  if (results.plan.isSuccess) {
+    changes = await getPlanChanges("tfplan.json");
+  }
+
   // Comment on PR if changes or errors
-  const isChanges = results.plan.output.indexOf('"type":"planned_change"') > -1;
-  if (isComment && (isChanges || isError)) {
-    await addComment(octokit, github.context, commentTitle, results);
+  if (isComment && (changes.isChanges || isError)) {
+    await addComment(octokit, github.context, commentTitle, results, changes);
   }
 
   if (isError && !isAllowFailure) {
@@ -6196,14 +7082,14 @@ module.exports = {
 
 /***/ }),
 
-/***/ 134:
+/***/ 9134:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
 
-
 /* eslint security/detect-child-process: "off" */
-const proc = __nccwpck_require__(129);
+
+const proc = __nccwpck_require__(3129);
 
 /**
  * Executes a command in a given directory
@@ -6237,7 +7123,7 @@ module.exports = {
 
 /***/ }),
 
-/***/ 396:
+/***/ 8396:
 /***/ ((module) => {
 
 "use strict";
@@ -6250,8 +7136,9 @@ module.exports = {
  * @param {Object} context GitHub context for the workflow run
  * @param {String} title Comment heading
  * @param {Object} results Results for all the Terraform commands
+ * @param {Object} changes Resource and output changes for the plan
  */
-const addComment = async (octokit, context, title, results) => {
+const addComment = async (octokit, context, title, results, changes) => {
   const comment = `## ${title}
 **${results.fmt.isSuccess ? "✅" : "❌"} &nbsp; Terraform Format:** \`${
     results.fmt.isSuccess ? "success" : "failed"
@@ -6259,11 +7146,23 @@ const addComment = async (octokit, context, title, results) => {
 **${results.plan.isSuccess ? "✅" : "❌"} &nbsp; Terraform Plan:** \`${
     results.plan.isSuccess ? "success" : "failed"
   }\`
+
+${
+  changes.isDeletes
+    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
+    : ""
+}
+\`\`\`terraform
+Plan: ${changes.resources.create} to add, ${
+    changes.resources.update
+  } to change, ${changes.resources.delete} to destroy
+\`\`\`
+
 <details>
 <summary>Show plan</summary>
 
 \`\`\`terraform
-${results.show.output}
+${results.plan.output}
 \`\`\`
 </details>`;
 
@@ -6308,7 +7207,59 @@ module.exports = {
 
 /***/ }),
 
-/***/ 877:
+/***/ 4624:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+/* eslint security/detect-non-literal-fs-filename: "off" */
+
+const fs = __nccwpck_require__(5747);
+const { loadPolicy } = __nccwpck_require__(1535);
+
+/**
+ * Uses ./policy/resource-changes.rego OPA policy to examine the JSON generated
+ * from a tfplan file and check if there are resource changes.
+ * @param {String} planJsonPath Path to a Terrform plan JSON output
+ * @returns {Object} Resource and output changes in the tfplan
+ */
+const getPlanChanges = async (planJsonPath) => {
+  const policyWasm = fs.readFileSync("./policy/policy.wasm");
+  const json = fs.readFileSync(planJsonPath);
+
+  const policy = await loadPolicy(policyWasm);
+  const results = policy.evaluate(JSON.parse(json));
+
+  let changes;
+  if (results !== null && results.length) {
+    const resources = results[0].result.resource_changes;
+    const outputs = results[0].result.output_changes;
+
+    changes = {
+      isChanges:
+        resources.create > 0 ||
+        resources.update > 0 ||
+        resources.delete > 0 ||
+        outputs.create > 0 ||
+        outputs.update > 0 ||
+        outputs.delete > 0,
+      isDeletes: resources.delete > 0,
+      resources: resources,
+      ouputs: outputs,
+    };
+  }
+
+  return changes;
+};
+
+module.exports = {
+  getPlanChanges: getPlanChanges,
+};
+
+
+/***/ }),
+
+/***/ 2877:
 /***/ ((module) => {
 
 module.exports = eval("require")("encoding");
@@ -6316,7 +7267,7 @@ module.exports = eval("require")("encoding");
 
 /***/ }),
 
-/***/ 357:
+/***/ 2357:
 /***/ ((module) => {
 
 "use strict";
@@ -6324,7 +7275,7 @@ module.exports = require("assert");;
 
 /***/ }),
 
-/***/ 129:
+/***/ 3129:
 /***/ ((module) => {
 
 "use strict";
@@ -6332,7 +7283,7 @@ module.exports = require("child_process");;
 
 /***/ }),
 
-/***/ 614:
+/***/ 8614:
 /***/ ((module) => {
 
 "use strict";
@@ -6340,7 +7291,7 @@ module.exports = require("events");;
 
 /***/ }),
 
-/***/ 747:
+/***/ 5747:
 /***/ ((module) => {
 
 "use strict";
@@ -6348,7 +7299,7 @@ module.exports = require("fs");;
 
 /***/ }),
 
-/***/ 605:
+/***/ 8605:
 /***/ ((module) => {
 
 "use strict";
@@ -6356,7 +7307,7 @@ module.exports = require("http");;
 
 /***/ }),
 
-/***/ 211:
+/***/ 7211:
 /***/ ((module) => {
 
 "use strict";
@@ -6364,7 +7315,7 @@ module.exports = require("https");;
 
 /***/ }),
 
-/***/ 631:
+/***/ 1631:
 /***/ ((module) => {
 
 "use strict";
@@ -6372,7 +7323,7 @@ module.exports = require("net");;
 
 /***/ }),
 
-/***/ 87:
+/***/ 2087:
 /***/ ((module) => {
 
 "use strict";
@@ -6380,7 +7331,7 @@ module.exports = require("os");;
 
 /***/ }),
 
-/***/ 622:
+/***/ 5622:
 /***/ ((module) => {
 
 "use strict";
@@ -6388,7 +7339,7 @@ module.exports = require("path");;
 
 /***/ }),
 
-/***/ 413:
+/***/ 2413:
 /***/ ((module) => {
 
 "use strict";
@@ -6396,7 +7347,7 @@ module.exports = require("stream");;
 
 /***/ }),
 
-/***/ 16:
+/***/ 4016:
 /***/ ((module) => {
 
 "use strict";
@@ -6404,7 +7355,7 @@ module.exports = require("tls");;
 
 /***/ }),
 
-/***/ 835:
+/***/ 8835:
 /***/ ((module) => {
 
 "use strict";
@@ -6412,7 +7363,7 @@ module.exports = require("url");;
 
 /***/ }),
 
-/***/ 669:
+/***/ 1669:
 /***/ ((module) => {
 
 "use strict";
@@ -6420,7 +7371,7 @@ module.exports = require("util");;
 
 /***/ }),
 
-/***/ 761:
+/***/ 8761:
 /***/ ((module) => {
 
 "use strict";
@@ -6470,8 +7421,8 @@ var __webpack_exports__ = {};
 "use strict";
 
 
-const core = __nccwpck_require__(186);
-const { action } = __nccwpck_require__(348);
+const core = __nccwpck_require__(2186);
+const { action } = __nccwpck_require__(3348);
 
 /**
  * Logs an error and sets the action as failed.

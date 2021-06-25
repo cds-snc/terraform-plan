@@ -49,18 +49,26 @@ describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
       fmt: { isSuccess: true },
-      plan: { isSuccess: true },
-      show: { output: "Well hello there" },
+      plan: { isSuccess: true, output: "Well hello there" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: true,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 1,
+      },
     };
 
-    await addComment(octomock, context, "Foobar", results);
+    await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
       {
         owner: "foo",
         repo: "bar",
         issue_number: 42,
-        body: "## Foobar\n**✅ &nbsp; Terraform Format:** `success`\n**✅ &nbsp; Terraform Plan:** `success`\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+        body: "## Foobar\n**✅ &nbsp; Terraform Format:** `success`\n**✅ &nbsp; Terraform Plan:** `success`\n\n**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!\n```terraform\nPlan: 1 to add, 0 to change, 0 to destroy\n```\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
       },
     ]);
   });
@@ -68,17 +76,25 @@ describe("addComment", () => {
   test("add a failed comment with changes", async () => {
     const results = {
       fmt: { isSuccess: false },
-      plan: { isSuccess: false },
-      show: { output: "Well hello there" },
+      plan: { isSuccess: false, output: "Well hello there" },
+    };
+    const changes = {
+      isChanges: false,
+      isDeletes: false,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 0,
+      },
     };
 
-    await addComment(octomock, context, "Foobar", results);
+    await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
       owner: "foo",
       repo: "bar",
       issue_number: 42,
-      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n\n\n```terraform\nPlan: 0 to add, 0 to change, 0 to destroy\n```\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
     });
   });
 });

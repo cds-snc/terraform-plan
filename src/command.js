@@ -1,6 +1,6 @@
 "use strict";
-
 /* eslint security/detect-child-process: "off" */
+
 const proc = require("child_process");
 
 /**

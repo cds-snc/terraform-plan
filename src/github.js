@@ -7,8 +7,9 @@
  * @param {Object} context GitHub context for the workflow run
  * @param {String} title Comment heading
  * @param {Object} results Results for all the Terraform commands
+ * @param {Object} changes Resource and output changes for the plan
  */
-const addComment = async (octokit, context, title, results) => {
+const addComment = async (octokit, context, title, results, changes) => {
   const comment = `## ${title}
 **${results.fmt.isSuccess ? "✅" : "❌"} &nbsp; Terraform Format:** \`${
     results.fmt.isSuccess ? "success" : "failed"
@@ -16,11 +17,23 @@ const addComment = async (octokit, context, title, results) => {
 **${results.plan.isSuccess ? "✅" : "❌"} &nbsp; Terraform Plan:** \`${
     results.plan.isSuccess ? "success" : "failed"
   }\`
+
+${
+  changes.isDeletes
+    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
+    : ""
+}
+\`\`\`terraform
+Plan: ${changes.resources.create} to add, ${
+    changes.resources.update
+  } to change, ${changes.resources.delete} to destroy
+\`\`\`
+
 <details>
 <summary>Show plan</summary>
 
 \`\`\`terraform
-${results.show.output}
+${results.plan.output}
 \`\`\`
 </details>`;
 
