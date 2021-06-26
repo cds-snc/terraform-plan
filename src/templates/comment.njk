@@ -1,6 +1,6 @@
 ## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** `{{ "success" if results.fmt.isSuccess else "failed" }}`
-**{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** `{{ "success" if results.fmt.isSuccess else "failed" }}`
+**{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** `{{ "success" if results.plan.isSuccess else "failed" }}`
 
 {% if changes.isDeletes %}
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
@@ -13,7 +13,9 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 
 <details>
 <summary>Show plan</summary>
+
 ```terraform
 {{ results.plan.output }}
 ```
+
 </details>
