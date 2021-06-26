@@ -1,7 +1,4 @@
 "use strict";
-/* eslint security/detect-child-process: "off" */
-
-const proc = require("child_process");
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
@@ -10,8 +7,17 @@ const proc = require("child_process");
  * @param {Object} context GitHub context for the workflow run
  * @param {String} title Comment heading
  * @param {Object} results Results for all the Terraform commands
+ * @param {Object} changes Resource and output changes for the plan
  */
-const addComment = async (octokit, context, title, results) => {
+const addComment = async (octokit, context, title, results, changes) => {
+  const deleteWarning = changes.isDeletes
+    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
+    : "";
+  const changeCount = changes.isChanges
+    ? `\`\`\`terraform
+Plan: ${changes.resources.create} to add, ${changes.resources.update} to change, ${changes.resources.delete} to destroy
+\`\`\``
+    : "";
   const comment = `## ${title}
 **${results.fmt.isSuccess ? "✅" : "❌"} &nbsp; Terraform Format:** \`${
     results.fmt.isSuccess ? "success" : "failed"
@@ -19,11 +25,15 @@ const addComment = async (octokit, context, title, results) => {
 **${results.plan.isSuccess ? "✅" : "❌"} &nbsp; Terraform Plan:** \`${
     results.plan.isSuccess ? "success" : "failed"
   }\`
+
+${deleteWarning}
+${changeCount}
+
 <details>
 <summary>Show plan</summary>
 
 \`\`\`terraform
-${results.show.output}
+${results.plan.output}
 \`\`\`
 </details>`;
 
@@ -60,33 +70,7 @@ const deleteComment = async (octokit, context, title) => {
   }
 };
 
-/**
- * Executes a command in a given directory
- * @param {String} command The command (and args) to execute
- * @param {String} directory The directory to execute the command in
- * @returns {Object} Results object with the command output and if the command was successful
- */
-const execCommand = (command, directory) => {
-  let output,
-    exitCode = 0;
-
-  try {
-    console.log("🧪 \x1b[36m%s\x1b[0m\n", command);
-    output = proc.execSync(command, { cwd: directory }).toString("utf8");
-    console.log(output);
-  } catch (error) {
-    exitCode = error.exitCode;
-    output = error.stderr.toString("utf8");
-  }
-
-  return {
-    isSuccess: exitCode === 0,
-    output: output,
-  };
-};
-
 module.exports = {
   addComment: addComment,
   deleteComment: deleteComment,
-  execCommand: execCommand,
 };

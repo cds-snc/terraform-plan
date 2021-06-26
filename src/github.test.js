@@ -1,6 +1,6 @@
 "use strict";
 
-const { addComment, deleteComment, execCommand } = require("./lib.js");
+const { addComment, deleteComment } = require("./github.js");
 global.console = { log: jest.fn() };
 
 // Mock octokit object and return values
@@ -49,18 +49,26 @@ describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
       fmt: { isSuccess: true },
-      plan: { isSuccess: true },
-      show: { output: "Well hello there" },
+      plan: { isSuccess: true, output: "Well hello there" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: true,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 1,
+      },
     };
 
-    await addComment(octomock, context, "Foobar", results);
+    await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
       {
         owner: "foo",
         repo: "bar",
         issue_number: 42,
-        body: "## Foobar\n**✅ &nbsp; Terraform Format:** `success`\n**✅ &nbsp; Terraform Plan:** `success`\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+        body: "## Foobar\n**✅ &nbsp; Terraform Format:** `success`\n**✅ &nbsp; Terraform Plan:** `success`\n\n**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!\n```terraform\nPlan: 1 to add, 0 to change, 0 to destroy\n```\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
       },
     ]);
   });
@@ -68,17 +76,17 @@ describe("addComment", () => {
   test("add a failed comment with changes", async () => {
     const results = {
       fmt: { isSuccess: false },
-      plan: { isSuccess: false },
-      show: { output: "Well hello there" },
+      plan: { isSuccess: false, output: "Well hello there" },
     };
+    const changes = {};
 
-    await addComment(octomock, context, "Foobar", results);
+    await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
       owner: "foo",
       repo: "bar",
       issue_number: 42,
-      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n\n\n\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
     });
   });
 });
@@ -103,20 +111,5 @@ describe("deleteComment", () => {
     await deleteComment(octomock, context, "Bort");
     expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(0);
-  });
-});
-
-describe("execCommand", () => {
-  test("show command output", () => {
-    expect(execCommand("ls", "./test/changes")).toEqual({
-      isSuccess: true,
-      output: "changes.tf\n",
-    });
-  });
-  test("show error message", () => {
-    expect(execCommand("cat foo", ".")).toEqual({
-      isSuccess: false,
-      output: "cat: foo: No such file or directory\n",
-    });
   });
 });

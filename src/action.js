@@ -2,7 +2,9 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { addComment, deleteComment, execCommand } = require("./lib.js");
+const { execCommand } = require("./command.js");
+const { addComment, deleteComment } = require("./github.js");
+const { getPlanChanges } = require("./opa.js");
 
 /**
  * Runs the action
@@ -23,8 +25,8 @@ const action = async () => {
     { key: "init", exec: `${binary} init` },
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
-    { key: "plan", exec: `${binary} plan -json -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show plan.tfplan -no-color` },
+    { key: "plan", exec: `${binary} plan -no-color -out=plan.tfplan` },
+    { key: "show", exec: `${binary} show -json plan.tfplan`, depends: "plan" },
   ];
   let results = {};
   let isError = false;
@@ -37,7 +39,11 @@ const action = async () => {
 
   // Exec commands
   for (let command of commands) {
-    results[command.key] = execCommand(command.exec, directory);
+    if (!command.depends || results[command.depends].isSuccess) {
+      results[command.key] = execCommand(command.exec, directory);
+    } else {
+      results[command.key] = { isSuccess: false };
+    }
     isError = isError || !results[command.key].isSuccess;
   }
 
@@ -46,10 +52,16 @@ const action = async () => {
     await deleteComment(octokit, github.context, commentTitle);
   }
 
+  // Check for changes
+  let changes = {};
+  if (results.show.isSuccess) {
+    const planJson = JSON.parse(results.show.output);
+    changes = await getPlanChanges(planJson);
+  }
+
   // Comment on PR if changes or errors
-  const isChanges = results.plan.output.indexOf('"type":"planned_change"') > -1;
-  if (isComment && (isChanges || isError)) {
-    await addComment(octokit, github.context, commentTitle, results);
+  if (isComment && (changes.isChanges || isError)) {
+    await addComment(octokit, github.context, commentTitle, results, changes);
   }
 
   if (isError && !isAllowFailure) {

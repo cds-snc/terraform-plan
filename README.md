@@ -1,12 +1,13 @@
 # Terraform Plan GitHub Action
-Runs the following commands in order on a Pull Request (PR).  If changes or errors are found during the plan it adds a comment to the PR:
+Runs `terraform plan` on your project and posts a comment with the changes on a Pull Request (PR).  It runs the following commands:
 ```sh
 terraform init
 terraform validate
 terraform fmt --check
-terraform plan
+terraform plan -out=plan.tfplan
+terraform show -json plan.tfplan 
 ```
-This action **does not** install Terraform or Terragrunt.  You can see how it's used in the [test.yaml workflow](.github/workflows/test.yaml).
+This action **does not** install Terraform or Terragrunt.  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/test.yaml).
 
 # Settings
 Use the following to control the action:
@@ -61,3 +62,6 @@ npm install
 npm run prepare
 ```
 Husky provides a pre-commit hook that builds the `dist/index.js` used by the action.  To test locally, [nektos/act](https://github.com/nektos/act) works well.
+
+# Policy
+[Open Policy Agent](https://www.openpolicyagent.org/) is used to check the `terraform plan` for changes.  [Policies](./policy) are written in Rego and then compiled into a WebAssembly module using `npm run policy`.
