@@ -7036,8 +7036,8 @@ const action = async () => {
     { key: "init", exec: `${binary} init` },
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
-    { key: "plan", exec: `${binary} plan -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show -json plan.tfplan` },
+    { key: "plan", exec: `${binary} plan -no-color -out=plan.tfplan` },
+    { key: "show", exec: `${binary} show -json plan.tfplan`, depends: "plan" },
   ];
   let results = {};
   let isError = false;
@@ -7050,7 +7050,11 @@ const action = async () => {
 
   // Exec commands
   for (let command of commands) {
-    results[command.key] = execCommand(command.exec, directory);
+    if (!command.depends || results[command.depends].isSuccess) {
+      results[command.key] = execCommand(command.exec, directory);
+    } else {
+      results[command.key] = { isSuccess: false };
+    }
     isError = isError || !results[command.key].isSuccess;
   }
 
@@ -7140,6 +7144,14 @@ module.exports = {
  * @param {Object} changes Resource and output changes for the plan
  */
 const addComment = async (octokit, context, title, results, changes) => {
+  const deleteWarning = changes.isDeletes
+    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
+    : "";
+  const changeCount = changes.isChanges
+    ? `\`\`\`terraform
+Plan: ${changes.resources.create} to add, ${changes.resources.update} to change, ${changes.resources.delete} to destroy
+\`\`\``
+    : "";
   const comment = `## ${title}
 **${results.fmt.isSuccess ? "✅" : "❌"} &nbsp; Terraform Format:** \`${
     results.fmt.isSuccess ? "success" : "failed"
@@ -7148,16 +7160,8 @@ const addComment = async (octokit, context, title, results, changes) => {
     results.plan.isSuccess ? "success" : "failed"
   }\`
 
-${
-  changes.isDeletes
-    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
-    : ""
-}
-\`\`\`terraform
-Plan: ${changes.resources.create} to add, ${
-    changes.resources.update
-  } to change, ${changes.resources.delete} to destroy
-\`\`\`
+${deleteWarning}
+${changeCount}
 
 <details>
 <summary>Show plan</summary>

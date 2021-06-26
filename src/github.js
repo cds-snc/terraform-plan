@@ -10,6 +10,14 @@
  * @param {Object} changes Resource and output changes for the plan
  */
 const addComment = async (octokit, context, title, results, changes) => {
+  const deleteWarning = changes.isDeletes
+    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
+    : "";
+  const changeCount = changes.isChanges
+    ? `\`\`\`terraform
+Plan: ${changes.resources.create} to add, ${changes.resources.update} to change, ${changes.resources.delete} to destroy
+\`\`\``
+    : "";
   const comment = `## ${title}
 **${results.fmt.isSuccess ? "✅" : "❌"} &nbsp; Terraform Format:** \`${
     results.fmt.isSuccess ? "success" : "failed"
@@ -18,16 +26,8 @@ const addComment = async (octokit, context, title, results, changes) => {
     results.plan.isSuccess ? "success" : "failed"
   }\`
 
-${
-  changes.isDeletes
-    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
-    : ""
-}
-\`\`\`terraform
-Plan: ${changes.resources.create} to add, ${
-    changes.resources.update
-  } to change, ${changes.resources.delete} to destroy
-\`\`\`
+${deleteWarning}
+${changeCount}
 
 <details>
 <summary>Show plan</summary>

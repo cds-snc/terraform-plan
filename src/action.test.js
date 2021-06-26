@@ -30,7 +30,7 @@ describe("action", () => {
       ["terraform init", "foo"],
       ["terraform validate", "foo"],
       ["terraform fmt --check", "foo"],
-      ["terraform plan -out=plan.tfplan", "foo"],
+      ["terraform plan -no-color -out=plan.tfplan", "foo"],
       ["terraform show -json plan.tfplan", "foo"],
     ]);
     expect(addComment.mock.calls.length).toBe(0);
@@ -49,7 +49,7 @@ describe("action", () => {
       ["terragrunt init", "bar"],
       ["terragrunt validate", "bar"],
       ["terragrunt fmt --check", "bar"],
-      ["terragrunt plan -out=plan.tfplan", "bar"],
+      ["terragrunt plan -no-color -out=plan.tfplan", "bar"],
       ["terragrunt show -json plan.tfplan", "bar"],
     ]);
     expect(getPlanChanges.mock.calls.length).toBe(1);

@@ -78,15 +78,7 @@ describe("addComment", () => {
       fmt: { isSuccess: false },
       plan: { isSuccess: false, output: "Well hello there" },
     };
-    const changes = {
-      isChanges: false,
-      isDeletes: false,
-      resources: {
-        update: 0,
-        delete: 0,
-        create: 0,
-      },
-    };
+    const changes = {};
 
     await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -94,7 +86,7 @@ describe("addComment", () => {
       owner: "foo",
       repo: "bar",
       issue_number: 42,
-      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n\n\n```terraform\nPlan: 0 to add, 0 to change, 0 to destroy\n```\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n\n\n\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
     });
   });
 });

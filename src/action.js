@@ -25,8 +25,8 @@ const action = async () => {
     { key: "init", exec: `${binary} init` },
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
-    { key: "plan", exec: `${binary} plan -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show -json plan.tfplan` },
+    { key: "plan", exec: `${binary} plan -no-color -out=plan.tfplan` },
+    { key: "show", exec: `${binary} show -json plan.tfplan`, depends: "plan" },
   ];
   let results = {};
   let isError = false;
@@ -39,7 +39,11 @@ const action = async () => {
 
   // Exec commands
   for (let command of commands) {
-    results[command.key] = execCommand(command.exec, directory);
+    if (!command.depends || results[command.depends].isSuccess) {
+      results[command.key] = execCommand(command.exec, directory);
+    } else {
+      results[command.key] = { isSuccess: false };
+    }
     isError = isError || !results[command.key].isSuccess;
   }
 
