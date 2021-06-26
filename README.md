@@ -7,7 +7,7 @@ terraform fmt --check
 terraform plan -out=plan.tfplan
 terraform show -json plan.tfplan 
 ```
-This action **does not** install Terraform or Terragrunt.  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/test.yaml).
+This action **does not** install Terraform or Terragrunt.  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/pr-test.yaml).
 
 # Settings
 Use the following to control the action:
