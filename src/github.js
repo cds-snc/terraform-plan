@@ -12,10 +12,12 @@ const nunjucks = require("nunjucks");
  * @param {Object} changes Resource and output changes for the plan
  */
 const addComment = async (octokit, context, title, results, changes) => {
+  const plan = removePlanRefresh(results.plan.output);
   const comment = nunjucks.render("./src/templates/comment.njk", {
-    title: title,
-    results: results,
     changes: changes,
+    plan: plan,
+    results: results,
+    title: title,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,
@@ -50,7 +52,24 @@ const deleteComment = async (octokit, context, title) => {
   }
 };
 
+/**
+ * Removes the Terraform refresh output from a plan.
+ * @param {String} plan Terraform plan output
+ * @returns {String} Terraform plan with the refresh output stripped
+ */
+const removePlanRefresh = (plan) => {
+  const startTokens = [
+    "No changes. Infrastructure is up-to-date",
+    "Resource actions are indicated with the following symbols",
+  ];
+  for (let token of startTokens) {
+    plan = plan.substring(plan.indexOf(token));
+  }
+  return plan;
+};
+
 module.exports = {
   addComment: addComment,
   deleteComment: deleteComment,
+  removeRefreshOutput: removePlanRefresh,
 };
