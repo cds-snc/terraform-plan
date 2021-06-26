@@ -17,17 +17,12 @@ const getPlanChanges = async (planJson) => {
 
   let changes;
   if (results !== null && results.length) {
+    const noChanges = results[0].result.no_changes;
     const resources = results[0].result.resource_changes;
     const outputs = results[0].result.output_changes;
 
     changes = {
-      isChanges:
-        resources.create > 0 ||
-        resources.update > 0 ||
-        resources.delete > 0 ||
-        outputs.create > 0 ||
-        outputs.update > 0 ||
-        outputs.delete > 0,
+      isChanges: !noChanges,
       isDeletes: resources.delete > 0,
       resources: resources,
       ouputs: outputs,
