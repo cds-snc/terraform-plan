@@ -1,5 +1,7 @@
 "use strict";
 
+const nunjucks = require("nunjucks");
+
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
  * and result of the format/validate checks.
@@ -10,33 +12,11 @@
  * @param {Object} changes Resource and output changes for the plan
  */
 const addComment = async (octokit, context, title, results, changes) => {
-  const deleteWarning = changes.isDeletes
-    ? "**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!"
-    : "";
-  const changeCount = changes.isChanges
-    ? `\`\`\`terraform
-Plan: ${changes.resources.create} to add, ${changes.resources.update} to change, ${changes.resources.delete} to destroy
-\`\`\``
-    : "";
-  const comment = `## ${title}
-**${results.fmt.isSuccess ? "✅" : "❌"} &nbsp; Terraform Format:** \`${
-    results.fmt.isSuccess ? "success" : "failed"
-  }\`
-**${results.plan.isSuccess ? "✅" : "❌"} &nbsp; Terraform Plan:** \`${
-    results.plan.isSuccess ? "success" : "failed"
-  }\`
-
-${deleteWarning}
-${changeCount}
-
-<details>
-<summary>Show plan</summary>
-
-\`\`\`terraform
-${results.plan.output}
-\`\`\`
-</details>`;
-
+  const comment = nunjucks.render("./src/templates/comment.njk", {
+    title: title,
+    results: results,
+    changes: changes,
+  });
   await octokit.rest.issues.createComment({
     ...context.repo,
     issue_number: context.payload.pull_request.number,
