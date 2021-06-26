@@ -1,5 +1,6 @@
 "use strict";
 
+const nunjucks = require("nunjucks");
 const { addComment, deleteComment } = require("./github.js");
 global.console = { log: jest.fn() };
 
@@ -60,6 +61,11 @@ describe("addComment", () => {
         create: 1,
       },
     };
+    const comment = nunjucks.render("./src/templates/comment.njk", {
+      title: "Foobar",
+      results: results,
+      changes: changes,
+    });
 
     await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -68,7 +74,7 @@ describe("addComment", () => {
         owner: "foo",
         repo: "bar",
         issue_number: 42,
-        body: "## Foobar\n**✅ &nbsp; Terraform Format:** `success`\n**✅ &nbsp; Terraform Plan:** `success`\n\n**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!\n```terraform\nPlan: 1 to add, 0 to change, 0 to destroy\n```\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+        body: comment,
       },
     ]);
   });
@@ -79,14 +85,19 @@ describe("addComment", () => {
       plan: { isSuccess: false, output: "Well hello there" },
     };
     const changes = {};
+    const comment = nunjucks.render("./src/templates/comment.njk", {
+      title: "Bambaz",
+      results: results,
+      changes: changes,
+    });
 
-    await addComment(octomock, context, "Foobar", results, changes);
+    await addComment(octomock, context, "Bambaz", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
       owner: "foo",
       repo: "bar",
       issue_number: 42,
-      body: "## Foobar\n**❌ &nbsp; Terraform Format:** `failed`\n**❌ &nbsp; Terraform Plan:** `failed`\n\n\n\n\n<details>\n<summary>Show plan</summary>\n\n```terraform\nWell hello there\n```\n</details>",
+      body: comment,
     });
   });
 });
