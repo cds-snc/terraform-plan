@@ -10,7 +10,7 @@
     "format:check": "prettier --check src",
     "format:write": "prettier --write src",
     "lint": "eslint src",
-    "policy": "opa build -t wasm -e 'terraform' -e 'terraform/resource_changes' -e 'terraform/output_changes' ./policy && tar -xzf ./bundle.tar.gz /policy.wasm && mv policy.wasm ./policy && rm bundle.tar.gz",
+    "policy": "opa build -t wasm -e 'terraform' -e 'terraform/no_changes' -e 'terraform/resource_changes' -e 'terraform/output_changes' ./policy && tar -xzf ./bundle.tar.gz /policy.wasm && mv policy.wasm ./policy && rm bundle.tar.gz",
     "prepare": "husky install",
     "pre-commit": "npm run format:write & npm run build",
     "test": "jest"
