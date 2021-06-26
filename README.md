@@ -26,13 +26,13 @@ Use the following to control the action:
 ```yaml
 # Run Terraform plan and add a comment with changes on the PR
 - name: Terraform plan
-  uses: cds-snc/action-terraform-plan
+  uses: cds-snc/terraform-plan
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
 
 # Use Terragrunt, allow failure and set a custom PR comment title
 - name: Terraform plan
-  uses: cds-snc/action-terraform-plan
+  uses: cds-snc/terraform-plan
   with:
     allow-failure: true
     comment-title: Custom comment title
@@ -41,7 +41,7 @@ Use the following to control the action:
 
 # Run on a sub project folder, deleting previous PR comments made by the action
 - name: Terraform plan
-  uses: cds-snc/action-terraform-plan
+  uses: cds-snc/terraform-plan
   with:
     directory: ./infra
     comment-delete: true
@@ -50,7 +50,7 @@ Use the following to control the action:
 # Run Terraform plan with no PR comment
 # Plan will still availabe in the workflow logs
 - name: Terraform plan
-  uses: cds-snc/action-terraform-plan
+  uses: cds-snc/terraform-plan
   with:
     add-comment: false
 ```

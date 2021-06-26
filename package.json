@@ -1,6 +1,6 @@
 {
-  "name": "action-terraform-plan",
-  "description": "A GitHub action to run Terraform validate and plan",
+  "name": "terraform-plan",
+  "description": "A GitHub Action to run Terraform plan",
   "version": "1.0.0",
   "author": "Canadian Digital Service",
   "license": "MIT",
