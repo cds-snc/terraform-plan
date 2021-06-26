@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs");
 const { getPlanChanges } = require("./opa.js");
 
 beforeEach(() => {
@@ -8,7 +9,8 @@ beforeEach(() => {
 
 describe("getPlanChanges", () => {
   test("plan with changes", async () => {
-    const changes = await getPlanChanges("./test/changes/tfplan.json");
+    const planJson = fs.readFileSync("./test/changes/tfplan.json");
+    const changes = await getPlanChanges(JSON.parse(planJson));
 
     expect(changes.isChanges).toBe(true);
     expect(changes.isDeletes).toBe(false);
@@ -25,7 +27,8 @@ describe("getPlanChanges", () => {
   });
 
   test("plan without changes", async () => {
-    const changes = await getPlanChanges("./test/no-changes/tfplan.json");
+    const planJson = fs.readFileSync("./test/no-changes/tfplan.json");
+    const changes = await getPlanChanges(JSON.parse(planJson));
 
     expect(changes.isChanges).toBe(false);
     expect(changes.isDeletes).toBe(false);
@@ -39,11 +42,5 @@ describe("getPlanChanges", () => {
       delete: 0,
       create: 0,
     });
-  });
-
-  test("missing plan", async () => {
-    await expect(getPlanChanges("./foo.json")).rejects.toThrow(
-      "ENOENT: no such file or directory, open './foo.json'"
-    );
   });
 });

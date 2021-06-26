@@ -7037,7 +7037,7 @@ const action = async () => {
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
     { key: "plan", exec: `${binary} plan -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show -json plan.tfplan > tfplan.json` },
+    { key: "show", exec: `${binary} show -json plan.tfplan` },
   ];
   let results = {};
   let isError = false;
@@ -7060,9 +7060,10 @@ const action = async () => {
   }
 
   // Check for changes
-  let changes = { isChanges: false };
-  if (results.plan.isSuccess) {
-    changes = await getPlanChanges("tfplan.json");
+  let changes = {};
+  if (results.show.isSuccess) {
+    const planJson = JSON.parse(results.show.output);
+    changes = await getPlanChanges(planJson);
   }
 
   // Comment on PR if changes or errors
@@ -7212,7 +7213,6 @@ module.exports = {
 
 "use strict";
 
-/* eslint security/detect-non-literal-fs-filename: "off" */
 
 const fs = __nccwpck_require__(5747);
 const { loadPolicy } = __nccwpck_require__(1535);
@@ -7220,15 +7220,14 @@ const { loadPolicy } = __nccwpck_require__(1535);
 /**
  * Uses ./policy/resource-changes.rego OPA policy to examine the JSON generated
  * from a tfplan file and check if there are resource changes.
- * @param {String} planJsonPath Path to a Terrform plan JSON output
+ * @param {Object} planJson Terraform plan JSON object
  * @returns {Object} Resource and output changes in the tfplan
  */
-const getPlanChanges = async (planJsonPath) => {
+const getPlanChanges = async (planJson) => {
   const policyWasm = fs.readFileSync("./policy/policy.wasm");
-  const json = fs.readFileSync(planJsonPath);
 
   const policy = await loadPolicy(policyWasm);
-  const results = policy.evaluate(JSON.parse(json));
+  const results = policy.evaluate(planJson);
 
   let changes;
   if (results !== null && results.length) {

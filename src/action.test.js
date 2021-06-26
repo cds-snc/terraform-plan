@@ -20,7 +20,7 @@ describe("action", () => {
   });
 
   test("default flow", async () => {
-    execCommand.mockReturnValue({ isSuccess: true, output: "" });
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
 
     await action();
@@ -31,14 +31,14 @@ describe("action", () => {
       ["terraform validate", "foo"],
       ["terraform fmt --check", "foo"],
       ["terraform plan -out=plan.tfplan", "foo"],
-      ["terraform show -json plan.tfplan > tfplan.json", "foo"],
+      ["terraform show -json plan.tfplan", "foo"],
     ]);
     expect(addComment.mock.calls.length).toBe(0);
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
   test("terragrunt flow", async () => {
-    execCommand.mockReturnValue({ isSuccess: true, output: "" });
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
     when(core.getInput).calledWith("terragrunt").mockReturnValue("true");
 
@@ -50,7 +50,7 @@ describe("action", () => {
       ["terragrunt validate", "bar"],
       ["terragrunt fmt --check", "bar"],
       ["terragrunt plan -out=plan.tfplan", "bar"],
-      ["terragrunt show -json plan.tfplan > tfplan.json", "bar"],
+      ["terragrunt show -json plan.tfplan", "bar"],
     ]);
     expect(getPlanChanges.mock.calls.length).toBe(1);
     expect(addComment.mock.calls.length).toBe(0);
@@ -58,7 +58,7 @@ describe("action", () => {
   });
 
   test("delete comment", async () => {
-    execCommand.mockReturnValue({ isSuccess: true, output: "" });
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("comment-delete").mockReturnValue("true");
     when(core.getInput)
       .calledWith("comment-title")
@@ -80,12 +80,8 @@ describe("action", () => {
   });
 
   test("add comment", async () => {
-    execCommand.mockReturnValue({
-      isSuccess: true,
-    });
-    getPlanChanges.mockReturnValue({
-      isChanges: true,
-    });
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    getPlanChanges.mockReturnValue({ isChanges: true });
     when(core.getInput).calledWith("comment").mockReturnValue("true");
     when(core.getInput)
       .calledWith("comment-title")
@@ -104,11 +100,11 @@ describe("action", () => {
       "context",
       "raspberries",
       {
-        fmt: { isSuccess: true },
-        init: { isSuccess: true },
-        plan: { isSuccess: true },
-        show: { isSuccess: true },
-        validate: { isSuccess: true },
+        fmt: { isSuccess: true, output: "{}" },
+        init: { isSuccess: true, output: "{}" },
+        plan: { isSuccess: true, output: "{}" },
+        show: { isSuccess: true, output: "{}" },
+        validate: { isSuccess: true, output: "{}" },
       },
       { isChanges: true },
     ]);

@@ -26,7 +26,7 @@ const action = async () => {
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
     { key: "plan", exec: `${binary} plan -out=plan.tfplan` },
-    { key: "show", exec: `${binary} show -json plan.tfplan > tfplan.json` },
+    { key: "show", exec: `${binary} show -json plan.tfplan` },
   ];
   let results = {};
   let isError = false;
@@ -49,9 +49,10 @@ const action = async () => {
   }
 
   // Check for changes
-  let changes = { isChanges: false };
-  if (results.plan.isSuccess) {
-    changes = await getPlanChanges("tfplan.json");
+  let changes = {};
+  if (results.show.isSuccess) {
+    const planJson = JSON.parse(results.show.output);
+    changes = await getPlanChanges(planJson);
   }
 
   // Comment on PR if changes or errors
