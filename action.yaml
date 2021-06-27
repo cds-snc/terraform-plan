@@ -27,6 +27,10 @@ inputs:
     description: 'GitHub Token used to add comment to PR'
     required: false
     default: 'false'
+  terraform-init:
+    description: 'Custom Terraform init args'
+    required: false
+    default: ''     
   terragrunt:
     description: 'Use Terragrunt instead of Terraform'
     required: false
