@@ -14837,17 +14837,21 @@ const action = async () => {
   const isCommentDelete = core.getInput("comment-delete") === "true";
   const isTerragrunt = core.getInput("terragrunt") === "true";
 
+  const binary = isTerragrunt ? "terragrunt" : "terraform";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
-  const binary = isTerragrunt ? "terragrunt" : "terraform";
+  const terraformInit = core.getInput("terraform-init");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const commands = [
-    { key: "init", exec: `${binary} init` },
+    { key: "init", exec: `${binary} init ${terraformInit}` },
     { key: "validate", exec: `${binary} validate` },
     { key: "fmt", exec: `${binary} fmt --check` },
-    { key: "plan", exec: `${binary} plan -no-color -out=plan.tfplan` },
+    {
+      key: "plan",
+      exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
+    },
     { key: "show", exec: `${binary} show -json plan.tfplan`, depends: "plan" },
   ];
   let results = {};

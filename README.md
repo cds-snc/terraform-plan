@@ -19,7 +19,8 @@ Use the following to control the action:
 | `comment-delete` | Delete previous comments made by the bot on the PR                 | false        |
 | `comment-title`  | The title to give the PR comment                                   | Plan changes |
 | `directory`      | Directory with the `*.tf` files to validate                        | .            |
-| `github-token`   | GitHub Token used to add comment to PR.  Required to add comments. |              |
+| `github-token`   | GitHub Token used to add comment to PR (required to add comments). |              |
+| `terraform-init` | Custom Terraform init args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 
 # Examples
@@ -53,6 +54,13 @@ Use the following to control the action:
   uses: cds-snc/terraform-plan
   with:
     add-comment: false
+
+# Run Terraform plan custom Terraform init args
+- name: Terraform plan
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    terraform-init: -backend-config="region=ca-central-1"
 ```
 
 # Contributing

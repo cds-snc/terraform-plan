@@ -22,15 +22,18 @@ describe("action", () => {
   test("default flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput)
+      .calledWith("terraform-init")
+      .mockReturnValue("-backend-config='bucket=some-bucket'");
 
     await action();
 
     expect(execCommand.mock.calls.length).toBe(5);
     expect(execCommand.mock.calls).toEqual([
-      ["terraform init", "foo"],
+      ["terraform init -backend-config='bucket=some-bucket'", "foo"],
       ["terraform validate", "foo"],
       ["terraform fmt --check", "foo"],
-      ["terraform plan -no-color -out=plan.tfplan", "foo"],
+      ["terraform plan -no-color -input=false -out=plan.tfplan", "foo"],
       ["terraform show -json plan.tfplan", "foo"],
     ]);
     expect(addComment.mock.calls.length).toBe(0);
@@ -40,16 +43,17 @@ describe("action", () => {
   test("terragrunt flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput).calledWith("terraform-init").mockReturnValue("");
     when(core.getInput).calledWith("terragrunt").mockReturnValue("true");
 
     await action();
 
     expect(execCommand.mock.calls.length).toBe(5);
     expect(execCommand.mock.calls).toEqual([
-      ["terragrunt init", "bar"],
+      ["terragrunt init ", "bar"],
       ["terragrunt validate", "bar"],
       ["terragrunt fmt --check", "bar"],
-      ["terragrunt plan -no-color -out=plan.tfplan", "bar"],
+      ["terragrunt plan -no-color -input=false -out=plan.tfplan", "bar"],
       ["terragrunt show -json plan.tfplan", "bar"],
     ]);
     expect(getPlanChanges.mock.calls.length).toBe(1);
