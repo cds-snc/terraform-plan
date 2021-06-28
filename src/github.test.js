@@ -3,6 +3,7 @@
 const nunjucks = require("nunjucks");
 const {
   addComment,
+  commentTemplate,
   deleteComment,
   removeRefreshOutput,
 } = require("./github.js");
@@ -65,7 +66,7 @@ describe("addComment", () => {
         create: 1,
       },
     };
-    const comment = nunjucks.render("./src/templates/comment.njk", {
+    const comment = nunjucks.renderString(commentTemplate, {
       changes: changes,
       plan: results.plan.output,
       results: results,
@@ -90,7 +91,7 @@ describe("addComment", () => {
       plan: { isSuccess: false, output: "Well hello there" },
     };
     const changes = {};
-    const comment = nunjucks.render("./src/templates/comment.njk", {
+    const comment = nunjucks.renderString(commentTemplate, {
       changes: changes,
       plan: results.plan.output,
       results: results,
