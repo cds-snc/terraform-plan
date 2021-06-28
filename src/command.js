@@ -16,12 +16,15 @@ const execCommand = (command, directory) => {
   try {
     console.log("🧪 \x1b[36m%s\x1b[0m\n", command);
     output = proc.execSync(command, { cwd: directory }).toString("utf8");
-    console.log(output);
   } catch (error) {
-    exitCode = error.exitCode;
+    exitCode = error.status;
     output = error.stderr.toString("utf8");
+    console.log(error.status);
+    console.log(error.stdout.toString("utf8"));
+    console.log(error.message.toString("utf8"));
   }
 
+  console.log(output);
   return {
     isSuccess: exitCode === 0,
     output: output,
