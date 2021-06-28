@@ -1,4 +1,4 @@
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 7351:
@@ -14950,6 +14950,27 @@ module.exports = {
 
 
 const nunjucks = __nccwpck_require__(7006);
+const commentTemplate = `## {{ title }}
+**{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
+**{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
+
+{% if changes.isDeletes %}
+**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
+{% endif %}
+{% if changes.isChanges %}
+\`\`\`terraform
+Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to change, {{ changes.resources.delete }} to destroy
+\`\`\`
+{% endif %}
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+{{ plan|safe }}
+\`\`\`
+
+</details>`;
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
@@ -14962,7 +14983,7 @@ const nunjucks = __nccwpck_require__(7006);
  */
 const addComment = async (octokit, context, title, results, changes) => {
   const plan = removePlanRefresh(results.plan.output);
-  const comment = nunjucks.render("./src/templates/comment.njk", {
+  const comment = nunjucks.renderString(commentTemplate, {
     changes: changes,
     plan: plan,
     results: results,
@@ -15019,6 +15040,7 @@ const removePlanRefresh = (plan) => {
 
 module.exports = {
   addComment: addComment,
+  commentTemplate: commentTemplate,
   deleteComment: deleteComment,
   removeRefreshOutput: removePlanRefresh,
 };
@@ -15269,3 +15291,4 @@ action().catch(handleError);
 module.exports = __webpack_exports__;
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map
