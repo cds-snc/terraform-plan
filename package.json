@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build src/index.js --license licenses.txt",
+    "build": "ncc build src/index.js --source-map --license licenses.txt",
     "format:check": "prettier --check src",
     "format:write": "prettier --write src",
     "lint": "eslint src",
