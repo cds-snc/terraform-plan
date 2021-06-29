@@ -43,6 +43,7 @@ const action = async () => {
       key: "show",
       exec: `${binary} show -json plan.tfplan`,
       depends: "plan",
+      output: false,
     },
   ];
   let results = {};
@@ -57,7 +58,7 @@ const action = async () => {
   // Exec commands
   for (let command of commands) {
     if (!command.depends || results[command.depends].isSuccess) {
-      results[command.key] = execCommand(command.exec, directory);
+      results[command.key] = execCommand(command, directory);
     } else {
       results[command.key] = { isSuccess: false };
     }

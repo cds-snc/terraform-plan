@@ -24,20 +24,52 @@ describe("action", () => {
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getMultilineInput)
       .calledWith("terraform-init")
-      .mockReturnValue([    
+      .mockReturnValue([
         "-backend-config='bucket=some-bucket'",
-        "-backend-config='region=ca-central-1'"
+        "-backend-config='region=ca-central-1'",
       ]);
 
     await action();
 
     expect(execCommand.mock.calls.length).toBe(5);
     expect(execCommand.mock.calls).toEqual([
-      ["terraform init -backend-config='bucket=some-bucket' -backend-config='region=ca-central-1'", "foo"],
-      ["terraform validate", "foo"],
-      ["terraform fmt --check", "foo"],
-      ["terraform plan -no-color -input=false -out=plan.tfplan", "foo"],
-      ["terraform show -json plan.tfplan", "foo"],
+      [
+        {
+          key: "init",
+          exec: "terraform init -backend-config='bucket=some-bucket' -backend-config='region=ca-central-1'",
+        },
+        "foo",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terraform validate",
+        },
+        "foo",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terraform fmt --check",
+        },
+        "foo",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terraform plan -no-color -input=false -out=plan.tfplan",
+        },
+        "foo",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terraform show -json plan.tfplan",
+          depends: "plan",
+          output: false,
+        },
+        "foo",
+      ],
     ]);
     expect(addComment.mock.calls.length).toBe(0);
     expect(deleteComment.mock.calls.length).toBe(0);
@@ -52,11 +84,43 @@ describe("action", () => {
 
     expect(execCommand.mock.calls.length).toBe(5);
     expect(execCommand.mock.calls).toEqual([
-      ["terragrunt init ", "bar"],
-      ["terragrunt validate", "bar"],
-      ["terragrunt fmt --check", "bar"],
-      ["terragrunt plan -no-color -input=false -out=plan.tfplan", "bar"],
-      ["terragrunt show -json plan.tfplan", "bar"],
+      [
+        {
+          key: "init",
+          exec: "terragrunt init ",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terragrunt validate",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terragrunt fmt --check",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terragrunt show -json plan.tfplan",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
     ]);
     expect(getPlanChanges.mock.calls.length).toBe(1);
     expect(addComment.mock.calls.length).toBe(0);
