@@ -14845,14 +14845,27 @@ const action = async () => {
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const commands = [
-    { key: "init", exec: `${binary} init ${terraformInit}` },
-    { key: "validate", exec: `${binary} validate` },
-    { key: "fmt", exec: `${binary} fmt --check` },
+    {
+      key: "init",
+      exec: `${binary} init ${terraformInit ? terraformInit.join(" ") : ""}`,
+    },
+    {
+      key: "validate",
+      exec: `${binary} validate`,
+    },
+    {
+      key: "fmt",
+      exec: `${binary} fmt --check`,
+    },
     {
       key: "plan",
       exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
     },
-    { key: "show", exec: `${binary} show -json plan.tfplan`, depends: "plan" },
+    {
+      key: "show",
+      exec: `${binary} show -json plan.tfplan`,
+      depends: "plan",
+    },
   ];
   let results = {};
   let isError = false;
