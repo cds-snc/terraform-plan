@@ -3,16 +3,16 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { when } = require("jest-when");
-const { execCommand } = require("./command.js");
-const { addComment, deleteComment } = require("./github.js");
-const { getPlanChanges } = require("./opa.js");
-const { action } = require("./action.js");
+const { execCommand } = require("../src/command.js");
+const { addComment, deleteComment } = require("../src/github.js");
+const { getPlanChanges } = require("../src/opa.js");
+const { action } = require("../src/action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
-jest.mock("./command.js");
-jest.mock("./github.js");
-jest.mock("./opa.js");
+jest.mock("../src/command.js");
+jest.mock("../src/github.js");
+jest.mock("../src/opa.js");
 
 describe("action", () => {
   beforeEach(() => {

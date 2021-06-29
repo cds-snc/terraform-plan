@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require("fs");
-const { getPlanChanges } = require("./opa.js");
+const { getPlanChanges } = require("../src/opa.js");
 
 beforeEach(() => {
   jest.resetAllMocks();

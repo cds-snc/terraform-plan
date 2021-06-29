@@ -6,7 +6,7 @@ const {
   commentTemplate,
   deleteComment,
   removeRefreshOutput,
-} = require("./github.js");
+} = require("../src/github.js");
 global.console = { log: jest.fn() };
 
 // Mock octokit object and return values
