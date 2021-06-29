@@ -4,7 +4,7 @@ IFS=$'\n\t'
 
 POLICY_DIR="$(dirname ${BASH_SOURCE[0]})"
 
-# Build the Open Police Agent policy WebAssembly module (.wasm) from the .rego files
+# Build the Open Policy Agent policy WebAssembly module (.wasm) from the .rego files
 opa build -t wasm \
     -e 'terraform' \
     -e 'terraform/no_changes' \
