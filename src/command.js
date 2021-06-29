@@ -5,7 +5,7 @@ const proc = require("child_process");
 
 /**
  * Executes a command in a given directory
- * @param {String} command The command (and args) to execute
+ * @param {Object} command The command to execute
  * @param {String} directory The directory to execute the command in
  * @returns {Object} Results object with the command output and if the command was successful
  */
@@ -14,9 +14,12 @@ const execCommand = (command, directory) => {
     exitCode = 0;
 
   try {
-    console.log("🧪 \x1b[36m%s\x1b[0m\n", command);
+    console.log("🧪 \x1b[36m%s\x1b[0m\n", command.exec);
     output = proc
-      .execSync(command, { cwd: directory, maxBuffer: 1024 * 5000 })
+      .execSync(command.exec, {
+        cwd: directory,
+        maxBuffer: 1024 * 5000,
+      })
       .toString("utf8");
   } catch (error) {
     exitCode = error.status;
@@ -24,7 +27,10 @@ const execCommand = (command, directory) => {
     console.log(`Command failed with exit code ${exitCode}`);
   }
 
-  console.log(output);
+  if (command.output !== false) {
+    console.log(output);
+  }
+
   return {
     isSuccess: exitCode === 0,
     output: output,

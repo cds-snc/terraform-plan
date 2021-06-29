@@ -14845,14 +14845,28 @@ const action = async () => {
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const commands = [
-    { key: "init", exec: `${binary} init ${terraformInit}` },
-    { key: "validate", exec: `${binary} validate` },
-    { key: "fmt", exec: `${binary} fmt --check` },
+    {
+      key: "init",
+      exec: `${binary} init ${terraformInit ? terraformInit.join(" ") : ""}`,
+    },
+    {
+      key: "validate",
+      exec: `${binary} validate`,
+    },
+    {
+      key: "fmt",
+      exec: `${binary} fmt --check`,
+    },
     {
       key: "plan",
       exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
     },
-    { key: "show", exec: `${binary} show -json plan.tfplan`, depends: "plan" },
+    {
+      key: "show",
+      exec: `${binary} show -json plan.tfplan`,
+      depends: "plan",
+      output: false,
+    },
   ];
   let results = {};
   let isError = false;
@@ -14866,7 +14880,7 @@ const action = async () => {
   // Exec commands
   for (let command of commands) {
     if (!command.depends || results[command.depends].isSuccess) {
-      results[command.key] = execCommand(command.exec, directory);
+      results[command.key] = execCommand(command, directory);
     } else {
       results[command.key] = { isSuccess: false };
     }
@@ -14913,7 +14927,7 @@ const proc = __nccwpck_require__(3129);
 
 /**
  * Executes a command in a given directory
- * @param {String} command The command (and args) to execute
+ * @param {Object} command The command to execute
  * @param {String} directory The directory to execute the command in
  * @returns {Object} Results object with the command output and if the command was successful
  */
@@ -14922,9 +14936,12 @@ const execCommand = (command, directory) => {
     exitCode = 0;
 
   try {
-    console.log("🧪 \x1b[36m%s\x1b[0m\n", command);
+    console.log("🧪 \x1b[36m%s\x1b[0m\n", command.exec);
     output = proc
-      .execSync(command, { cwd: directory, maxBuffer: 1024 * 5000 })
+      .execSync(command.exec, {
+        cwd: directory,
+        maxBuffer: 1024 * 5000,
+      })
       .toString("utf8");
   } catch (error) {
     exitCode = error.status;
@@ -14932,7 +14949,10 @@ const execCommand = (command, directory) => {
     console.log(`Command failed with exit code ${exitCode}`);
   }
 
-  console.log(output);
+  if (command.output !== false) {
+    console.log(output);
+  }
+
   return {
     isSuccess: exitCode === 0,
     output: output,
