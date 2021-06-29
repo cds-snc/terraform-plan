@@ -1,7 +1,7 @@
 "use strict";
 
-const fs = require("fs");
 const { loadPolicy } = require("@open-policy-agent/opa-wasm");
+const { policyWasmBase64 } = require("./opa-policy.js");
 
 /**
  * Uses ./policy/resource-changes.rego OPA policy to examine the JSON generated
@@ -10,9 +10,9 @@ const { loadPolicy } = require("@open-policy-agent/opa-wasm");
  * @returns {Object} Resource and output changes in the tfplan
  */
 const getPlanChanges = async (planJson) => {
-  const policyWasm = fs.readFileSync("./policy/policy.wasm");
-
+  const policyWasm = Buffer.from(policyWasmBase64, "base64");
   const policy = await loadPolicy(policyWasm);
+
   const results = policy.evaluate(planJson);
 
   let changes;
