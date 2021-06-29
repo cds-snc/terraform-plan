@@ -7,9 +7,9 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.js --source-map --license licenses.txt",
-    "format:check": "prettier --check src",
-    "format:write": "prettier --write src",
-    "lint": "eslint src",
+    "format:check": "prettier --check src test",
+    "format:write": "prettier --write src test",
+    "lint": "eslint src test",
     "policy": "./src/policy/build.sh",
     "prepare": "husky install",
     "pre-commit": "npm run policy && npm run format:write && npm run build",
