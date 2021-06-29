@@ -1,6 +1,6 @@
 "use strict";
 
-const { execCommand } = require("./command.js");
+const { execCommand } = require("../src/command.js");
 global.console = { log: jest.fn() };
 
 beforeEach(() => {

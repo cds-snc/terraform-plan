@@ -1,7 +1,7 @@
 "use strict";
 
 const { loadPolicy } = require("@open-policy-agent/opa-wasm");
-const { policyWasmBase64 } = require("./opa-policy.js");
+const { policyWasmBase64 } = require("./policy/policy.js");
 
 /**
  * Uses ./policy/resource-changes.rego OPA policy to examine the JSON generated

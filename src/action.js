@@ -10,15 +10,15 @@ const { getPlanChanges } = require("./opa.js");
  * Runs the action
  */
 const action = async () => {
-  const isAllowFailure = core.getInput("allow-failure") === "true";
-  const isComment = core.getInput("comment") === "true";
-  const isCommentDelete = core.getInput("comment-delete") === "true";
-  const isTerragrunt = core.getInput("terragrunt") === "true";
+  const isAllowFailure = core.getBooleanInput("allow-failure");
+  const isComment = core.getBooleanInput("comment");
+  const isCommentDelete = core.getBooleanInput("comment-delete");
+  const isTerragrunt = core.getBooleanInput("terragrunt");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
-  const terraformInit = core.getInput("terraform-init");
+  const terraformInit = core.getMultilineInput("terraform-init");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 

@@ -3,16 +3,16 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { when } = require("jest-when");
-const { execCommand } = require("./command.js");
-const { addComment, deleteComment } = require("./github.js");
-const { getPlanChanges } = require("./opa.js");
-const { action } = require("./action.js");
+const { execCommand } = require("../src/command.js");
+const { addComment, deleteComment } = require("../src/github.js");
+const { getPlanChanges } = require("../src/opa.js");
+const { action } = require("../src/action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
-jest.mock("./command.js");
-jest.mock("./github.js");
-jest.mock("./opa.js");
+jest.mock("../src/command.js");
+jest.mock("../src/github.js");
+jest.mock("../src/opa.js");
 
 describe("action", () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("action", () => {
   test("default flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
-    when(core.getInput)
+    when(core.getMultilineInput)
       .calledWith("terraform-init")
       .mockReturnValue("-backend-config='bucket=some-bucket'");
 
@@ -43,8 +43,10 @@ describe("action", () => {
   test("terragrunt flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
-    when(core.getInput).calledWith("terraform-init").mockReturnValue("");
-    when(core.getInput).calledWith("terragrunt").mockReturnValue("true");
+    when(core.getMultilineInput)
+      .calledWith("terraform-init")
+      .mockReturnValue("");
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
 
     await action();
 
@@ -63,7 +65,9 @@ describe("action", () => {
 
   test("delete comment", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
-    when(core.getInput).calledWith("comment-delete").mockReturnValue("true");
+    when(core.getBooleanInput)
+      .calledWith("comment-delete")
+      .mockReturnValue(true);
     when(core.getInput)
       .calledWith("comment-title")
       .mockReturnValue("blueberries");
@@ -86,7 +90,7 @@ describe("action", () => {
   test("add comment", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     getPlanChanges.mockReturnValue({ isChanges: true });
-    when(core.getInput).calledWith("comment").mockReturnValue("true");
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
     when(core.getInput)
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
@@ -125,9 +129,13 @@ describe("action", () => {
 
   test("allowed to fail", async () => {
     execCommand.mockReturnValue({ isSuccess: false });
-    when(core.getInput).calledWith("allow-failure").mockReturnValue("true");
-    when(core.getInput).calledWith("comment").mockReturnValue("false");
-    when(core.getInput).calledWith("comment-delete").mockReturnValue("false");
+    when(core.getBooleanInput)
+      .calledWith("allow-failure")
+      .mockReturnValue(true);
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(false);
+    when(core.getBooleanInput)
+      .calledWith("comment-delete")
+      .mockReturnValue(false);
 
     await action();
 
@@ -135,7 +143,7 @@ describe("action", () => {
   });
 
   test("failed validation", async () => {
-    when(core.getInput).calledWith("comment").mockReturnValue("true");
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
     when(core.getInput).calledWith("github-token").mockReturnValue("false");
 
     await action();
