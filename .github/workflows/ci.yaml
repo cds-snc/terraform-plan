@@ -26,3 +26,4 @@ jobs:
       - run: npm run format:check
       - run: npm audit
       - run: npm test
+      - run: docker run -v "$PWD:/mnt" koalaman/shellcheck:v0.7.2 -P ./bin/ -x ./src/**/*.sh
