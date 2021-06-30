@@ -14882,9 +14882,17 @@ const action = async () => {
     if (!command.depends || results[command.depends].isSuccess) {
       results[command.key] = execCommand(command, directory);
     } else {
-      results[command.key] = { isSuccess: false };
+      results[command.key] = { isSuccess: false, output: "" };
     }
     isError = isError || !results[command.key].isSuccess;
+
+    // Check for hashicorp/setup-terraform action's terraform_wrapper output
+    if (results[command.key].output.indexOf("::debug::exitcode:") > -1) {
+      core.setFailed(
+        "Error: `hashicorp/setup-terraform` must have `terraform_wrapper: false`"
+      );
+      return;
+    }
   }
 
   // Delete previous PR comments

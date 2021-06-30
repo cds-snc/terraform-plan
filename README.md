@@ -63,6 +63,14 @@ Use the following to control the action:
     terraform-init: -backend-config="region=ca-central-1"
 ```
 
+# Notes
+If you use the [hashicorp/setup-terraform](https://github.com/hashicorp/setup-terraform) action, `terraform_wrapper` needs to be disabled:
+```yaml
+- uses: hashicorp/setup-terraform@v1
+  with:
+    terraform_wrapper: false
+```
+
 # Contributing
 To setup your local dev environment:
 ```sh

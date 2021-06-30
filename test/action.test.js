@@ -183,7 +183,7 @@ describe("action", () => {
   });
 
   test("failed command", async () => {
-    execCommand.mockReturnValue({ isSuccess: false });
+    execCommand.mockReturnValue({ isSuccess: false, output: "" });
 
     await action();
 
@@ -192,7 +192,7 @@ describe("action", () => {
   });
 
   test("allowed to fail", async () => {
-    execCommand.mockReturnValue({ isSuccess: false });
+    execCommand.mockReturnValue({ isSuccess: false, output: "" });
     when(core.getBooleanInput)
       .calledWith("allow-failure")
       .mockReturnValue(true);
@@ -204,6 +204,20 @@ describe("action", () => {
     await action();
 
     expect(core.setFailed.mock.calls.length).toBe(0);
+  });
+
+  test("detect terraform_wrapper", async () => {
+    execCommand.mockReturnValue({
+      isSuccess: false,
+      output: "Some command output ::debug::exitcode: 1",
+    });
+
+    await action();
+
+    expect(core.setFailed.mock.calls.length).toBe(1);
+    expect(core.setFailed.mock.calls[0]).toEqual([
+      "Error: `hashicorp/setup-terraform` must have `terraform_wrapper: false`",
+    ]);
   });
 
   test("failed validation", async () => {
