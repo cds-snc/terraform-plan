@@ -25,6 +25,11 @@ Use the following to control the action:
 
 # Examples
 ```yaml
+# Setup Terraform with the `terraform_wrapper` disabled
+- uses: hashicorp/setup-terraform@v1
+  with:
+    terraform_wrapper: false
+
 # Run Terraform plan and add a comment with changes on the PR
 - name: Terraform plan
   uses: cds-snc/terraform-plan
@@ -60,15 +65,9 @@ Use the following to control the action:
   uses: cds-snc/terraform-plan
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
-    terraform-init: -backend-config="region=ca-central-1"
-```
-
-# Notes
-If you use the [hashicorp/setup-terraform](https://github.com/hashicorp/setup-terraform) action, `terraform_wrapper` needs to be disabled:
-```yaml
-- uses: hashicorp/setup-terraform@v1
-  with:
-    terraform_wrapper: false
+    terraform-init: |
+      -backend-config="bucket=your-state-bucket-name"
+      -backend-config="region=ca-central-1"
 ```
 
 # Contributing
