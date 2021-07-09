@@ -5,6 +5,13 @@ const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
 
+{% if not results.fmt.isSuccess %}
+**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following files: 
+\`\`\`sh
+{{ results.fmt.output }}
+\`\`\`
+{% endif %}
+
 {% if changes.isDeletes %}
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
 {% endif %}
