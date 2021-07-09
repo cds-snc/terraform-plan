@@ -91,7 +91,12 @@ const action = async () => {
   }
 
   if (isError && !isAllowFailure) {
-    core.setFailed("Terraform plan failed");
+    let failedCommands = commands
+      .filter((c) => !results[c.key].isSuccess)
+      .map((c) => c.exec);
+    core.setFailed(
+      `The following commands failed:\n${failedCommands.join("\n")}`
+    );
   }
 };
 

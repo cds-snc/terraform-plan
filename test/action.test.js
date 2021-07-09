@@ -188,7 +188,12 @@ describe("action", () => {
     await action();
 
     expect(core.setFailed.mock.calls.length).toBe(1);
-    expect(core.setFailed.mock.calls[0][0]).toBe("Terraform plan failed");
+    expect(core.setFailed.mock.calls[0][0]).toBe(`The following commands failed:
+terraform init 
+terraform validate
+terraform fmt --check
+terraform plan -no-color -input=false -out=plan.tfplan
+terraform show -json plan.tfplan`);
   });
 
   test("allowed to fail", async () => {
