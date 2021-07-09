@@ -36,14 +36,14 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terraform init -backend-config='bucket=some-bucket' -backend-config='region=ca-central-1'",
+          exec: "terraform init -no-color -backend-config='bucket=some-bucket' -backend-config='region=ca-central-1'",
         },
         "foo",
       ],
       [
         {
           key: "validate",
-          exec: "terraform validate",
+          exec: "terraform validate -no-color",
         },
         "foo",
       ],
@@ -64,7 +64,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terraform show -json plan.tfplan",
+          exec: "terraform show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
         },
@@ -87,14 +87,14 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terragrunt init ",
+          exec: "terragrunt init -no-color ",
         },
         "bar",
       ],
       [
         {
           key: "validate",
-          exec: "terragrunt validate",
+          exec: "terragrunt validate -no-color",
         },
         "bar",
       ],
@@ -115,7 +115,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terragrunt show -json plan.tfplan",
+          exec: "terragrunt show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
         },
@@ -189,11 +189,11 @@ describe("action", () => {
 
     expect(core.setFailed.mock.calls.length).toBe(1);
     expect(core.setFailed.mock.calls[0][0]).toBe(`The following commands failed:
-terraform init 
-terraform validate
+terraform init -no-color 
+terraform validate -no-color
 terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan
-terraform show -json plan.tfplan`);
+terraform show -no-color -json plan.tfplan`);
   });
 
   test("allowed to fail", async () => {
