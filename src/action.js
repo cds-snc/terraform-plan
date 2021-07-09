@@ -25,11 +25,13 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary} init ${terraformInit ? terraformInit.join(" ") : ""}`,
+      exec: `${binary} init -no-color ${
+        terraformInit ? terraformInit.join(" ") : ""
+      }`,
     },
     {
       key: "validate",
-      exec: `${binary} validate`,
+      exec: `${binary} validate -no-color`,
     },
     {
       key: "fmt",
@@ -41,7 +43,7 @@ const action = async () => {
     },
     {
       key: "show",
-      exec: `${binary} show -json plan.tfplan`,
+      exec: `${binary} show -no-color -json plan.tfplan`,
       depends: "plan",
       output: false,
     },
