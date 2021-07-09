@@ -23,8 +23,8 @@ const execCommand = (command, directory) => {
       .toString("utf8");
   } catch (error) {
     exitCode = error.status;
-    output = error.stderr.toString("utf8");
-    console.log(`Command failed with exit code ${exitCode}`);
+    output = `${error.stdout.toString("utf8")}${error.stderr.toString("utf8")}`;
+    console.log(`Command failed: exit code ${exitCode}`);
   }
 
   if (command.output !== false) {

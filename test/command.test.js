@@ -25,7 +25,7 @@ describe("execCommand", () => {
     });
     expect(global.console.log.mock.calls).toEqual([
       ["🧪 \x1b[36m%s\x1b[0m\n", "cat foo"],
-      ["Command failed with exit code 1"],
+      ["Command failed: exit code 1"],
     ]);
   });
 });
