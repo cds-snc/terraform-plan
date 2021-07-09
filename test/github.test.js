@@ -87,7 +87,7 @@ describe("addComment", () => {
 
   test("add a failed comment with changes", async () => {
     const results = {
-      fmt: { isSuccess: false },
+      fmt: { isSuccess: false, output: "format-error.tf\nsome-other-file.tf" },
       plan: { isSuccess: false, output: "Well hello there" },
     };
     const changes = {};

@@ -14913,7 +14913,12 @@ const action = async () => {
   }
 
   if (isError && !isAllowFailure) {
-    core.setFailed("Terraform plan failed");
+    let failedCommands = commands
+      .filter((c) => !results[c.key].isSuccess)
+      .map((c) => c.exec);
+    core.setFailed(
+      `The following commands failed:\n${failedCommands.join("\n")}`
+    );
   }
 };
 
@@ -14953,8 +14958,8 @@ const execCommand = (command, directory) => {
       .toString("utf8");
   } catch (error) {
     exitCode = error.status;
-    output = error.stderr.toString("utf8");
-    console.log(`Command failed with exit code ${exitCode}`);
+    output = `${error.stdout.toString("utf8")}${error.stderr.toString("utf8")}`;
+    console.log(`Command failed: exit code ${exitCode}`);
   }
 
   if (command.output !== false) {
@@ -14984,6 +14989,13 @@ const nunjucks = __nccwpck_require__(7006);
 const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
+
+{% if not results.fmt.isSuccess %}
+**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following files: 
+\`\`\`sh
+{{ results.fmt.output }}
+\`\`\`
+{% endif %}
 
 {% if changes.isDeletes %}
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
