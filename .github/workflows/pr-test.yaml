@@ -29,7 +29,6 @@ jobs:
         uses: ./
         with:
           directory: test/${{ matrix.test }}
-          allow-failure: ${{ matrix.allow-failure }}
           comment-title: Test ${{ matrix.test }}
           comment-delete: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
