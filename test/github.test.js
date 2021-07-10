@@ -1,9 +1,8 @@
 "use strict";
 
-const nunjucks = require("nunjucks");
 const {
   addComment,
-  commentTemplate,
+  cleanFormatOutput,
   deleteComment,
   removeRefreshOutput,
 } = require("../src/github.js");
@@ -54,7 +53,7 @@ beforeEach(() => {
 describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
-      fmt: { isSuccess: true },
+      fmt: { isSuccess: true, output: "" },
       plan: { isSuccess: true, output: "Well hello there" },
     };
     const changes = {
@@ -66,12 +65,29 @@ describe("addComment", () => {
         create: 1,
       },
     };
-    const comment = nunjucks.renderString(commentTemplate, {
-      changes: changes,
-      plan: results.plan.output,
-      results: results,
-      title: "Foobar",
-    });
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Format:** \`success\`
+**✅ &nbsp; Terraform Plan:** \`success\`
+
+
+
+
+**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
+
+
+\`\`\`terraform
+Plan: 1 to add, 0 to change, 0 to destroy
+\`\`\`
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+Well hello there
+\`\`\`
+
+</details>`;
 
     await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -87,16 +103,36 @@ describe("addComment", () => {
 
   test("add a failed comment with changes", async () => {
     const results = {
-      fmt: { isSuccess: false, output: "format-error.tf\nsome-other-file.tf" },
+      fmt: {
+        isSuccess: false,
+        output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
+      },
       plan: { isSuccess: false, output: "Well hello there" },
     };
     const changes = {};
-    const comment = nunjucks.renderString(commentTemplate, {
-      changes: changes,
-      plan: results.plan.output,
-      results: results,
-      title: "Bambaz",
-    });
+    const comment = `## Bambaz
+**❌ &nbsp; Terraform Format:** \`failed\`
+**❌ &nbsp; Terraform Plan:** \`failed\`
+
+
+**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+\`\`\`sh
+format-error.tf
+some-other-file.tf
+\`\`\`
+
+
+
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+Well hello there
+\`\`\`
+
+</details>`;
 
     await addComment(octomock, context, "Bambaz", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -106,6 +142,24 @@ describe("addComment", () => {
       issue_number: 42,
       body: comment,
     });
+  });
+});
+
+describe("cleanFormatOutput", () => {
+  test("does not change output that is just filenames", () => {
+    const output = "one.tf\n/path/to/two.tf\n/longer/path/to/three.tf";
+    expect(cleanFormatOutput(output)).toBe(output);
+  });
+
+  test("removes non-filename output", () => {
+    const output = "one.tf\ntceci est un test\n/longer/path/to/three.tf";
+    expect(cleanFormatOutput(output)).toBe("one.tf\n/longer/path/to/three.tf");
+  });
+
+  test("returns blank if no filenames", () => {
+    const output =
+      "not a filename.tf   with spaces\nnor this being a filename\ncertainly not this either";
+    expect(cleanFormatOutput(output)).toBe("");
   });
 });
 
