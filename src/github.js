@@ -5,10 +5,10 @@ const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
 
-{% if not results.fmt.isSuccess %}
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following files: 
+{% if not results.fmt.isSuccess and format|length %}
+**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
-{{ results.fmt.output }}
+{{ format }}
 \`\`\`
 {% endif %}
 
@@ -40,10 +40,12 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
  * @param {Object} changes Resource and output changes for the plan
  */
 const addComment = async (octokit, context, title, results, changes) => {
+  const format = cleanFormatOutput(results.fmt.output);
   const plan = removePlanRefresh(results.plan.output);
   const comment = nunjucks.renderString(commentTemplate, {
     changes: changes,
     plan: plan,
+    format: format,
     results: results,
     title: title,
   });
@@ -96,9 +98,22 @@ const removePlanRefresh = (plan) => {
   return plan;
 };
 
+/**
+ * Remove all lines from a block text that doesn't end with *.tf.
+ * This is used to remove errors from the terrform fmt output.
+ * @param {String} format Output from the terraform fmt
+ * @returns Terraform fmt output with only *.tf filenames.
+ */
+const cleanFormatOutput = (format) => {
+  return format
+    .split("\n")
+    .filter((line) => line.match(/^.*\.tf$/))
+    .join("\n");
+};
+
 module.exports = {
   addComment: addComment,
-  commentTemplate: commentTemplate,
+  cleanFormatOutput: cleanFormatOutput,
   deleteComment: deleteComment,
   removeRefreshOutput: removePlanRefresh,
 };
