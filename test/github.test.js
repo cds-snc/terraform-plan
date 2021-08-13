@@ -224,6 +224,23 @@ describe("removePlanRefresh", () => {
     expect(removeRefreshOutput(plan)).toBe(expected);
   });
 
+  test("remove refresh for plan with only output changes", async () => {
+    const plan = `aws_lambda_permission.api: Refreshing state... [id=AllowAPIGatewayInvoke]
+    aws_api_gateway_integration.integration: Refreshing state... [id=agi]
+
+    Changes to Outputs:
+      + scan_websites_kms_key_arn = "arn:aws:kms:ca-central-1:12345:key/67890"
+
+    You can apply this plan to save these new output values to the Terraform
+    state, without changing any real infrastructure.`;
+    const expected = `Changes to Outputs:
+      + scan_websites_kms_key_arn = "arn:aws:kms:ca-central-1:12345:key/67890"
+
+    You can apply this plan to save these new output values to the Terraform
+    state, without changing any real infrastructure.`;
+    expect(removeRefreshOutput(plan)).toBe(expected);
+  });
+
   test("no change if start tokens do not exist", async () => {
     const plan = `This is a string without any plan start tokens
     for good measure, there's a line break in the mix`;

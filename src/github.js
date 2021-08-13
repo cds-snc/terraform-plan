@@ -91,6 +91,7 @@ const removePlanRefresh = (plan) => {
   const startTokens = [
     "No changes. Infrastructure is up-to-date",
     "Resource actions are indicated with the following symbols",
+    "Changes to Outputs",
   ];
   for (let token of startTokens) {
     plan = plan.substring(plan.indexOf(token));
