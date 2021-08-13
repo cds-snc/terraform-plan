@@ -15080,8 +15080,14 @@ const removePlanRefresh = (plan) => {
     "Resource actions are indicated with the following symbols",
     "Changes to Outputs",
   ];
+
+  // This will only strip the first refresh token it finds in the plan ouput
   for (let token of startTokens) {
-    plan = plan.substring(plan.indexOf(token));
+    let index = plan.indexOf(token);
+    if (index > -1) {
+      plan = plan.substring(index);
+      break;
+    }
   }
   return plan;
 };

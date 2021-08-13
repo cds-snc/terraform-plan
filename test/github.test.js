@@ -197,14 +197,20 @@ describe("removePlanRefresh", () => {
     ~ update in-place
     - destroy
 
-    Terraform will perform the following actions:`;
+    Terraform will perform the following actions:
+
+    Changes to Outputs:
+      foo=bar`;
     const expected = `Resource actions are indicated with the following symbols:
 
     + create  
     ~ update in-place
     - destroy
 
-    Terraform will perform the following actions:`;
+    Terraform will perform the following actions:
+
+    Changes to Outputs:
+      foo=bar`;
     expect(removeRefreshOutput(plan)).toBe(expected);
   });
 
