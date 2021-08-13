@@ -197,14 +197,20 @@ describe("removePlanRefresh", () => {
     ~ update in-place
     - destroy
 
-    Terraform will perform the following actions:`;
+    Terraform will perform the following actions:
+
+    Changes to Outputs:
+      foo=bar`;
     const expected = `Resource actions are indicated with the following symbols:
 
     + create  
     ~ update in-place
     - destroy
 
-    Terraform will perform the following actions:`;
+    Terraform will perform the following actions:
+
+    Changes to Outputs:
+      foo=bar`;
     expect(removeRefreshOutput(plan)).toBe(expected);
   });
 
@@ -221,6 +227,23 @@ describe("removePlanRefresh", () => {
     This means that Terraform did not detect any differences between your
     configuration and real physical resources that exist. As a result, no
     actions need to be performed.`;
+    expect(removeRefreshOutput(plan)).toBe(expected);
+  });
+
+  test("remove refresh for plan with only output changes", async () => {
+    const plan = `aws_lambda_permission.api: Refreshing state... [id=AllowAPIGatewayInvoke]
+    aws_api_gateway_integration.integration: Refreshing state... [id=agi]
+
+    Changes to Outputs:
+      + scan_websites_kms_key_arn = "arn:aws:kms:ca-central-1:12345:key/67890"
+
+    You can apply this plan to save these new output values to the Terraform
+    state, without changing any real infrastructure.`;
+    const expected = `Changes to Outputs:
+      + scan_websites_kms_key_arn = "arn:aws:kms:ca-central-1:12345:key/67890"
+
+    You can apply this plan to save these new output values to the Terraform
+    state, without changing any real infrastructure.`;
     expect(removeRefreshOutput(plan)).toBe(expected);
   });
 
