@@ -16,6 +16,7 @@ const action = async () => {
   const isTerragrunt = core.getBooleanInput("terragrunt");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
+  const conftest_binary = "conftest";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
@@ -47,6 +48,18 @@ const action = async () => {
       depends: "plan",
       output: false,
     },
+    {
+      key: "show-json-out",
+      exect: `${binary} show -no-color -json plan.tfplan > plan.json`,
+      depends: "plan",
+      output: false,
+    },
+    {
+      key: "conftest",
+      depends: "show-json-out",
+      exec: `${conftest_binary} test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`,
+      output: true,
+    }
   ];
   let results = {};
   let isError = false;
