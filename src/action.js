@@ -59,7 +59,7 @@ const action = async () => {
       depends: "show-json-out",
       exec: `${conftest_binary} test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`,
       output: true,
-    }
+    },
   ];
   let results = {};
   let isError = false;

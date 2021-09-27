@@ -2,8 +2,8 @@ name: Test action
 on: pull_request
 
 env:
-  TERRAFORM_VERSION: 1.0.0
-  CONFTEST_VERSION: 0.27.0
+  TERRAFORM_VERSION: 1.0.7
+  CONFTEST_VERSION: 0.32.1
 
 jobs:
   terraform-plan:
