@@ -4,6 +4,7 @@ const nunjucks = require("nunjucks");
 const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
+**{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\`
 
 {% if not results.fmt.isSuccess and format|length %}
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
@@ -28,7 +29,17 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 {{ plan|safe }}
 \`\`\`
 
-</details>`;
+</details>
+{% if results.conftest.output %}
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+{{ results.conftest.output }}
+\`\`\`
+
+</details>
+{% endif %}`;
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes

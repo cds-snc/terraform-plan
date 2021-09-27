@@ -54,7 +54,8 @@ describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
       fmt: { isSuccess: true, output: "" },
-      plan: { isSuccess: true, output: "Well hello there" },
+      plan: { isSuccess: true, output: "Hello there" },
+      conftest: { isSuccess: true, output: "General Kenobi" },
     };
     const changes = {
       isChanges: true,
@@ -68,6 +69,7 @@ describe("addComment", () => {
     const comment = `## Foobar
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\`
 
 
 
@@ -84,10 +86,20 @@ Plan: 1 to add, 0 to change, 0 to destroy
 <summary>Show plan</summary>
 
 \`\`\`terraform
-Well hello there
+Hello there
 \`\`\`
 
-</details>`;
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+General Kenobi
+\`\`\`
+
+</details>
+`;
 
     await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -107,12 +119,14 @@ Well hello there
         isSuccess: false,
         output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
       },
-      plan: { isSuccess: false, output: "Well hello there" },
+      plan: { isSuccess: false, output: "Hello there" },
+      conftest: { isSuccess: false, output: "General Kenobi" },
     };
     const changes = {};
     const comment = `## Bambaz
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
+**❌ &nbsp; Conftest:** \`failed\`
 
 
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
@@ -129,10 +143,66 @@ some-other-file.tf
 <summary>Show plan</summary>
 
 \`\`\`terraform
-Well hello there
+Hello there
 \`\`\`
 
-</details>`;
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+General Kenobi
+\`\`\`
+
+</details>
+`;
+
+    await addComment(octomock, context, "Bambaz", results, changes);
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
+      owner: "foo",
+      repo: "bar",
+      issue_number: 42,
+      body: comment,
+    });
+  });
+
+  test("hide conftest details if outputs is empty", async () => {
+    const results = {
+      fmt: {
+        isSuccess: false,
+        output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
+      },
+      plan: { isSuccess: false, output: "Hello there" },
+      conftest: { isSuccess: false, output: "" },
+    };
+    const changes = {};
+    const comment = `## Bambaz
+**❌ &nbsp; Terraform Format:** \`failed\`
+**❌ &nbsp; Terraform Plan:** \`failed\`
+**❌ &nbsp; Conftest:** \`failed\`
+
+
+**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+\`\`\`sh
+format-error.tf
+some-other-file.tf
+\`\`\`
+
+
+
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+Hello there
+\`\`\`
+
+</details>
+`;
 
     await addComment(octomock, context, "Bambaz", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);

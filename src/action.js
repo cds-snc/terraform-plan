@@ -47,6 +47,18 @@ const action = async () => {
       depends: "plan",
       output: false,
     },
+    {
+      key: "show-json-out",
+      exec: `${binary} show -no-color -json plan.tfplan > plan.json`,
+      depends: "plan",
+      output: false,
+    },
+    {
+      key: "conftest",
+      depends: "show-json-out",
+      exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      output: true,
+    },
   ];
   let results = {};
   let isError = false;
