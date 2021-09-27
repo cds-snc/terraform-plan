@@ -69,7 +69,8 @@ describe("action", () => {
           output: false,
         },
         "foo",
-      ],[
+      ],
+      [
         {
           key: "show-json-out",
           exec: "terraform show -no-color -json plan.tfplan > plan.json",
@@ -77,7 +78,8 @@ describe("action", () => {
           output: false,
         },
         "foo",
-      ],[
+      ],
+      [
         {
           key: "conftest",
           depends: "show-json-out",
@@ -85,7 +87,7 @@ describe("action", () => {
           output: true,
         },
         "foo",
-      ]
+      ],
     ]);
     expect(addComment.mock.calls.length).toBe(0);
     expect(deleteComment.mock.calls.length).toBe(0);
@@ -136,7 +138,8 @@ describe("action", () => {
           output: false,
         },
         "bar",
-      ],[
+      ],
+      [
         {
           key: "show-json-out",
           exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
@@ -144,7 +147,8 @@ describe("action", () => {
           output: false,
         },
         "bar",
-      ],[
+      ],
+      [
         {
           key: "conftest",
           depends: "show-json-out",
@@ -209,8 +213,8 @@ describe("action", () => {
         plan: { isSuccess: true, output: "{}" },
         show: { isSuccess: true, output: "{}" },
         validate: { isSuccess: true, output: "{}" },
-        "show-json-out": { isSuccess: true, output: "{}"},
-        conftest: { isSuccess: true, output: "{}"},
+        "show-json-out": { isSuccess: true, output: "{}" },
+        conftest: { isSuccess: true, output: "{}" },
       },
       { isChanges: true },
     ]);

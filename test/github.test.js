@@ -55,7 +55,7 @@ describe("addComment", () => {
     const results = {
       fmt: { isSuccess: true, output: "" },
       plan: { isSuccess: true, output: "Hello there" },
-      conftest: {isSuccess: true, output: "General Kenobi"},
+      conftest: { isSuccess: true, output: "General Kenobi" },
     };
     const changes = {
       isChanges: true,
