@@ -31,7 +31,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(5);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -69,7 +69,23 @@ describe("action", () => {
           output: false,
         },
         "foo",
-      ],
+      ],[
+        {
+          key: "show-json-out",
+          exec: "terraform show -no-color -json plan.tfplan > plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "foo",
+      ],[
+        {
+          key: "conftest",
+          depends: "show-json-out",
+          exec: "conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
+        },
+        "foo",
+      ]
     ]);
     expect(addComment.mock.calls.length).toBe(0);
     expect(deleteComment.mock.calls.length).toBe(0);
@@ -82,7 +98,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(5);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -118,6 +134,22 @@ describe("action", () => {
           exec: "terragrunt show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
+        },
+        "bar",
+      ],[
+        {
+          key: "show-json-out",
+          exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],[
+        {
+          key: "conftest",
+          depends: "show-json-out",
+          exec: "conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
         },
         "bar",
       ],
@@ -177,6 +209,8 @@ describe("action", () => {
         plan: { isSuccess: true, output: "{}" },
         show: { isSuccess: true, output: "{}" },
         validate: { isSuccess: true, output: "{}" },
+        "show-json-out": { isSuccess: true, output: "{}"},
+        conftest: { isSuccess: true, output: "{}"},
       },
       { isChanges: true },
     ]);
@@ -193,7 +227,9 @@ terraform init -no-color
 terraform validate -no-color
 terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan
-terraform show -no-color -json plan.tfplan`);
+terraform show -no-color -json plan.tfplan
+terraform show -no-color -json plan.tfplan > plan.json
+conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
   });
 
   test("allowed to fail", async () => {

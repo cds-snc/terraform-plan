@@ -54,7 +54,8 @@ describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
       fmt: { isSuccess: true, output: "" },
-      plan: { isSuccess: true, output: "Well hello there" },
+      plan: { isSuccess: true, output: "Hello there" },
+      conftest: {isSuccess: true, output: "General Kenobi"},
     };
     const changes = {
       isChanges: true,
@@ -68,6 +69,7 @@ describe("addComment", () => {
     const comment = `## Foobar
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\`
 
 
 
@@ -84,7 +86,16 @@ Plan: 1 to add, 0 to change, 0 to destroy
 <summary>Show plan</summary>
 
 \`\`\`terraform
-Well hello there
+Hello there
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+General Kenobi
 \`\`\`
 
 </details>`;
@@ -107,12 +118,14 @@ Well hello there
         isSuccess: false,
         output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
       },
-      plan: { isSuccess: false, output: "Well hello there" },
+      plan: { isSuccess: false, output: "Hello there" },
+      conftest: { isSuccess: false, output: "General Kenobi" },
     };
     const changes = {};
     const comment = `## Bambaz
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
+**❌ &nbsp; Conftest:** \`failed\`
 
 
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
@@ -129,7 +142,16 @@ some-other-file.tf
 <summary>Show plan</summary>
 
 \`\`\`terraform
-Well hello there
+Hello there
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+General Kenobi
 \`\`\`
 
 </details>`;
