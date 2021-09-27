@@ -98,7 +98,8 @@ Hello there
 General Kenobi
 \`\`\`
 
-</details>`;
+</details>
+`;
 
     await addComment(octomock, context, "Foobar", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -154,7 +155,8 @@ Hello there
 General Kenobi
 \`\`\`
 
-</details>`;
+</details>
+`;
 
     await addComment(octomock, context, "Bambaz", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
