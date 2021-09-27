@@ -15061,7 +15061,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 
 </details>
-
+{% if not result.conftest.output %}
 <details>
 <summary>Show Conftest results</summary>
 
@@ -15069,7 +15069,8 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 {{ results.conftest.output }}
 \`\`\`
 
-</details>`;
+</details>
+{% endif %}`;
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
