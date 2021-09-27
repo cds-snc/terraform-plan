@@ -167,6 +167,52 @@ General Kenobi
       body: comment,
     });
   });
+
+  test("hide conftest details if outputs is empty", async () => {
+    const results = {
+      fmt: {
+        isSuccess: false,
+        output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
+      },
+      plan: { isSuccess: false, output: "Hello there" },
+      conftest: { isSuccess: false, output: "" },
+    };
+    const changes = {};
+    const comment = `## Bambaz
+**❌ &nbsp; Terraform Format:** \`failed\`
+**❌ &nbsp; Terraform Plan:** \`failed\`
+**❌ &nbsp; Conftest:** \`failed\`
+
+
+**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+\`\`\`sh
+format-error.tf
+some-other-file.tf
+\`\`\`
+
+
+
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+Hello there
+\`\`\`
+
+</details>
+`;
+
+    await addComment(octomock, context, "Bambaz", results, changes);
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
+      owner: "foo",
+      repo: "bar",
+      issue_number: 42,
+      body: comment,
+    });
+  });
 });
 
 describe("cleanFormatOutput", () => {

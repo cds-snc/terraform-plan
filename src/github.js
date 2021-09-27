@@ -30,7 +30,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 
 </details>
-{% if not result.conftest.output|length %}
+{% if results.conftest.output %}
 <details>
 <summary>Show Conftest results</summary>
 
