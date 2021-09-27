@@ -83,7 +83,7 @@ describe("action", () => {
         {
           key: "conftest",
           depends: "show-json-out",
-          exec: "conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
         "foo",
@@ -152,7 +152,7 @@ describe("action", () => {
         {
           key: "conftest",
           depends: "show-json-out",
-          exec: "conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
         "bar",
@@ -233,7 +233,7 @@ terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan
 terraform show -no-color -json plan.tfplan
 terraform show -no-color -json plan.tfplan > plan.json
-conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
+conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
   });
 
   test("allowed to fail", async () => {

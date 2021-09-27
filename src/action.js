@@ -56,7 +56,7 @@ const action = async () => {
     {
       key: "conftest",
       depends: "show-json-out",
-      exec: "conftest test plan.json --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       output: true,
     },
   ];
