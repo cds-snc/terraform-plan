@@ -20,6 +20,8 @@ jobs:
             allow-failure: true
           - test: invalid
             allow-failure: true
+          - test: conftest-deny
+            allow-failure: true
     steps:
       - uses: actions/checkout@v2
       - uses: hashicorp/setup-terraform@v1
@@ -36,6 +38,9 @@ jobs:
           && rm "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" checksums.txt
 
       - name: Test ${{ matrix.test }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         uses: ./
         with:
           directory: test/${{ matrix.test }}
@@ -71,6 +76,10 @@ jobs:
                 exist: false,
                 title: /Test no-changes/g,
                 state: /./g
+              },{
+                exist: true,
+                title: /Test conftest-deny/g,
+                state: /*/g
               }
             ];
 
