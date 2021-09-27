@@ -79,7 +79,7 @@ jobs:
               },{
                 exist: true,
                 title: /Test conftest-deny/g,
-                state: /*/g
+                state: /FAIL/g
               }
             ];
 
