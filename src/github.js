@@ -35,7 +35,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show Conftest results</summary>
 
 \`\`\`sh
-{{ results.conftest.output }}
+{{ results.conftest.output|safe }}
 \`\`\`
 
 </details>

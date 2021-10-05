@@ -54,8 +54,8 @@ describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
       fmt: { isSuccess: true, output: "" },
-      plan: { isSuccess: true, output: "Hello there" },
-      conftest: { isSuccess: true, output: "General Kenobi" },
+      plan: { isSuccess: true, output: "< Hello there >" },
+      conftest: { isSuccess: true, output: "< General Kenobi >" },
     };
     const changes = {
       isChanges: true,
@@ -86,7 +86,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
 <summary>Show plan</summary>
 
 \`\`\`terraform
-Hello there
+< Hello there >
 \`\`\`
 
 </details>
@@ -95,7 +95,7 @@ Hello there
 <summary>Show Conftest results</summary>
 
 \`\`\`sh
-General Kenobi
+< General Kenobi >
 \`\`\`
 
 </details>
