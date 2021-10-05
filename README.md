@@ -26,9 +26,22 @@ Use the following to control the action:
 # Examples
 ```yaml
 # Setup Terraform with the `terraform_wrapper` disabled
-- uses: hashicorp/setup-terraform@v1
+- name: Setup terraform
+  uses: hashicorp/setup-terraform@v1
   with:
     terraform_wrapper: false
+
+# Setup Conftest if using v2+ of the action
+- name: Setup Conftest
+  env:
+    CONFTEST_VERSION: 0.27.0
+  run: |
+    wget "https://github.com/open-policy-agent/conftest/releases/download/v${{ env.CONFTEST_VERSION }}/conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" \
+    && wget "https://github.com/open-policy-agent/conftest/releases/download/v${{ env.CONFTEST_VERSION }}/checksums.txt" \
+    && grep 'Linux_x86_64.tar.gz' < checksums.txt | sha256sum --check  --status \
+    && tar -zxvf "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" conftest \
+    && mv conftest /usr/local/bin \
+    && rm "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" checksums.txt
 
 # Run Terraform plan and add a comment with changes on the PR
 - name: Terraform plan
