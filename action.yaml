@@ -27,6 +27,10 @@ inputs:
     description: 'GitHub Token used to add comment to PR'
     required: false
     default: 'false'
+  iam-role:
+    description: 'IAM role to use with the terragrunt plan command'
+    required: false
+    default: ''    
   terraform-init:
     description: 'Custom Terraform init args'
     required: false

@@ -28,6 +28,7 @@ describe("action", () => {
         "-backend-config='bucket=some-bucket'",
         "-backend-config='region=ca-central-1'",
       ]);
+    when(core.getInput).calledWith("iam-role").mockReturnValue("baz");
 
     await action();
 
@@ -97,6 +98,7 @@ describe("action", () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
+    when(core.getInput).calledWith("iam-role").mockReturnValue(undefined);
 
     await action();
 
