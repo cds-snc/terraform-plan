@@ -20,6 +20,7 @@ Use the following to control the action:
 | `comment-title`  | The title to give the PR comment                                   | Plan changes |
 | `directory`      | Directory with the `*.tf` files to validate                        | .            |
 | `github-token`   | GitHub Token used to add comment to PR (required to add comments). |              |
+| `iam-role`       | IAM role to use with the terragrunt plan command (required to assume roles). |              |
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 

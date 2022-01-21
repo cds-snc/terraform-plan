@@ -18,6 +18,7 @@ const action = async () => {
   const binary = isTerragrunt ? "terragrunt" : "terraform";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
+  const iamRole = isTerragrunt ? core.getInput("iam-role") : undefined;
   const terraformInit = core.getMultilineInput("terraform-init");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
@@ -39,7 +40,9 @@ const action = async () => {
     },
     {
       key: "plan",
-      exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
+      exec: `${binary} plan -no-color -input=false -out=plan.tfplan${
+        iamRole ? ` --terragrunt-iam-role ${iamRole}` : ""
+      }`,
     },
     {
       key: "show",
