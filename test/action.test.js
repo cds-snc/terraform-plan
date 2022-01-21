@@ -163,6 +163,77 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
+  test("terragrunt flow with assume iam role", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
+    when(core.getInput).calledWith("iam-role").mockReturnValue("baz");
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(7);
+    expect(execCommand.mock.calls).toEqual([
+      [
+        {
+          key: "init",
+          exec: "terragrunt init -no-color ",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terragrunt validate -no-color",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terragrunt fmt --check",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan --terragrunt-iam-role baz",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terragrunt show -no-color -json plan.tfplan",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show-json-out",
+          exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "conftest",
+          depends: "show-json-out",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
+        },
+        "bar",
+      ],
+    ]);
+    expect(getPlanChanges.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls.length).toBe(0);
+    expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
   test("delete comment", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getBooleanInput)
