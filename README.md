@@ -7,7 +7,7 @@ terraform fmt --check
 terraform plan -out=plan.tfplan
 terraform show -json plan.tfplan 
 ```
-This action **does not** install Terraform or Terragrunt.  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/pr-test.yaml).
+This action **does not** install Terraform or Terragrunt, but can be installed using [Terraform tools setup action](https://github.com/cds-snc/terraform-tools-setup).  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/pr-test.yaml).
 
 # Settings
 Use the following to control the action:
@@ -25,23 +25,9 @@ Use the following to control the action:
 
 # Examples
 ```yaml
-# Setup Terraform with the `terraform_wrapper` disabled
-- name: Setup terraform
-  uses: hashicorp/setup-terraform@v1
-  with:
-    terraform_wrapper: false
-
-# Setup Conftest if using v2+ of the action
-- name: Setup Conftest
-  env:
-    CONFTEST_VERSION: 0.27.0
-  run: |
-    wget "https://github.com/open-policy-agent/conftest/releases/download/v${{ env.CONFTEST_VERSION }}/conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" \
-    && wget "https://github.com/open-policy-agent/conftest/releases/download/v${{ env.CONFTEST_VERSION }}/checksums.txt" \
-    && grep 'Linux_x86_64.tar.gz' < checksums.txt | sha256sum --check  --status \
-    && tar -zxvf "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" conftest \
-    && mv conftest /usr/local/bin \
-    && rm "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" checksums.txt
+# Setup Terraform, Terragrunt, and Conftest
+- name: Setup terraform tools
+  uses: cds-snc/terraform-tools-setup@v1
 
 # Run Terraform plan and add a comment with changes on the PR
 - name: Terraform plan
