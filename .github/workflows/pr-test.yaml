@@ -1,10 +1,6 @@
 name: Test action
 on: pull_request
 
-env:
-  TERRAFORM_VERSION: 1.0.7
-  CONFTEST_VERSION: 0.27.0
-
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
@@ -24,18 +20,9 @@ jobs:
             allow-failure: true
     steps:
       - uses: actions/checkout@v2
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: ${{ env.TERRAFORM_VERSION }}
-          terraform_wrapper: false
-      - name: Install Conftest
-        run: |
-          wget "https://github.com/open-policy-agent/conftest/releases/download/v${{ env.CONFTEST_VERSION }}/conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" \
-          && wget "https://github.com/open-policy-agent/conftest/releases/download/v${{ env.CONFTEST_VERSION }}/checksums.txt" \
-          && grep 'Linux_x86_64.tar.gz' < checksums.txt | sha256sum --check  --status \
-          && tar -zxvf "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" conftest \
-          && mv conftest /usr/local/bin \
-          && rm "conftest_${{ env.CONFTEST_VERSION }}_Linux_x86_64.tar.gz" checksums.txt
+
+      - name: Setup terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
 
       - name: Test ${{ matrix.test }}
         env:
