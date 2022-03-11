@@ -5,7 +5,11 @@ const {
   cleanFormatOutput,
   deleteComment,
   removeRefreshOutput,
+  commentTemplate,
 } = require("../src/github.js");
+
+const nunjucks = require("nunjucks");
+
 global.console = { log: jest.fn() };
 
 // Mock octokit object and return values
@@ -48,6 +52,31 @@ const context = {
 
 beforeEach(() => {
   jest.clearAllMocks();
+});
+
+describe("commentTemplate", () => {
+  test("truncate plans > 64000 characters", async () => {
+    const str = nunjucks.renderString(commentTemplate, {
+      results: {
+        fmt: { isSuccess: false },
+        plan: { isSuccess: false },
+        conftest: { isSucces: false },
+      },
+      changes: {
+        resources: {
+          create: 10,
+          update: 10,
+          delete: 10,
+        },
+      },
+      plan: "x".repeat(66000),
+      conftest: {
+        output: "x".repeat(2000),
+      },
+      title: "x".repeat(100),
+    });
+    expect(str.length).toBeLessThan(65536);
+  });
 });
 
 describe("addComment", () => {

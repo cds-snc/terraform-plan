@@ -26,7 +26,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show plan</summary>
 
 \`\`\`terraform
-{{ plan|safe }}
+{{ plan|safe|truncate(63000) }}
 \`\`\`
 
 </details>
@@ -35,7 +35,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show Conftest results</summary>
 
 \`\`\`sh
-{{ results.conftest.output|safe }}
+{{ results.conftest.output|safe|truncate(1000) }}
 \`\`\`
 
 </details>
@@ -134,4 +134,5 @@ module.exports = {
   cleanFormatOutput: cleanFormatOutput,
   deleteComment: deleteComment,
   removeRefreshOutput: removePlanRefresh,
+  commentTemplate: commentTemplate,
 };
