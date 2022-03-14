@@ -4223,8 +4223,10 @@ class LoadedPolicy {
         }
         const buf = new Uint8Array(this.mem.buffer);
         buf.set(inputBuf, this.dataHeapPtr);
-        this.dataHeapPtr = inputAddr + inputLen;
       }
+
+      // opa_eval will update the Instance heap pointer to the value below
+      const heapPtr = this.dataHeapPtr + inputLen;
 
       const ret = this.wasmInstance.exports.opa_eval(
         0,
@@ -4232,7 +4234,7 @@ class LoadedPolicy {
         this.dataAddr,
         inputAddr,
         inputLen,
-        this.dataHeapPtr,
+        heapPtr,
         0,
       );
       return _dumpJSONRaw(this.mem, ret);
@@ -23521,6 +23523,14 @@ const { execCommand } = __nccwpck_require__(9134);
 const { addComment, deleteComment } = __nccwpck_require__(8396);
 const { getPlanChanges } = __nccwpck_require__(4624);
 
+function parseInputInt(str, def) {
+  const parsed = parseInt(str, 10);
+  if (isNaN(parsed)) {
+    return def;
+  }
+  return parsed;
+}
+
 /**
  * Runs the action
  */
@@ -23536,6 +23546,9 @@ const action = async () => {
   const terraformInit = core.getMultilineInput("terraform-init");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
+
+  const planCharLimit = core.getInput("plan-character-limit");
+  const conftestCharLimit = core.getInput("conftest-character-limit");
 
   const commands = [
     {
@@ -23616,7 +23629,18 @@ const action = async () => {
 
   // Comment on PR if changes or errors
   if (isComment && (changes.isChanges || isError)) {
-    await addComment(octokit, github.context, commentTitle, results, changes);
+    const planLimit = parseInputInt(planCharLimit, 30000);
+    const conftestLimit = parseInputInt(conftestCharLimit, 2000);
+
+    await addComment(
+      octokit,
+      github.context,
+      commentTitle,
+      results,
+      changes,
+      planLimit,
+      conftestLimit
+    );
   }
 
   if (isError && !isAllowFailure) {
@@ -23720,7 +23744,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show plan</summary>
 
 \`\`\`terraform
-{{ plan|safe }}
+{{ plan|safe|truncate(planLimit) }}
 \`\`\`
 
 </details>
@@ -23729,7 +23753,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show Conftest results</summary>
 
 \`\`\`sh
-{{ results.conftest.output|safe }}
+{{ results.conftest.output|safe|truncate(conftestLimit) }}
 \`\`\`
 
 </details>
@@ -23744,7 +23768,15 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
  * @param {Object} results Results for all the Terraform commands
  * @param {Object} changes Resource and output changes for the plan
  */
-const addComment = async (octokit, context, title, results, changes) => {
+const addComment = async (
+  octokit,
+  context,
+  title,
+  results,
+  changes,
+  planLimit,
+  conftestLimit
+) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = removePlanRefresh(results.plan.output);
   const comment = nunjucks.renderString(commentTemplate, {
@@ -23753,6 +23785,8 @@ const addComment = async (octokit, context, title, results, changes) => {
     format: format,
     results: results,
     title: title,
+    planLimit: planLimit,
+    conftestLimit: conftestLimit,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,
@@ -23828,6 +23862,7 @@ module.exports = {
   cleanFormatOutput: cleanFormatOutput,
   deleteComment: deleteComment,
   removeRefreshOutput: removePlanRefresh,
+  commentTemplate: commentTemplate,
 };
 
 
