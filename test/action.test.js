@@ -218,7 +218,7 @@ describe("action", () => {
       },
       { isChanges: true },
       30000,
-      2000
+      2000,
     ]);
   });
 
