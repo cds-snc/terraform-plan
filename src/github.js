@@ -26,7 +26,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show plan</summary>
 
 \`\`\`terraform
-{{ plan|safe|truncate(63000) }}
+{{ plan|safe|truncate(planLimit) }}
 \`\`\`
 
 </details>
@@ -35,7 +35,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <summary>Show Conftest results</summary>
 
 \`\`\`sh
-{{ results.conftest.output|safe|truncate(1000) }}
+{{ results.conftest.output|safe|truncate(conftestLimit) }}
 \`\`\`
 
 </details>
@@ -50,7 +50,15 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
  * @param {Object} results Results for all the Terraform commands
  * @param {Object} changes Resource and output changes for the plan
  */
-const addComment = async (octokit, context, title, results, changes) => {
+const addComment = async (
+  octokit,
+  context,
+  title,
+  results,
+  changes,
+  planLimit,
+  conftestLimit
+) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = removePlanRefresh(results.plan.output);
   const comment = nunjucks.renderString(commentTemplate, {
@@ -59,6 +67,8 @@ const addComment = async (octokit, context, title, results, changes) => {
     format: format,
     results: results,
     title: title,
+    planLimit: planLimit,
+    conftestLimit: conftestLimit,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,

@@ -6,6 +6,14 @@ const { execCommand } = require("./command.js");
 const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
 
+function parseInputInt(str, def) {
+  const parsed = parseInt(str, 10);
+  if (isNaN(parsed)) {
+    return def;
+  }
+  return parsed;
+}
+
 /**
  * Runs the action
  */
@@ -21,6 +29,9 @@ const action = async () => {
   const terraformInit = core.getMultilineInput("terraform-init");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
+
+  const planCharLimit = core.getInput("plan-character-limit");
+  const conftestCharLimit = core.getInput("conftest-character-limit");
 
   const commands = [
     {
@@ -101,7 +112,18 @@ const action = async () => {
 
   // Comment on PR if changes or errors
   if (isComment && (changes.isChanges || isError)) {
-    await addComment(octokit, github.context, commentTitle, results, changes);
+    const planLimit = parseInputInt(planCharLimit, 30000);
+    const conftestLimit = parseInputInt(conftestCharLimit, 2000);
+
+    await addComment(
+      octokit,
+      github.context,
+      commentTitle,
+      results,
+      changes,
+      planLimit,
+      conftestLimit
+    );
   }
 
   if (isError && !isAllowFailure) {

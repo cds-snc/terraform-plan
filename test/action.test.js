@@ -217,6 +217,8 @@ describe("action", () => {
         conftest: { isSuccess: true, output: "{}" },
       },
       { isChanges: true },
+      30000,
+      2000,
     ]);
   });
 
