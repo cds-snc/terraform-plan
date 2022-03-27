@@ -31,7 +31,6 @@ const action = async () => {
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const planCharLimit = core.getInput("plan-character-limit");
-  const conftestCharLimit = core.getInput("conftest-character-limit");
 
   const commands = [
     {
@@ -63,12 +62,6 @@ const action = async () => {
       exec: `${binary} show -no-color -json plan.tfplan > plan.json`,
       depends: "plan",
       output: false,
-    },
-    {
-      key: "conftest",
-      depends: "show-json-out",
-      exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
-      output: true,
     },
   ];
   let results = {};
@@ -113,7 +106,6 @@ const action = async () => {
   // Comment on PR if changes or errors
   if (isComment && (changes.isChanges || isError)) {
     const planLimit = parseInputInt(planCharLimit, 30000);
-    const conftestLimit = parseInputInt(conftestCharLimit, 2000);
 
     await addComment(
       octokit,
@@ -121,8 +113,7 @@ const action = async () => {
       commentTitle,
       results,
       changes,
-      planLimit,
-      conftestLimit
+      planLimit
     );
   }
 

@@ -23,7 +23,6 @@ Use the following to control the action:
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 | `plan-character-limit` | Character limit for Terraform plan output                    | 30000        |
-| `conftest-character-limit` | Character limit for Conftest output                      | 2000         |
 
 # Examples
 ```yaml

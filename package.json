@@ -2,7 +2,7 @@
   "name": "terraform-plan",
   "description": "A GitHub Action to run Terraform plan",
   "version": "1.0.0",
-  "author": "Canadian Digital Service",
+  "author": "anthr76",
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
@@ -10,15 +10,13 @@
     "format:check": "prettier --check src test",
     "format:write": "prettier --write src test",
     "lint": "eslint src test",
-    "policy": "./src/policy/build.sh",
     "prepare": "husky install",
-    "pre-commit": "npm run policy && npm run format:write && npm run build",
+    "pre-commit": "npm run format:write && npm run build",
     "test": "jest"
   },
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
-    "@open-policy-agent/opa-wasm": "^1.6.1",
     "nunjucks": "^3.2.3"
   },
   "devDependencies": {

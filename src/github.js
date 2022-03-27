@@ -4,7 +4,6 @@ const nunjucks = require("nunjucks");
 const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
-**{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\`
 
 {% if not results.fmt.isSuccess and format|length %}
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
@@ -30,16 +29,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 
 </details>
-{% if results.conftest.output %}
-<details>
-<summary>Show Conftest results</summary>
-
-\`\`\`sh
-{{ results.conftest.output|safe|truncate(conftestLimit) }}
-\`\`\`
-
-</details>
-{% endif %}`;
+`;
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
@@ -56,8 +46,7 @@ const addComment = async (
   title,
   results,
   changes,
-  planLimit,
-  conftestLimit
+  planLimit
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = removePlanRefresh(results.plan.output);
@@ -68,7 +57,6 @@ const addComment = async (
     results: results,
     title: title,
     planLimit: planLimit,
-    conftestLimit: conftestLimit,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,
