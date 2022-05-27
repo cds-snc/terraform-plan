@@ -1,0 +1,29 @@
+name: Generate SBOM
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - package-lock.json
+      - .github/workflows/generate-sbom.yml
+  push:
+    branches:
+      - main
+    paths:
+      - package-lock.json
+      - .github/workflows/generate-sbom.yml
+
+jobs:
+  generate-sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Generate app SBOM
+        uses: cds-snc/security-tools/.github/actions/generate-sbom@4c6b386722985552f3f008d04279a3f01402cc35 # tag=v1
+        with:
+          dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
+          project_name: terraform-plan/app
+          project_type: node        
