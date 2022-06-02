@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # tag=v2.4.2
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
       - name: Generate app SBOM
         uses: cds-snc/security-tools/.github/actions/generate-sbom@4c6b386722985552f3f008d04279a3f01402cc35 # tag=v1
