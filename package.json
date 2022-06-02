@@ -28,7 +28,7 @@
     "eslint-plugin-security": "1.4.0",
     "husky": "6.0.0",
     "jest": "27.4.7",
-    "jest-when": "3.5.0",
+    "jest-when": "3.5.1",
     "prettier": "2.5.1"
   }
 }
