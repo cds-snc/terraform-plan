@@ -19,7 +19,7 @@ jobs:
           - test: conftest-deny
             allow-failure: true
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@7884fcad6b5d53d10323aee724dc68d8b9096a2e # tag=v2
 
       - name: Setup terraform tools
         uses: cds-snc/terraform-tools-setup@v1
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test action comments
-        uses: actions/github-script@v4
+        uses: actions/github-script@deb7ae927cc19ae3a8b57293dd5cd2f16171e1e2 # tag=v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
