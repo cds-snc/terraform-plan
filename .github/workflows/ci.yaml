@@ -16,7 +16,7 @@ jobs:
       - uses: actions/setup-node@17f8bd926464a1afa4c6a11669539e9c1ba77048 # tag=v3.2.0
         with: 
           node-version: 14
-      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd # tag=v3.0.3
+      - uses: actions/cache@c3f1317a9e7b1ef106c153ac8c0f00fed3ddbc0d # tag=v3.0.4
         with:
           path: ~/.npm
           key: ${{runner.os}}-npm-${{hashFiles('**/package-lock.json')}}
