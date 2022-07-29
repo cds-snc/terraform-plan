@@ -79,7 +79,7 @@ jobs:
               },{
                 exist: true,
                 title: /Test skip-p1an/g
-                state: /(?!.*plan).*./gm
+                state: /Terraform Format:\*\* `success`\n/gm
               }
             ];
 
