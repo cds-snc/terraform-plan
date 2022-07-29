@@ -10,14 +10,19 @@ jobs:
         include:
           - test: changes
             allow-failure: false
+            skip-plan: false
           - test: no-changes
             allow-failure: false
+            skip-plan: false
           - test: format-error
             allow-failure: true
+            skip-plan: false
           - test: invalid
             allow-failure: true
+            skip-plan: false
           - test: conftest-deny
             allow-failure: true
+            skip-plan: false
           - test: skip-plan
             skip-plan: true
     steps:
