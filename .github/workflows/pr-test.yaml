@@ -76,10 +76,6 @@ jobs:
                 exist: true,
                 title: /Test conftest-deny/g,
                 state: /FAIL/g
-              },{
-                exist: true,
-                title: /Test skip-p1an/g
-                state: /^(?!.*plan).*./g
               }
             ];
 
