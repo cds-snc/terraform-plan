@@ -117,13 +117,13 @@ const action = async () => {
 
   // Check for changes
   let changes = {};
-  if (results.show.isSuccess) {
+  if (results.show.isSuccess && !skipPlan) {
     const planJson = JSON.parse(results.show.output);
     changes = await getPlanChanges(planJson);
   }
 
   // Comment on PR if changes or errors
-  if (isComment && (changes.isChanges || isError)) {
+  if (isComment && (changes.isChanges || isError || skipPlan)) {
     const planLimit = parseInputInt(planCharLimit, 30000);
     const conftestLimit = parseInputInt(conftestCharLimit, 2000);
 
