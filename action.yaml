@@ -35,9 +35,12 @@ inputs:
     description: 'Use Terragrunt instead of Terraform'
     required: false
     default: 'false'  
-
+  skip-plan:
+    description: 'Skip the planning step, used for repos that do not specifically have a remove backend'
+    required: false
+    default: 'false'
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'dist/index.js'
 
 branding:

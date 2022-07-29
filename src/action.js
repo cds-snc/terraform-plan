@@ -22,6 +22,7 @@ const action = async () => {
   const isComment = core.getBooleanInput("comment");
   const isCommentDelete = core.getBooleanInput("comment-delete");
   const isTerragrunt = core.getBooleanInput("terragrunt");
+  const skipPlan = core.getBooleanInput("skip-plan");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
   const commentTitle = core.getInput("comment-title");
@@ -82,6 +83,16 @@ const action = async () => {
 
   // Exec commands
   for (let command of commands) {
+    if (skipPlan) {
+      switch (command.key) {
+        case "plan":
+        case "show":
+        case "show-json-out":
+        case "conftest":
+          continue;
+      }
+    }
+
     if (!command.depends || results[command.depends].isSuccess) {
       results[command.key] = execCommand(command, directory);
     } else {
@@ -122,7 +133,8 @@ const action = async () => {
       results,
       changes,
       planLimit,
-      conftestLimit
+      conftestLimit,
+      skipPlan
     );
   }
 

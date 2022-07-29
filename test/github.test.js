@@ -99,18 +99,10 @@ describe("addComment", () => {
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
 **✅ &nbsp; Conftest:** \`success\`
-
-
-
-
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
-
-
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`
-
-
 <details>
 <summary>Show plan</summary>
 
@@ -130,7 +122,16 @@ Plan: 1 to add, 0 to change, 0 to destroy
 </details>
 `;
 
-    await addComment(octomock, context, "Foobar", results, changes);
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      results,
+      changes,
+      10000,
+      10000,
+      false
+    );
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
       {
@@ -156,18 +157,11 @@ Plan: 1 to add, 0 to change, 0 to destroy
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
 **❌ &nbsp; Conftest:** \`failed\`
-
-
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
 some-other-file.tf
 \`\`\`
-
-
-
-
-
 <details>
 <summary>Show plan</summary>
 
@@ -211,18 +205,11 @@ General Kenobi
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
 **❌ &nbsp; Conftest:** \`failed\`
-
-
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
 some-other-file.tf
 \`\`\`
-
-
-
-
-
 <details>
 <summary>Show plan</summary>
 
@@ -231,6 +218,7 @@ Hello there
 \`\`\`
 
 </details>
+
 `;
 
     await addComment(octomock, context, "Bambaz", results, changes);

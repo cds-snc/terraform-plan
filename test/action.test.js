@@ -195,6 +195,7 @@ describe("action", () => {
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
 
@@ -219,6 +220,7 @@ describe("action", () => {
       { isChanges: true },
       30000,
       2000,
+      false,
     ]);
   });
 

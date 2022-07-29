@@ -3,24 +3,29 @@
 const nunjucks = require("nunjucks");
 const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
+{% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
 **{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\`
+{% endif -%}
 
-{% if not results.fmt.isSuccess and format|length %}
+{% if not results.fmt.isSuccess and format|length -%}
 **⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 {{ format }}
 \`\`\`
-{% endif %}
+{% endif -%}
 
-{% if changes.isDeletes %}
+
+{% if not skipPlan -%}
+{% if changes.isDeletes -%}
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
-{% endif %}
-{% if changes.isChanges %}
+{% endif -%}
+
+{% if changes.isChanges -%}
 \`\`\`terraform
 Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to change, {{ changes.resources.delete }} to destroy
 \`\`\`
-{% endif %}
+{% endif -%}
 
 <details>
 <summary>Show plan</summary>
@@ -30,7 +35,8 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 
 </details>
-{% if results.conftest.output %}
+
+{% if results.conftest.output -%}
 <details>
 <summary>Show Conftest results</summary>
 
@@ -39,7 +45,8 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 
 </details>
-{% endif %}`;
+{% endif -%}
+{% endif -%}`;
 
 /**
  * Adds a comment to the Pull Request with the Terraform plan changes
@@ -49,6 +56,9 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
  * @param {String} title Comment heading
  * @param {Object} results Results for all the Terraform commands
  * @param {Object} changes Resource and output changes for the plan
+ * @param {number} planLimit the number of characters to render
+ * @param {number} conftestPlanLimit the nubmer of characters to render
+ * @param {boolean} skipPlan Skip the rendering of the plan output
  */
 const addComment = async (
   octokit,
@@ -57,7 +67,8 @@ const addComment = async (
   results,
   changes,
   planLimit,
-  conftestLimit
+  conftestLimit,
+  skipPlan
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = removePlanRefresh(results.plan.output);
@@ -69,6 +80,7 @@ const addComment = async (
     title: title,
     planLimit: planLimit,
     conftestLimit: conftestLimit,
+    skipPlan: skipPlan,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,
