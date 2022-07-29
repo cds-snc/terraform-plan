@@ -89,7 +89,7 @@ const action = async () => {
         case "show":
         case "show-json-out":
         case "conftest":
-          results[command.key] = { isSuccess: true, output: ""};
+          results[command.key] = { isSuccess: true, output: "" };
           continue;
       }
     }
