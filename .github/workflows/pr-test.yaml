@@ -78,7 +78,7 @@ jobs:
                 state: /FAIL/g
               },{
                 exist: true,
-                title: /Test skip-plan/g
+                title: /Test skip-p1an/g
                 state: /^(?!.*plan).*./g
               }
             ];
