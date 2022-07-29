@@ -195,6 +195,7 @@ describe("action", () => {
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
 
@@ -219,6 +220,7 @@ describe("action", () => {
       { isChanges: true },
       30000,
       2000,
+      false,
     ]);
   });
 
@@ -277,5 +279,41 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
     expect(core.setFailed.mock.calls[0][0]).toBe(
       "You must pass a GitHub token to comment on PRs"
     );
+  });
+
+  test("skip-plan", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    getPlanChanges.mockReturnValue({ isChanges: false });
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getInput)
+      .calledWith("comment-title")
+      .mockReturnValue("raspberries");
+    when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(true);
+    github.getOctokit.mockReturnValue("octokit");
+    github.context = "context";
+
+    await action();
+
+    expect(core.setFailed.mock.calls.length).toBe(0);
+    expect(addComment.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls[0]).toEqual([
+      "octokit",
+      "context",
+      "raspberries",
+      {
+        fmt: { isSuccess: true, output: "{}" },
+        init: { isSuccess: true, output: "{}" },
+        plan: { isSuccess: true, output: "" },
+        show: { isSuccess: true, output: "" },
+        validate: { isSuccess: true, output: "{}" },
+        "show-json-out": { isSuccess: true, output: "" },
+        conftest: { isSuccess: true, output: "" },
+      },
+      {},
+      30000,
+      2000,
+      true,
+    ]);
   });
 });
