@@ -17524,6 +17524,7 @@ const action = async () => {
         case "show":
         case "show-json-out":
         case "conftest":
+          results[command.key] = {};
           continue;
       }
     }
@@ -17719,7 +17720,7 @@ const addComment = async (
   skipPlan
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
-  const plan = removePlanRefresh(results.plan.output);
+  const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
   const comment = nunjucks.renderString(commentTemplate, {
     changes: changes,
     plan: plan,
