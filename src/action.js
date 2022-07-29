@@ -89,6 +89,7 @@ const action = async () => {
         case "show":
         case "show-json-out":
         case "conftest":
+          results[command.key] = {};
           continue;
       }
     }

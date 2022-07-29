@@ -18,6 +18,8 @@ jobs:
             allow-failure: true
           - test: conftest-deny
             allow-failure: true
+          - test: skip-plan
+            skip-plan: true
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # tag=v3.0.2
 
@@ -35,6 +37,7 @@ jobs:
           comment-title: Test ${{ matrix.test }}
           comment-delete: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          skip-plan: ${{ matrix.skip-p}}
 
   test-action-comments:
     needs: terraform-plan
@@ -67,6 +70,10 @@ jobs:
                 exist: true,
                 title: /Test conftest-deny/g,
                 state: /FAIL/g
+              },{
+                exist: true,
+                title: /Test skip-plan/g
+                state: /^(?!.*plan).*./g
               }
             ];
 

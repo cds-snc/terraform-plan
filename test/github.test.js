@@ -22,6 +22,7 @@ const octomock = {
     },
   },
 };
+
 octomock.rest.issues.listComments.mockReturnValue({
   data: [
     {
@@ -77,6 +78,7 @@ describe("commentTemplate", () => {
     });
     expect(str.length).toBeLessThan(65536);
   });
+
 });
 
 describe("addComment", () => {
@@ -222,6 +224,28 @@ Hello there
 `;
 
     await addComment(octomock, context, "Bambaz", results, changes);
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
+      owner: "foo",
+      repo: "bar",
+      issue_number: 42,
+      body: comment,
+    });
+  });
+
+  test("don't render plan if skip-plan is true", async () => {
+    const results = {
+      fmt: {
+        isSuccess: true,
+        output: "",
+      },
+      plan: {}
+    };
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Format:** \`success\`
+`;
+
+    await addComment(octomock, context, "Foobar", results, {}, 1000, 1000, true)
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
       owner: "foo",
