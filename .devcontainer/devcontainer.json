@@ -1,0 +1,31 @@
+{
+    "name": "terraform-plan",
+    "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye",
+    "features": {
+        "node": {
+            "version": "lts",
+            "nodeGypDependencies": true
+        },
+        "terraform": {
+            "version": "latest",
+            "tflint": "none",
+            "terragrunt": "none"
+        }
+    },
+    "containerEnv": {
+        "SHELL": "/bin/zsh"
+    },
+    "settings": {
+        "[javascript]": {
+            "editor.formatOnSave": true
+        },
+        "[terraform]": {
+            "editor.formatOnSave": true
+        }
+    },
+    "extensions": [
+        "github.copilot"
+    ],
+    "remoteUser": "vscode",
+    "postCreateCommand": "sudo .devcontainer/post-create-command.sh"
+}

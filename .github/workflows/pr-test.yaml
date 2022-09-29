@@ -23,7 +23,7 @@ jobs:
           - test: conftest-deny
             allow-failure: true
             skip-plan: false
-          - test: skip-p1an
+          - test: skip-plan
             allow-failure: false
             skip-plan: true
     steps:
@@ -78,7 +78,7 @@ jobs:
                 state: /FAIL/g
               },{
                 exist: true,
-                title: /Test skip-p1an/g,
+                title: /Test skip-plan/g,
                 state: /Terraform Format:\*\* `success`\n/gm
               }
             ];
