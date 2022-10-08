@@ -84,7 +84,7 @@ const addComment = async (
     planLimit: planLimit,
     conftestLimit: conftestLimit,
     skipPlan: skipPlan,
-    runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+    runLink: context.payload.workflow_run.html_url,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,
