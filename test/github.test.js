@@ -101,7 +101,7 @@ describe("addComment", () => {
 **✅ &nbsp; Terraform Plan:** \`success\`
 **✅ &nbsp; Conftest:** \`success\` 
 
-**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`

@@ -18,11 +18,7 @@ const commentTemplate = `## {{ title }}
 
 {% if not skipPlan -%}
 {% if changes.isDeletes -%}
-**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
-{% endif -%}
-
-{% if plan|length >= planLimit -%}
-**✂ &nbsp; Truncated:** plan has been cut! See the [full plan in the logs]({{ runLink }}).
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
 {% endif -%}
 
 {% if changes.isChanges -%}
@@ -31,6 +27,9 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 {% endif -%}
 
+{% if plan|length >= planLimit -%}
+**✂ &nbsp; Warning:** plan has been truncated! See the [full plan in the logs]({{ runLink }}).
+{% endif -%}
 <details>
 <summary>Show plan</summary>
 
