@@ -158,7 +158,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
 **❌ &nbsp; Conftest:** \`failed\`
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+**🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
 some-other-file.tf
@@ -206,7 +206,7 @@ General Kenobi
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
 **❌ &nbsp; Conftest:** \`failed\`
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+**🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
 some-other-file.tf

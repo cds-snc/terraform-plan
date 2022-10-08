@@ -9,16 +9,19 @@ const commentTemplate = `## {{ title }}
 {% endif -%}
 
 {% if not results.fmt.isSuccess and format|length -%}
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+**🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 {{ format }}
 \`\`\`
 {% endif -%}
 
-
 {% if not skipPlan -%}
 {% if changes.isDeletes -%}
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
+{% endif -%}
+
+{% if plan|length >= planLimit -%}
+**✂ &nbsp; Truncated:** plan has been cut! See the [full plan in the logs]({{ runLink }}).
 {% endif -%}
 
 {% if changes.isChanges -%}
@@ -81,6 +84,7 @@ const addComment = async (
     planLimit: planLimit,
     conftestLimit: conftestLimit,
     skipPlan: skipPlan,
+    runLink: `${context.serverUrl}/${context.owner}/${context.repo}/actions/runs/${context.runId}`,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,
