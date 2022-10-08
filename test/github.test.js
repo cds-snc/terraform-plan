@@ -99,7 +99,8 @@ describe("addComment", () => {
     const comment = `## Foobar
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
-**✅ &nbsp; Conftest:** \`success\`
+**✅ &nbsp; Conftest:** \`success\` 
+
 **⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
@@ -157,7 +158,8 @@ Plan: 1 to add, 0 to change, 0 to destroy
     const comment = `## Bambaz
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
-**❌ &nbsp; Conftest:** \`failed\`
+**❌ &nbsp; Conftest:** \`failed\` 
+
 **🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
@@ -205,7 +207,8 @@ General Kenobi
     const comment = `## Bambaz
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
-**❌ &nbsp; Conftest:** \`failed\`
+**❌ &nbsp; Conftest:** \`failed\` 
+
 **🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
