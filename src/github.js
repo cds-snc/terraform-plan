@@ -5,20 +5,20 @@ const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 {% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
-**{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\`
+**{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\` 
+
 {% endif -%}
 
 {% if not results.fmt.isSuccess and format|length -%}
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+**🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 {{ format }}
 \`\`\`
 {% endif -%}
 
-
 {% if not skipPlan -%}
 {% if changes.isDeletes -%}
-**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
 {% endif -%}
 
 {% if changes.isChanges -%}
@@ -27,6 +27,9 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 {% endif -%}
 
+{% if plan|length >= planLimit -%}
+**✂ &nbsp; Warning:** plan has been truncated! See the [full plan in the logs]({{ runLink }}).
+{% endif -%}
 <details>
 <summary>Show plan</summary>
 
@@ -81,6 +84,7 @@ const addComment = async (
     planLimit: planLimit,
     conftestLimit: conftestLimit,
     skipPlan: skipPlan,
+    runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
   });
   await octokit.rest.issues.createComment({
     ...context.repo,

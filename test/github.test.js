@@ -49,6 +49,8 @@ const context = {
     repo: "bar",
   },
   payload: { pull_request: { number: 42 } },
+  runId: 42,
+  serverUrl: "https://github.com",
 };
 
 beforeEach(() => {
@@ -99,8 +101,9 @@ describe("addComment", () => {
     const comment = `## Foobar
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
-**✅ &nbsp; Conftest:** \`success\`
-**⚠️ &nbsp; WARNING:** resources will be destroyed by this change!
+**✅ &nbsp; Conftest:** \`success\` 
+
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`
@@ -157,8 +160,9 @@ Plan: 1 to add, 0 to change, 0 to destroy
     const comment = `## Bambaz
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
-**❌ &nbsp; Conftest:** \`failed\`
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+**❌ &nbsp; Conftest:** \`failed\` 
+
+**🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
 some-other-file.tf
@@ -205,8 +209,9 @@ General Kenobi
     const comment = `## Bambaz
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
-**❌ &nbsp; Conftest:** \`failed\`
-**⚠️ &nbsp; Format:** run \`terraform fmt\` to fix the following: 
+**❌ &nbsp; Conftest:** \`failed\` 
+
+**🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
 format-error.tf
 some-other-file.tf
@@ -261,6 +266,71 @@ Hello there
       issue_number: 42,
       body: comment,
     });
+  });
+
+  test("add a truncated plan comment", async () => {
+    const results = {
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "< Hello there >" },
+      conftest: { isSuccess: true, output: "< General Kenobi >" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: true,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 1,
+      },
+    };
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Format:** \`success\`
+**✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\` 
+
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
+\`\`\`terraform
+Plan: 1 to add, 0 to change, 0 to destroy
+\`\`\`
+**✂ &nbsp; Warning:** plan has been truncated! See the [full plan in the logs](https://github.com/foo/bar/actions/runs/42).
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+< Hello...
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+< General Kenobi >
+\`\`\`
+
+</details>
+`;
+
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      results,
+      changes,
+      10,
+      10000,
+      false
+    );
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
+      {
+        owner: "foo",
+        repo: "bar",
+        issue_number: 42,
+        body: comment,
+      },
+    ]);
   });
 });
 

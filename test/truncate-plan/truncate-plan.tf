@@ -27,9 +27,9 @@ module "rds" {
   backup_retention_period = 7
   billing_tag_value       = "cal"
   database_name           = "foo"
-  engine_version          = "13.3"
-  password                = "foo"
-  username                = "cal"
+  engine_version          = "14.5"
+  password                = "MostSecurePasswordEver"
+  username                = "probably"
   preferred_backup_window = "07:00-09:00"
   subnet_ids              = module.vpc.public_subnet_ids
   vpc_id                  = module.vpc.vpc_id
