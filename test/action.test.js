@@ -62,14 +62,6 @@ describe("action", () => {
         "foo",
       ],
       [
-        { 
-          key: "summary",
-          depends: "plan",
-          exec: "tf-summarize -md plan.tfplan",
-        },
-        "foo",
-      ],
-      [
         {
           key: "show",
           exec: "terraform show -no-color -json plan.tfplan",
@@ -84,6 +76,14 @@ describe("action", () => {
           exec: "terraform show -no-color -json plan.tfplan > plan.json",
           depends: "plan",
           output: false,
+        },
+        "foo",
+      ],
+      [
+        {
+          key: "summary",
+          depends: "show-json-out",
+          exec: "cat plan.json | tf-summarize -md",
         },
         "foo",
       ],
@@ -139,14 +139,6 @@ describe("action", () => {
         "bar",
       ],
       [
-        { 
-          key: "summary",
-          depends: "plan",
-          exec: "tf-summarize -md plan.tfplan",
-        },
-        "bar",
-      ],
-      [
         {
           key: "show",
           exec: "terragrunt show -no-color -json plan.tfplan",
@@ -161,6 +153,14 @@ describe("action", () => {
           exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
           depends: "plan",
           output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "summary",
+          depends: "show-json-out",
+          exec: "cat plan.json | tf-summarize -md",
         },
         "bar",
       ],
@@ -229,7 +229,7 @@ describe("action", () => {
         init: { isSuccess: true, output: "{}" },
         plan: { isSuccess: true, output: "{}" },
         show: { isSuccess: true, output: "{}" },
-        summary: {isSuccess: true, output: "{}"},
+        summary: { isSuccess: true, output: "{}" },
         validate: { isSuccess: true, output: "{}" },
         "show-json-out": { isSuccess: true, output: "{}" },
         conftest: { isSuccess: true, output: "{}" },
@@ -252,9 +252,9 @@ terraform init -no-color
 terraform validate -no-color
 terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan
-tf-summarize -md plan.tfplan
 terraform show -no-color -json plan.tfplan
 terraform show -no-color -json plan.tfplan > plan.json
+cat plan.json | tf-summarize -md
 conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
   });
 
@@ -324,9 +324,9 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
         init: { isSuccess: true, output: "{}" },
         plan: { isSuccess: true, output: "" },
         show: { isSuccess: true, output: "" },
-        summary: {isSuccess: true, output: "{}"},
         validate: { isSuccess: true, output: "{}" },
         "show-json-out": { isSuccess: true, output: "" },
+        summary: { isSuccess: true, output: "" },
         conftest: { isSuccess: true, output: "" },
       },
       {},
