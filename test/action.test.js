@@ -62,19 +62,19 @@ describe("action", () => {
         "foo",
       ],
       [
+        { 
+          key: "summary",
+          depends: "plan",
+          exec: "tf-summarize -md plan.tfplan",
+        },
+        "foo",
+      ],
+      [
         {
           key: "show",
           exec: "terraform show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
-        },
-        "foo",
-      ],
-      [
-        { 
-          key: "summary",
-          depends: "plan",
-          exec: "tf-summarize -md plan.tfplan",
         },
         "foo",
       ],
@@ -139,19 +139,19 @@ describe("action", () => {
         "bar",
       ],
       [
+        { 
+          key: "summary",
+          depends: "plan",
+          exec: "tf-summarize -md plan.tfplan",
+        },
+        "bar",
+      ],
+      [
         {
           key: "show",
           exec: "terragrunt show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
-        },
-        "bar",
-      ],
-      [
-        { 
-          key: "summary",
-          depends: "plan",
-          exec: "tf-summarize -md plan.tfplan",
         },
         "bar",
       ],
@@ -252,8 +252,8 @@ terraform init -no-color
 terraform validate -no-color
 terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan
-terraform show -no-color -json plan.tfplan
 tf-summarize -md plan.tfplan
+terraform show -no-color -json plan.tfplan
 terraform show -no-color -json plan.tfplan > plan.json
 conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
   });

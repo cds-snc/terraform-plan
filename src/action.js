@@ -55,6 +55,11 @@ const action = async () => {
       exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
     },
     {
+      key: "summary",
+      exec: `${summarizeBinary} -md plan.tfplan`,
+      depends: "plan",
+    },
+    {
       key: "show",
       exec: `${binary} show -no-color -json plan.tfplan`,
       depends: "plan",
@@ -65,11 +70,6 @@ const action = async () => {
       exec: `${binary} show -no-color -json plan.tfplan > plan.json`,
       depends: "plan",
       output: false,
-    },
-    {
-      key: "summary",
-      exec: `${summarizeBinary} -md plan.tfplan`,
-      depends: "plan",
     },
     {
       key: "conftest",
@@ -92,6 +92,7 @@ const action = async () => {
     if (skipPlan) {
       switch (command.key) {
         case "plan":
+        case "summary":
         case "show":
         case "show-json-out":
         case "conftest":
