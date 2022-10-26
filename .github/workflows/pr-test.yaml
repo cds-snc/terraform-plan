@@ -37,8 +37,8 @@ jobs:
 
       - name: Install TF-Summarize
         run: |
-          curl -L https://github.com/dineshba/tf-summarize/releases/download/v0.2.3/tf-summarize_linux_arm.zip \
-          && unzip tf-summarize_linux_arm.zip tf-summarize \
+          curl -L -o tf-summarize.zip https://github.com/dineshba/tf-summarize/releases/download/v0.2.3/tf-summarize_linux_arm.zip \
+          && unzip tf-summarize.zip tf-summarize \
           && chmod +x tf-summarize \
           && mv tf-summarize /usr/local/bin
           
