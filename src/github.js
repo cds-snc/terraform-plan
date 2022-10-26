@@ -20,10 +20,6 @@ const commentTemplate = `## {{ title }}
 {% if changes.isDeletes -%}
 **⚠️ &nbsp; Warning:** resources will be destroyed by this change!
 {% endif -%}
-<details>
-<summary>Show Summary</summary>
-{{ results.summary.output }}
-<details>
 
 {% if changes.isChanges -%}
 \`\`\`terraform
