@@ -67,13 +67,8 @@ const action = async () => {
       output: false,
     },
     { 
-      key: "cat",
-      exec: `cat plan.json | tf-summarize -md`,
-      depends: "show-json-out",
-    }, 
-    {
-      key: "summary",
-      exec: `${summarizeBinary} -md plan.json`,
+      key: "sumary",
+      exec: `cat plan.json | ${summarizeBinary} -md`,
       depends: "show-json-out",
     },
     {
