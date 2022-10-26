@@ -35,6 +35,13 @@ jobs:
       - name: Setup terraform tools
         uses: cds-snc/terraform-tools-setup@v1
 
+      - name: Install TF-Summarize
+        run: |
+          curl -l -o tf-summarize.zip https://github.com/dineshba/tf-summarize/releases/download/v0.2.3/tf-summarize_linux_arm.zip \
+          && unzip tf-summarize.zip tf-summarize \
+          && chmod +x tf-summarize \
+          && mv tf-summarize /usr/local/bin
+          
       - name: Test ${{ matrix.test }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}

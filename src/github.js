@@ -25,6 +25,13 @@ const commentTemplate = `## {{ title }}
 \`\`\`terraform
 Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to change, {{ changes.resources.delete }} to destroy
 \`\`\`
+
+<details>
+<summary>Show Summary</summary>
+{{ results.summary.output }}
+<details>
+
+
 {% endif -%}
 
 {% if plan|length >= planLimit -%}

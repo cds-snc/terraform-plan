@@ -9,11 +9,17 @@
         "terraform": {
             "version": "latest",
             "tflint": "none",
-            "terragrunt": "none"
-        }
+            "terragrunt": "latest"
+        },
+        "github-cli": "latest"
     },
+    "mounts": [
+        "source=${env:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
+        "source=/run/host-services/ssh-auth.sock,target=/run/host-services/ssh-auth.sock,type=bind,consistency=cached"
+    ],
     "containerEnv": {
-        "SHELL": "/bin/zsh"
+        "SHELL": "/bin/zsh",
+        "SSH_AUTH_SOCK": "/run/host-services/ssh-auth.sock"
     },
     "settings": {
         "[javascript]": {
@@ -24,6 +30,10 @@
         }
     },
     "extensions": [
+        "dbaeumer.vscode-eslint",
+        "redhat.vscode-yaml",
+        "timonwong.shellcheck",
+        "hashicorp.terraform",
         "github.copilot"
     ],
     "remoteUser": "vscode",
