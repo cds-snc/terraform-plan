@@ -25,7 +25,7 @@ const action = async () => {
   const skipPlan = core.getBooleanInput("skip-plan");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
-  const summarizeBinary = "tf-summarize"
+  const summarizeBinary = "tf-summarize";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
@@ -61,7 +61,7 @@ const action = async () => {
       output: false,
     },
     {
-      key: "summarize",
+      key: "summary",
       exec: `${summarizeBinary} -md -plan.tfplan`,
       depends: "show",
     },
