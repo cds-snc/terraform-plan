@@ -34,7 +34,8 @@
         "redhat.vscode-yaml",
         "timonwong.shellcheck",
         "hashicorp.terraform",
-        "github.copilot"
+        "github.copilot",
+        "orta.vscode-jest"
     ],
     "remoteUser": "vscode",
     "postCreateCommand": "sudo .devcontainer/post-create-command.sh"

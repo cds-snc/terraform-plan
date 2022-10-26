@@ -31,7 +31,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(7);
+    expect(execCommand.mock.calls.length).toBe(8);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -71,6 +71,14 @@ describe("action", () => {
         "foo",
       ],
       [
+        { 
+          key: "summary",
+          depends: "plan",
+          exec: "tf-summarize -md plan.tfplan",
+        },
+        "foo",
+      ],
+      [
         {
           key: "show-json-out",
           exec: "terraform show -no-color -json plan.tfplan > plan.json",
@@ -100,7 +108,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(7);
+    expect(execCommand.mock.calls.length).toBe(8);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -136,6 +144,14 @@ describe("action", () => {
           exec: "terragrunt show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
+        },
+        "bar",
+      ],
+      [
+        { 
+          key: "summary",
+          depends: "plan",
+          exec: "tf-summarize -md plan.tfplan",
         },
         "bar",
       ],
@@ -213,6 +229,7 @@ describe("action", () => {
         init: { isSuccess: true, output: "{}" },
         plan: { isSuccess: true, output: "{}" },
         show: { isSuccess: true, output: "{}" },
+        summary: {isSuccess: true, output: "{}"},
         validate: { isSuccess: true, output: "{}" },
         "show-json-out": { isSuccess: true, output: "{}" },
         conftest: { isSuccess: true, output: "{}" },
@@ -236,6 +253,7 @@ terraform validate -no-color
 terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan
 terraform show -no-color -json plan.tfplan
+tf-summarize -md plan.tfplan
 terraform show -no-color -json plan.tfplan > plan.json
 conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
   });
@@ -306,6 +324,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
         init: { isSuccess: true, output: "{}" },
         plan: { isSuccess: true, output: "" },
         show: { isSuccess: true, output: "" },
+        summary: {isSuccess: true, output: "{}"},
         validate: { isSuccess: true, output: "{}" },
         "show-json-out": { isSuccess: true, output: "" },
         conftest: { isSuccess: true, output: "" },
