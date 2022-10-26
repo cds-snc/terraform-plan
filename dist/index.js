@@ -17502,7 +17502,7 @@ const action = async () => {
       output: false,
     },
     { 
-      key: "sumary",
+      key: "summary",
       exec: `cat plan.json | ${summarizeBinary} -md`,
       depends: "show-json-out",
     },
@@ -17685,7 +17685,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <details>
 <summary>Show Summary</summary>
 {{ results.summary.output }}
-<details>
+</details>
 
 
 {% endif -%}

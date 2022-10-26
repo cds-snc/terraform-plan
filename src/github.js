@@ -29,7 +29,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 <details>
 <summary>Show Summary</summary>
 {{ results.summary.output }}
-<details>
+</details>
 
 
 {% endif -%}
