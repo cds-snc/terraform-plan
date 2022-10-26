@@ -17504,7 +17504,7 @@ const action = async () => {
     {
       key: "summary",
       exec: `${summarizeBinary} -md plan.tfplan`,
-      depends: "show",
+      depends: "plan",
     },
     {
       key: "conftest",
