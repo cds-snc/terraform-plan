@@ -66,6 +66,10 @@ const action = async () => {
       depends: "plan",
       output: false,
     },
+    { 
+      key: "cat",
+      exec: `cat plan.json`
+    }, 
     {
       key: "summary",
       exec: `${summarizeBinary} -md plan.json`,
