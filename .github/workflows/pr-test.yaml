@@ -41,8 +41,6 @@ jobs:
           && unzip tf-summarize.zip tf-summarize \
           && chmod +x tf-summarize \
           && mv tf-summarize /usr/local/bin
-      - name: Run TF_Summarize
-        run: tf-summarize
           
       - name: Test ${{ matrix.test }}
         env:
