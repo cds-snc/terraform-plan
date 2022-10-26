@@ -17503,7 +17503,8 @@ const action = async () => {
     },
     { 
       key: "cat",
-      exec: `cat plan.json`
+      exec: `cat plan.json | tf-summarize -md`,
+      depends: "show-json-out",
     }, 
     {
       key: "summary",
