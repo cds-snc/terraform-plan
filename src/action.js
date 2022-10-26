@@ -25,6 +25,7 @@ const action = async () => {
   const skipPlan = core.getBooleanInput("skip-plan");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
+  const summarizeBinary = "tf-summarize";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
@@ -66,6 +67,11 @@ const action = async () => {
       output: false,
     },
     {
+      key: "summary",
+      exec: `cat plan.json | ${summarizeBinary} -md`,
+      depends: "show-json-out",
+    },
+    {
       key: "conftest",
       depends: "show-json-out",
       exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
@@ -86,6 +92,7 @@ const action = async () => {
     if (skipPlan) {
       switch (command.key) {
         case "plan":
+        case "summary":
         case "show":
         case "show-json-out":
         case "conftest":

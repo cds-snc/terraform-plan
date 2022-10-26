@@ -87,6 +87,7 @@ describe("addComment", () => {
     const results = {
       fmt: { isSuccess: true, output: "" },
       plan: { isSuccess: true, output: "< Hello there >" },
+      summary: { isSuccess: true, output: "" },
       conftest: { isSuccess: true, output: "< General Kenobi >" },
     };
     const changes = {
@@ -107,6 +108,15 @@ describe("addComment", () => {
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`
+
+<details>
+<summary>Show Summary</summary>
+
+
+
+</details>
+
+
 <details>
 <summary>Show plan</summary>
 
@@ -154,6 +164,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
         output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
       },
       plan: { isSuccess: false, output: "Hello there" },
+      summary: { isSuccess: true, output: "" },
       conftest: { isSuccess: false, output: "General Kenobi" },
     };
     const changes = {};
@@ -272,6 +283,7 @@ Hello there
     const results = {
       fmt: { isSuccess: true, output: "" },
       plan: { isSuccess: true, output: "< Hello there >" },
+      summary: { isSucces: true, output: "" },
       conftest: { isSuccess: true, output: "< General Kenobi >" },
     };
     const changes = {
@@ -292,6 +304,15 @@ Hello there
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`
+
+<details>
+<summary>Show Summary</summary>
+
+
+
+</details>
+
+
 **✂ &nbsp; Warning:** plan has been truncated! See the [full plan in the logs](https://github.com/foo/bar/actions/runs/42).
 <details>
 <summary>Show plan</summary>
