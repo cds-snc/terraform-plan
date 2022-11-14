@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@vercel/ncc": "0.34.0",
-    "eslint": "8.26.0",
+    "eslint": "8.27.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-security": "1.5.0",
     "husky": "8.0.1",
