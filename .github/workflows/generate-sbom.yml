@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
 
       - name: Generate app SBOM
-        uses: cds-snc/security-tools/.github/actions/generate-sbom@4c6b386722985552f3f008d04279a3f01402cc35 # tag=v1
+        uses: cds-snc/security-tools/.github/actions/generate-sbom@e8bfe289161e1a923f8bb153c57280abfa33eb22 # v1
         with:
           dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
           project_name: terraform-plan/app
