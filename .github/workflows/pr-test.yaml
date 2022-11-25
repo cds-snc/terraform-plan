@@ -127,17 +127,18 @@ jobs:
         uses: cds-snc/terraform-tools-setup@v1
 
       - name: Test directory failure
+        id: directory-failure
         continue-on-error: true
         uses: ./
         with:
           directory: invalid
 
-      - name: Test passed
-        if: failure()
+      - name: Check directory failure
+        if: steps.directory-failure.outcome == 'failure'
         run: |
-          exit 0
+          echo "Directory failure test passed"
 
       - name: Test failed
-        if: success()
+        if: steps.directory-failure.outcome == 'success' && steps.directory-failure.conclusion == 'success'
         run: |
           exit 1
