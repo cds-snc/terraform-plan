@@ -131,7 +131,8 @@ jobs:
         continue-on-error: true
         uses: ./
         with:
-          directory: ./
+          directory: invalid
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check directory failure
         if: steps.directory-failure.outcome == 'failure'
