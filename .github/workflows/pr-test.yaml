@@ -28,7 +28,7 @@ jobs:
             skip-plan: true
           - test: truncate-plan
             allow-failure: false
-            skip-plan: false            
+            skip-plan: false
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
 
@@ -41,7 +41,7 @@ jobs:
           && unzip tf-summarize.zip tf-summarize \
           && chmod +x tf-summarize \
           && mv tf-summarize /usr/local/bin
-          
+
       - name: Test ${{ matrix.test }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -117,3 +117,21 @@ jobs:
             if(isFailed){
               core.setFailed('PR comments did not match');
             }
+
+  test-directort-failure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3.1.0
+
+      - name: Setup terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+
+      - name: Test directory failure
+        uses: ./
+        with:
+          directory: invalid
+
+      - name: Test failed
+        if: failure()
+        run: |
+          exit 0
