@@ -3,10 +3,16 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { when } = require("jest-when");
+const mock_fs = require("mock-fs");
 const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
 const { action } = require("../src/action.js");
+
+mock_fs({
+  foo: {},
+  bar: {},
+});
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
@@ -15,6 +21,10 @@ jest.mock("../src/github.js");
 jest.mock("../src/opa.js");
 
 describe("action", () => {
+  afterAll(() => {
+    mock_fs.restore();
+  });
+
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -243,6 +253,7 @@ describe("action", () => {
 
   test("failed command", async () => {
     execCommand.mockReturnValue({ isSuccess: false, output: "" });
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
 
     await action();
 
@@ -264,6 +275,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       .calledWith("allow-failure")
       .mockReturnValue(true);
     when(core.getBooleanInput).calledWith("comment").mockReturnValue(false);
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getBooleanInput)
       .calledWith("comment-delete")
       .mockReturnValue(false);
@@ -278,6 +290,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       isSuccess: false,
       output: "Some command output ::debug::exitcode: 1",
     });
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
 
     await action();
 
@@ -287,9 +300,23 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
     ]);
   });
 
+  test("failed directory exists", async () => {
+    const directory = "does-not-exist";
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getInput).calledWith("directory").mockReturnValue(directory);
+
+    await action();
+
+    expect(core.setFailed.mock.calls.length).toBe(1);
+    expect(core.setFailed.mock.calls[0][0]).toBe(
+      `Directory ${directory} does not exist`
+    );
+  });
+
   test("failed validation", async () => {
     when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
     when(core.getInput).calledWith("github-token").mockReturnValue("false");
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
 
     await action();
 
@@ -303,6 +330,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     getPlanChanges.mockReturnValue({ isChanges: false });
     when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput)
       .calledWith("comment-title")
       .mockReturnValue("raspberries");

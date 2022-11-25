@@ -3,3 +3,4 @@ node_modules
 .terraform
 .terraform.lock.hcl
 .tool-versions
+tf-summarize.zip
