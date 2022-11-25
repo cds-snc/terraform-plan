@@ -1,5 +1,6 @@
 "use strict";
 
+const fs = require("fs");
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { execCommand } = require("./command.js");
@@ -80,6 +81,13 @@ const action = async () => {
   ];
   let results = {};
   let isError = false;
+
+  // Validate that directory exists
+  // eslint-disable-next-line security/detect-non-literal-fs-filename
+  if (!fs.existsSync(directory)) {
+    core.setFailed(`Directory ${directory} does not exist`);
+    return;
+  }
 
   // Validate input
   if (octokit === undefined && (isComment || isCommentDelete)) {
