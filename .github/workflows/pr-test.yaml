@@ -127,11 +127,17 @@ jobs:
         uses: cds-snc/terraform-tools-setup@v1
 
       - name: Test directory failure
+        continue-on-error: true
         uses: ./
         with:
           directory: invalid
 
-      - name: Test failed
+      - name: Test passed
         if: failure()
         run: |
           exit 0
+
+      - name: Test failed
+        if: success()
+        run: |
+          exit 1
