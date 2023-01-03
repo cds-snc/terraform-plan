@@ -110,7 +110,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`
 
 <details>
-<summary>Show Summary</summary>
+<summary>Show summary</summary>
 
 
 
@@ -306,7 +306,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
 \`\`\`
 
 <details>
-<summary>Show Summary</summary>
+<summary>Show summary</summary>
 
 
 

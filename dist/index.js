@@ -18452,7 +18452,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 \`\`\`
 
 <details>
-<summary>Show Summary</summary>
+<summary>Show summary</summary>
 
 {{ results.summary.output }}
 
