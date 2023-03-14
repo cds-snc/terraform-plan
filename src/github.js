@@ -14,18 +14,22 @@ const commentTemplate = `## {{ title }}
 
 <details>
 <summary>Show Init results</summary>
+
 \`\`\`sh
 {{ results.init.output }}
 \`\`\`
+
 </details>
 
 {% endif -%}
 {% if not results.validate.isSuccess -%}
 <details>
 <summary>Show Validate results</summary>
+
 \`\`\`sh
 {{ results.validate.output }}
 \`\`\`
+
 </details>
 
 {% endif -%}
