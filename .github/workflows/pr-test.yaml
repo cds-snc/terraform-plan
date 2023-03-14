@@ -104,7 +104,6 @@ jobs:
                 exist: true,
                 title: /Test init-fail/g,
                 state: /Terraform Init:\*\* `failure`\n/gm
-              }
               },{
                 exist: true,
                 title: /Test validate-fail/g,
