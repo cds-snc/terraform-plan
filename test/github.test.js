@@ -185,16 +185,20 @@ Plan: 1 to add, 0 to change, 0 to destroy
 
 <details>
 <summary>Show Init results</summary>
+
 \`\`\`sh
 I love you
 \`\`\`
+
 </details>
 
 <details>
 <summary>Show Validate results</summary>
+
 \`\`\`sh
 I know
 \`\`\`
+
 </details>
 
 **🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
