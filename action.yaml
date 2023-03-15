@@ -14,15 +14,15 @@ inputs:
   comment-delete:
     description: 'Delete previous comments made by the bot on the PR'
     required: false
-    default: 'false'    
+    default: 'false'
   comment-title:
     description: 'The title to give the PR comment'
     required: false
-    default: 'Plan changes'    
+    default: 'Plan changes'
   directory:
     description: 'Directory with the *.tf files to validate'
     required: false
-    default: '.'    
+    default: '.'
   github-token:
     description: 'GitHub Token used to add comment to PR'
     required: false
@@ -30,19 +30,27 @@ inputs:
   terraform-init:
     description: 'Custom Terraform init args'
     required: false
-    default: ''     
+    default: ''
   terragrunt:
     description: 'Use Terragrunt instead of Terraform'
     required: false
-    default: 'false'  
+    default: 'false'
   skip-plan:
-    description: 'Skip the planning step, used for repos that do not specifically have a remove backend'
+    description: 'Skip the planning step, used for repos that do not specifically have a remote backend'
     required: false
     default: 'false'
+  skip-conftest:
+    description: 'Skip the conftest step'
+    required: false
+    default: 'false'
+  conftest-checks:
+    description: 'Location of custom conftest check definitions, e.g. `git::https://github.com/user/repository.git`, `./conftest-checks`'
+    required: false
+    default: 'git::https://github.com/cds-snc/opa_checks.git//aws_terraform'
 runs:
   using: 'node16'
   main: 'dist/index.js'
 
 branding:
-  icon: 'layers'  
-  color: 'purple'  
+  icon: 'layers'
+  color: 'purple'

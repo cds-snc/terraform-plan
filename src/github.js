@@ -7,8 +7,9 @@ const commentTemplate = `## {{ title }}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 {% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
+{% if not skipConftest -%}
 **{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\` 
-
+{% endif -%}
 {% endif -%}
 {% if not results.init.isSuccess -%}
 
@@ -104,7 +105,8 @@ const addComment = async (
   changes,
   planLimit,
   conftestLimit,
-  skipPlan
+  skipPlan,
+  skipConftest
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
@@ -117,6 +119,7 @@ const addComment = async (
     planLimit: planLimit,
     conftestLimit: conftestLimit,
     skipPlan: skipPlan,
+    skipConftest: skipConftest,
     runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
   });
   await octokit.rest.issues.createComment({
