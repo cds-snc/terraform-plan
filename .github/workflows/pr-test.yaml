@@ -29,6 +29,12 @@ jobs:
           - test: truncate-plan
             allow-failure: false
             skip-plan: false
+          - test: init-fail
+            allow-failure: true
+            skip-plan: false
+          - test: validate-fail
+            allow-failure: true
+            skip-plan: false
     steps:
       - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
 
@@ -94,6 +100,14 @@ jobs:
                 exist: true,
                 title: /Test truncate-plan/g,
                 state: /plan has been truncated/gm
+              },{
+                exist: true,
+                title: /Test init-fail/g,
+                state: /Terraform Init:\*\* `failed`\n/gm
+              },{
+                exist: true,
+                title: /Test validate-fail/g,
+                state: /Terraform Validate:\*\* `failed`\n/gm
               }
             ];
 

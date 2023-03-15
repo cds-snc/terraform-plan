@@ -61,6 +61,8 @@ describe("commentTemplate", () => {
   test("truncate plans > 64000 characters", async () => {
     const str = nunjucks.renderString(commentTemplate, {
       results: {
+        init: { isSuccess: true, output: "" },
+        validate: { isSuccess: true, output: "" },
         fmt: { isSuccess: false },
         plan: { isSuccess: false },
         conftest: { isSucces: false },
@@ -85,6 +87,8 @@ describe("commentTemplate", () => {
 describe("addComment", () => {
   test("add a success comment with changes", async () => {
     const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
       fmt: { isSuccess: true, output: "" },
       plan: { isSuccess: true, output: "< Hello there >" },
       summary: { isSuccess: true, output: "" },
@@ -100,6 +104,8 @@ describe("addComment", () => {
       },
     };
     const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
 **✅ &nbsp; Conftest:** \`success\` 
@@ -159,6 +165,8 @@ Plan: 1 to add, 0 to change, 0 to destroy
 
   test("add a failed comment with changes", async () => {
     const results = {
+      init: { isSuccess: false, output: "I love you" },
+      validate: { isSuccess: false, output: "I know" },
       fmt: {
         isSuccess: false,
         output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
@@ -169,9 +177,29 @@ Plan: 1 to add, 0 to change, 0 to destroy
     };
     const changes = {};
     const comment = `## Bambaz
+**❌ &nbsp; Terraform Init:** \`failed\`
+**❌ &nbsp; Terraform Validate:** \`failed\`
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
 **❌ &nbsp; Conftest:** \`failed\` 
+
+<details>
+<summary>Show Init results</summary>
+
+\`\`\`sh
+I love you
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Validate results</summary>
+
+\`\`\`sh
+I know
+\`\`\`
+
+</details>
 
 **🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
@@ -209,6 +237,8 @@ General Kenobi
 
   test("hide conftest details if outputs is empty", async () => {
     const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
       fmt: {
         isSuccess: false,
         output: "format-error.tf\nnot a doctor\nsome-other-file.tf",
@@ -218,6 +248,8 @@ General Kenobi
     };
     const changes = {};
     const comment = `## Bambaz
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
 **❌ &nbsp; Terraform Format:** \`failed\`
 **❌ &nbsp; Terraform Plan:** \`failed\`
 **❌ &nbsp; Conftest:** \`failed\` 
@@ -250,6 +282,8 @@ Hello there
 
   test("don't render plan if skip-plan is true", async () => {
     const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
       fmt: {
         isSuccess: true,
         output: "",
@@ -257,6 +291,8 @@ Hello there
       plan: {},
     };
     const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
 `;
 
@@ -281,6 +317,8 @@ Hello there
 
   test("add a truncated plan comment", async () => {
     const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
       fmt: { isSuccess: true, output: "" },
       plan: { isSuccess: true, output: "< Hello there >" },
       summary: { isSucces: true, output: "" },
@@ -296,6 +334,8 @@ Hello there
       },
     };
     const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
 **✅ &nbsp; Conftest:** \`success\` 

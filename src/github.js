@@ -2,13 +2,37 @@
 
 const nunjucks = require("nunjucks");
 const commentTemplate = `## {{ title }}
+**{{ "✅" if results.init.isSuccess else "❌" }} &nbsp; Terraform Init:** \`{{ "success" if results.init.isSuccess else "failed" }}\`
+**{{ "✅" if results.validate.isSuccess else "❌" }} &nbsp; Terraform Validate:** \`{{ "success" if results.validate.isSuccess else "failed" }}\`
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
 {% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
 **{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\` 
 
 {% endif -%}
+{% if not results.init.isSuccess -%}
 
+<details>
+<summary>Show Init results</summary>
+
+\`\`\`sh
+{{ results.init.output }}
+\`\`\`
+
+</details>
+
+{% endif -%}
+{% if not results.validate.isSuccess -%}
+<details>
+<summary>Show Validate results</summary>
+
+\`\`\`sh
+{{ results.validate.output }}
+\`\`\`
+
+</details>
+
+{% endif -%}
 {% if not results.fmt.isSuccess and format|length -%}
 **🧹 &nbsp; Format:** run \`terraform fmt\` to fix the following: 
 \`\`\`sh
