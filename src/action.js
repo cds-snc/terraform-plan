@@ -24,12 +24,14 @@ const action = async () => {
   const isCommentDelete = core.getBooleanInput("comment-delete");
   const isTerragrunt = core.getBooleanInput("terragrunt");
   const skipPlan = core.getBooleanInput("skip-plan");
+  const skipConftest = core.getBooleanInput("skip-conftest");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
   const summarizeBinary = "tf-summarize";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
+  const conftestChecks = core.getInput("conftest-checks");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
@@ -75,7 +77,7 @@ const action = async () => {
     {
       key: "conftest",
       depends: "show-json-out",
-      exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      exec: "conftest test plan.json --no-color --update ${conftestChecks}",
       output: true,
     },
   ];
@@ -107,6 +109,8 @@ const action = async () => {
           results[command.key] = { isSuccess: true, output: "" };
           continue;
       }
+    } else if (command.key === "conftest" && skipConftest) {
+      results[command.key] = { isSuccess: true, output: "" };
     }
 
     if (!command.depends || results[command.depends].isSuccess) {
@@ -150,7 +154,8 @@ const action = async () => {
       changes,
       planLimit,
       conftestLimit,
-      skipPlan
+      skipPlan,
+      skipConftest
     );
   }
 
