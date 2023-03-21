@@ -9,6 +9,7 @@ const commentTemplate = `## {{ title }}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
 {% if not skipConftest -%}
 **{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\` 
+
 {% endif -%}
 {% endif -%}
 {% if not results.init.isSuccess -%}
