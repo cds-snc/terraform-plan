@@ -77,7 +77,7 @@ const action = async () => {
     {
       key: "conftest",
       depends: "show-json-out",
-      exec: "conftest test plan.json --no-color --update ${conftestChecks}",
+      exec: `conftest test plan.json --no-color --update ${conftestChecks}`,
       output: true,
     },
   ];

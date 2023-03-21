@@ -32,6 +32,7 @@ describe("action", () => {
   test("default flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput).calledWith("conftest-checks").mockReturnValue("git::https://github.com/cds-snc/opa_checks.git//aws_terraform");
     when(core.getMultilineInput)
       .calledWith("terraform-init")
       .mockReturnValue([
@@ -114,6 +115,7 @@ describe("action", () => {
   test("terragrunt flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput).calledWith("conftest-checks").mockReturnValue("git::https://github.com/cds-snc/opa_checks.git//aws_terraform");
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
 
     await action();
@@ -254,7 +256,7 @@ describe("action", () => {
   test("failed command", async () => {
     execCommand.mockReturnValue({ isSuccess: false, output: "" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
-
+    when(core.getInput).calledWith("conftest-checks").mockReturnValue("git::https://github.com/cds-snc/opa_checks.git//aws_terraform");
     await action();
 
     expect(core.setFailed.mock.calls.length).toBe(1);
