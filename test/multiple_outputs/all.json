@@ -1,0 +1,85 @@
+{
+  "format_version": "1.1",
+  "terraform_version": "1.4.0",
+  "planned_values": {
+    "outputs": {
+      "bar": {
+        "sensitive": false,
+        "type": "string",
+        "value": "bart"
+      },
+      "baz": {
+        "sensitive": false,
+        "type": "string",
+        "value": "baz"
+      }
+    },
+    "root_module": {}
+  },
+  "output_changes": {
+    "bar": {
+      "actions": ["update"],
+      "before": "bar",
+      "after": "bart",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "baz": {
+      "actions": ["create"],
+      "before": null,
+      "after": "baz",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "foo": {
+      "actions": ["delete"],
+      "before": "foo",
+      "after": null,
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.4.0",
+    "values": {
+      "outputs": {
+        "bar": {
+          "sensitive": false,
+          "value": "bart",
+          "type": "string"
+        },
+        "baz": {
+          "sensitive": false,
+          "value": "baz",
+          "type": "string"
+        },
+        "foo": {
+          "sensitive": false,
+          "value": "foo",
+          "type": "string"
+        }
+      },
+      "root_module": {}
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "bar": {
+          "expression": {
+            "constant_value": "bart"
+          }
+        },
+        "baz": {
+          "expression": {
+            "constant_value": "baz"
+          }
+        }
+      }
+    }
+  }
+}

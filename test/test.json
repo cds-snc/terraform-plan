@@ -1,0 +1,1556 @@
+{
+  "format_version": "1.0",
+  "terraform_version": "1.1.7",
+  "variables": {
+    "account_id": {
+      "value": "659087519042"
+    },
+    "admin_sso_role_arn": {
+      "value": "foo"
+    },
+    "billing_code": {
+      "value": "cds-aws-lz-production"
+    },
+    "env": {
+      "value": "production"
+    },
+    "org_account": {
+      "value": "659087519042"
+    },
+    "product_name": {
+      "value": "cds-aws-lz"
+    },
+    "region": {
+      "value": "ca-central-1"
+    }
+  },
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_iam_policy.org_account_list",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "org_account_list",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "description": null,
+            "name": "ListAccountsInOrg",
+            "name_prefix": null,
+            "path": "/",
+            "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ListAccountsInOrg\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"organizations:ListAccounts\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+            "tags": null
+          },
+          "sensitive_values": {
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_iam_policy.org_account_list_in_sandbox",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "org_account_list_in_sandbox",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+            "description": "",
+            "id": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+            "name": "listAccountsInSandboxOUForNuke",
+            "name_prefix": null,
+            "path": "/",
+            "policy": "{\"Statement\":[{\"Action\":\"organizations:ListAccountsForParent\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl\",\"Sid\":\"ListAccountsInSandboxOU\"}],\"Version\":\"2012-10-17\"}",
+            "policy_id": "ANPAZS5FNNVBEKTYJLVT2",
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_values": {
+            "tags": {},
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_iam_role_policy_attachment.attach_list_accounts",
+          "mode": "managed",
+          "type": "aws_iam_role_policy_attachment",
+          "name": "attach_list_accounts",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "role": "listAccountsInSandboxOUForNuke"
+          },
+          "sensitive_values": {}
+        },
+        {
+          "address": "aws_iam_role_policy_attachment.attach_list_accounts_in_sandbox",
+          "mode": "managed",
+          "type": "aws_iam_role_policy_attachment",
+          "name": "attach_list_accounts_in_sandbox",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "id": "listAccountsInSandboxOUForNuke-20230119155346510200000001",
+            "policy_arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+            "role": "listAccountsInSandboxOUForNuke"
+          },
+          "sensitive_values": {}
+        }
+      ],
+      "child_modules": [
+        {
+          "resources": [
+            {
+              "address": "module.OIDC_Roles.aws_iam_role.this[\"listAccountsInSandboxOUForNuke\"]",
+              "mode": "managed",
+              "type": "aws_iam_role",
+              "name": "this",
+              "index": "listAccountsInSandboxOUForNuke",
+              "provider_name": "registry.terraform.io/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "arn": "arn:aws:iam::659087519042:role/listAccountsInSandboxOUForNuke",
+                "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringLike\":{\"token.actions.githubusercontent.com:sub\":[\"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"]}},\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
+                "create_date": "2023-01-19T15:53:45Z",
+                "description": "",
+                "force_detach_policies": false,
+                "id": "listAccountsInSandboxOUForNuke",
+                "inline_policy": [],
+                "managed_policy_arns": [
+                  "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke"
+                ],
+                "max_session_duration": 3600,
+                "name": "listAccountsInSandboxOUForNuke",
+                "name_prefix": "",
+                "path": "/",
+                "permissions_boundary": null,
+                "tags": {
+                  "CostCentre": "cds-aws-lz-production",
+                  "Terraform": "true"
+                },
+                "tags_all": {
+                  "CostCentre": "cds-aws-lz-production",
+                  "Terraform": "true"
+                },
+                "unique_id": "AROAZS5FNNVBOFMX2HMXF"
+              },
+              "sensitive_values": {
+                "inline_policy": [],
+                "managed_policy_arns": [false],
+                "tags": {},
+                "tags_all": {}
+              }
+            }
+          ],
+          "address": "module.OIDC_Roles"
+        },
+        {
+          "resources": [
+            {
+              "address": "module.assume_plan_role.aws_iam_role.this",
+              "mode": "managed",
+              "type": "aws_iam_role",
+              "name": "this",
+              "provider_name": "registry.terraform.io/hashicorp/aws",
+              "schema_version": 0,
+              "values": {
+                "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::794722365809:role/ListAccountsInOrg\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
+                "description": null,
+                "force_detach_policies": false,
+                "max_session_duration": 3600,
+                "name": "assumeCartographyOrg",
+                "path": "/",
+                "permissions_boundary": null,
+                "tags": {
+                  "CostCentre": "cds-aws-lz-production",
+                  "Terraform": "true"
+                },
+                "tags_all": {
+                  "CostCentre": "cds-aws-lz-production",
+                  "Terraform": "true"
+                }
+              },
+              "sensitive_values": {
+                "inline_policy": [],
+                "managed_policy_arns": [],
+                "tags": {},
+                "tags_all": {}
+              }
+            }
+          ],
+          "address": "module.assume_plan_role"
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_iam_policy.org_account_list",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "org_account_list",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "description": null,
+          "name": "ListAccountsInOrg",
+          "name_prefix": null,
+          "path": "/",
+          "policy": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ListAccountsInOrg\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"organizations:ListAccounts\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "policy_id": true,
+          "tags_all": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_iam_policy.org_account_list_in_sandbox",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "org_account_list_in_sandbox",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+          "description": "",
+          "id": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+          "name": "listAccountsInSandboxOUForNuke",
+          "name_prefix": null,
+          "path": "/",
+          "policy": "{\"Statement\":[{\"Action\":\"organizations:ListAccountsForParent\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl\",\"Sid\":\"ListAccountsInSandboxOU\"}],\"Version\":\"2012-10-17\"}",
+          "policy_id": "ANPAZS5FNNVBEKTYJLVT2",
+          "tags": {},
+          "tags_all": {}
+        },
+        "after": {
+          "arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+          "description": "",
+          "id": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+          "name": "listAccountsInSandboxOUForNuke",
+          "name_prefix": null,
+          "path": "/",
+          "policy": "{\"Statement\":[{\"Action\":\"organizations:ListAccountsForParent\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl\",\"Sid\":\"ListAccountsInSandboxOU\"}],\"Version\":\"2012-10-17\"}",
+          "policy_id": "ANPAZS5FNNVBEKTYJLVT2",
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_iam_policy.sre_bot_policy",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "sre_bot_policy",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "arn": "arn:aws:iam::659087519042:policy/sre_bot_policy",
+          "description": "",
+          "id": "arn:aws:iam::659087519042:policy/sre_bot_policy",
+          "name": "sre_bot_policy",
+          "name_prefix": null,
+          "path": "/",
+          "policy": "{\"Statement\":[{\"Action\":\"organizations:ListAccounts\",\"Effect\":\"Allow\",\"Resource\":\"*\",\"Sid\":\"ReadOrgAccounts\"},{\"Action\":\"ce:GetCostAndUsage\",\"Effect\":\"Allow\",\"Resource\":\"*\",\"Sid\":\"ReadCostExplorer\"}],\"Version\":\"2012-10-17\"}",
+          "policy_id": "ANPAZS5FNNVBE3ZSLRZTV",
+          "tags": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "tags_all": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          }
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "aws_iam_role.sre_bot",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "sre_bot",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "arn": "arn:aws:iam::659087519042:role/sre_bot_role",
+          "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::283582579564:role/sre-bot-ecs-role\",\"arn:aws:iam::659087519042:role/aws-reserved/sso.amazonaws.com/ca-central-1/AWSReservedSSO_AWSAdministratorAccess_3a0a13131cabe836\"]},\"Sid\":\"AssumeRole\"}],\"Version\":\"2012-10-17\"}",
+          "create_date": "2022-10-19T14:28:25Z",
+          "description": "",
+          "force_detach_policies": false,
+          "id": "sre_bot_role",
+          "inline_policy": [],
+          "managed_policy_arns": [
+            "arn:aws:iam::659087519042:policy/sre_bot_policy"
+          ],
+          "max_session_duration": 3600,
+          "name": "sre_bot_role",
+          "name_prefix": "",
+          "path": "/",
+          "permissions_boundary": null,
+          "tags": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "tags_all": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "unique_id": "AROAZS5FNNVBDA7Z3P6NX"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {
+          "assume_role_policy": true,
+          "inline_policy": [],
+          "managed_policy_arns": [false],
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "aws_iam_role_policy_attachment.attach_list_accounts",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "attach_list_accounts",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "role": "listAccountsInSandboxOUForNuke"
+        },
+        "after_unknown": {
+          "id": true,
+          "policy_arn": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role_policy_attachment.attach_list_accounts_in_sandbox",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "attach_list_accounts_in_sandbox",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "id": "listAccountsInSandboxOUForNuke-20230119155346510200000001",
+          "policy_arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+          "role": "listAccountsInSandboxOUForNuke"
+        },
+        "after": {
+          "id": "listAccountsInSandboxOUForNuke-20230119155346510200000001",
+          "policy_arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+          "role": "listAccountsInSandboxOUForNuke"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      }
+    },
+    {
+      "address": "aws_iam_role_policy_attachment.sre_bot",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "sre_bot",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["delete"],
+        "before": {
+          "id": "sre_bot_role-20221019142825869400000001",
+          "policy_arn": "arn:aws:iam::659087519042:policy/sre_bot_policy",
+          "role": "sre_bot_role"
+        },
+        "after": null,
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": false
+      },
+      "action_reason": "delete_because_no_resource_config"
+    },
+    {
+      "address": "module.OIDC_Roles.aws_iam_role.this[\"listAccountsInSandboxOUForNuke\"]",
+      "module_address": "module.OIDC_Roles",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "this",
+      "index": "listAccountsInSandboxOUForNuke",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "arn": "arn:aws:iam::659087519042:role/listAccountsInSandboxOUForNuke",
+          "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringLike\":{\"token.actions.githubusercontent.com:sub\":[\"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"]}},\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
+          "create_date": "2023-01-19T15:53:45Z",
+          "description": "",
+          "force_detach_policies": false,
+          "id": "listAccountsInSandboxOUForNuke",
+          "inline_policy": [],
+          "managed_policy_arns": [
+            "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke"
+          ],
+          "max_session_duration": 3600,
+          "name": "listAccountsInSandboxOUForNuke",
+          "name_prefix": "",
+          "path": "/",
+          "permissions_boundary": null,
+          "tags": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "tags_all": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "unique_id": "AROAZS5FNNVBOFMX2HMXF"
+        },
+        "after": {
+          "arn": "arn:aws:iam::659087519042:role/listAccountsInSandboxOUForNuke",
+          "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringLike\":{\"token.actions.githubusercontent.com:sub\":[\"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"]}},\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
+          "create_date": "2023-01-19T15:53:45Z",
+          "description": "",
+          "force_detach_policies": false,
+          "id": "listAccountsInSandboxOUForNuke",
+          "inline_policy": [],
+          "managed_policy_arns": [
+            "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke"
+          ],
+          "max_session_duration": 3600,
+          "name": "listAccountsInSandboxOUForNuke",
+          "name_prefix": "",
+          "path": "/",
+          "permissions_boundary": null,
+          "tags": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "tags_all": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "unique_id": "AROAZS5FNNVBOFMX2HMXF"
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "inline_policy": [],
+          "managed_policy_arns": [false],
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_sensitive": {
+          "inline_policy": [],
+          "managed_policy_arns": [false],
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "module.assume_plan_role.aws_iam_role.this",
+      "module_address": "module.assume_plan_role",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "this",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"arn:aws:iam::794722365809:role/ListAccountsInOrg\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
+          "description": null,
+          "force_detach_policies": false,
+          "max_session_duration": 3600,
+          "name": "assumeCartographyOrg",
+          "path": "/",
+          "permissions_boundary": null,
+          "tags": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          },
+          "tags_all": {
+            "CostCentre": "cds-aws-lz-production",
+            "Terraform": "true"
+          }
+        },
+        "after_unknown": {
+          "arn": true,
+          "create_date": true,
+          "id": true,
+          "inline_policy": true,
+          "managed_policy_arns": true,
+          "name_prefix": true,
+          "tags": {},
+          "tags_all": {},
+          "unique_id": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "inline_policy": [],
+          "managed_policy_arns": [],
+          "tags": {},
+          "tags_all": {}
+        }
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.1.7",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "aws_iam_policy.org_account_list_in_sandbox",
+            "mode": "managed",
+            "type": "aws_iam_policy",
+            "name": "org_account_list_in_sandbox",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+              "description": "",
+              "id": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+              "name": "listAccountsInSandboxOUForNuke",
+              "name_prefix": null,
+              "path": "/",
+              "policy": "{\"Statement\":[{\"Action\":\"organizations:ListAccountsForParent\",\"Effect\":\"Allow\",\"Resource\":\"arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl\",\"Sid\":\"ListAccountsInSandboxOU\"}],\"Version\":\"2012-10-17\"}",
+              "policy_id": "ANPAZS5FNNVBEKTYJLVT2",
+              "tags": {},
+              "tags_all": {}
+            },
+            "sensitive_values": {
+              "tags": {},
+              "tags_all": {}
+            },
+            "depends_on": [
+              "data.aws_iam_policy_document.org_account_list_in_sandbox"
+            ]
+          },
+          {
+            "address": "aws_iam_policy.sre_bot_policy",
+            "mode": "managed",
+            "type": "aws_iam_policy",
+            "name": "sre_bot_policy",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "arn": "arn:aws:iam::659087519042:policy/sre_bot_policy",
+              "description": "",
+              "id": "arn:aws:iam::659087519042:policy/sre_bot_policy",
+              "name": "sre_bot_policy",
+              "name_prefix": null,
+              "path": "/",
+              "policy": "{\"Statement\":[{\"Action\":\"organizations:ListAccounts\",\"Effect\":\"Allow\",\"Resource\":\"*\",\"Sid\":\"ReadOrgAccounts\"},{\"Action\":\"ce:GetCostAndUsage\",\"Effect\":\"Allow\",\"Resource\":\"*\",\"Sid\":\"ReadCostExplorer\"}],\"Version\":\"2012-10-17\"}",
+              "policy_id": "ANPAZS5FNNVBE3ZSLRZTV",
+              "tags": {
+                "CostCentre": "cds-aws-lz-production",
+                "Terraform": "true"
+              },
+              "tags_all": {
+                "CostCentre": "cds-aws-lz-production",
+                "Terraform": "true"
+              }
+            },
+            "sensitive_values": {
+              "tags": {},
+              "tags_all": {}
+            },
+            "depends_on": ["data.aws_iam_policy_document.sre_bot_policy"]
+          },
+          {
+            "address": "aws_iam_role.sre_bot",
+            "mode": "managed",
+            "type": "aws_iam_role",
+            "name": "sre_bot",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "arn": "arn:aws:iam::659087519042:role/sre_bot_role",
+              "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"AWS\":[\"arn:aws:iam::283582579564:role/sre-bot-ecs-role\",\"arn:aws:iam::659087519042:role/aws-reserved/sso.amazonaws.com/ca-central-1/AWSReservedSSO_AWSAdministratorAccess_3a0a13131cabe836\"]},\"Sid\":\"AssumeRole\"}],\"Version\":\"2012-10-17\"}",
+              "create_date": "2022-10-19T14:28:25Z",
+              "description": "",
+              "force_detach_policies": false,
+              "id": "sre_bot_role",
+              "inline_policy": [],
+              "managed_policy_arns": [
+                "arn:aws:iam::659087519042:policy/sre_bot_policy"
+              ],
+              "max_session_duration": 3600,
+              "name": "sre_bot_role",
+              "name_prefix": "",
+              "path": "/",
+              "permissions_boundary": null,
+              "tags": {
+                "CostCentre": "cds-aws-lz-production",
+                "Terraform": "true"
+              },
+              "tags_all": {
+                "CostCentre": "cds-aws-lz-production",
+                "Terraform": "true"
+              },
+              "unique_id": "AROAZS5FNNVBDA7Z3P6NX"
+            },
+            "sensitive_values": {
+              "assume_role_policy": true,
+              "inline_policy": [],
+              "managed_policy_arns": [false],
+              "tags": {},
+              "tags_all": {}
+            },
+            "depends_on": ["data.aws_iam_policy_document.sre_bot_role"]
+          },
+          {
+            "address": "aws_iam_role_policy_attachment.attach_list_accounts_in_sandbox",
+            "mode": "managed",
+            "type": "aws_iam_role_policy_attachment",
+            "name": "attach_list_accounts_in_sandbox",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "id": "listAccountsInSandboxOUForNuke-20230119155346510200000001",
+              "policy_arn": "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke",
+              "role": "listAccountsInSandboxOUForNuke"
+            },
+            "sensitive_values": {},
+            "depends_on": [
+              "aws_iam_policy.org_account_list_in_sandbox",
+              "data.aws_iam_policy_document.org_account_list_in_sandbox"
+            ]
+          },
+          {
+            "address": "aws_iam_role_policy_attachment.sre_bot",
+            "mode": "managed",
+            "type": "aws_iam_role_policy_attachment",
+            "name": "sre_bot",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "id": "sre_bot_role-20221019142825869400000001",
+              "policy_arn": "arn:aws:iam::659087519042:policy/sre_bot_policy",
+              "role": "sre_bot_role"
+            },
+            "sensitive_values": {},
+            "depends_on": [
+              "aws_iam_policy.sre_bot_policy",
+              "aws_iam_role.sre_bot",
+              "data.aws_iam_policy_document.sre_bot_policy",
+              "data.aws_iam_policy_document.sre_bot_role"
+            ]
+          },
+          {
+            "address": "data.aws_iam_policy_document.org_account_list",
+            "mode": "data",
+            "type": "aws_iam_policy_document",
+            "name": "org_account_list",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "id": "3703281101",
+              "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ListAccountsInOrg\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"organizations:ListAccounts\",\n      \"Resource\": \"*\"\n    }\n  ]\n}",
+              "override_json": null,
+              "override_policy_documents": null,
+              "policy_id": null,
+              "source_json": null,
+              "source_policy_documents": null,
+              "statement": [
+                {
+                  "actions": ["organizations:ListAccounts"],
+                  "condition": [],
+                  "effect": "Allow",
+                  "not_actions": [],
+                  "not_principals": [],
+                  "not_resources": [],
+                  "principals": [],
+                  "resources": ["*"],
+                  "sid": "ListAccountsInOrg"
+                }
+              ],
+              "version": "2012-10-17"
+            },
+            "sensitive_values": {
+              "statement": [
+                {
+                  "actions": [false],
+                  "condition": [],
+                  "not_actions": [],
+                  "not_principals": [],
+                  "not_resources": [],
+                  "principals": [],
+                  "resources": [false]
+                }
+              ]
+            }
+          },
+          {
+            "address": "data.aws_iam_policy_document.org_account_list_in_sandbox",
+            "mode": "data",
+            "type": "aws_iam_policy_document",
+            "name": "org_account_list_in_sandbox",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "id": "3633738509",
+              "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"ListAccountsInSandboxOU\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"organizations:ListAccountsForParent\",\n      \"Resource\": \"arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl\"\n    }\n  ]\n}",
+              "override_json": null,
+              "override_policy_documents": null,
+              "policy_id": null,
+              "source_json": null,
+              "source_policy_documents": null,
+              "statement": [
+                {
+                  "actions": ["organizations:ListAccountsForParent"],
+                  "condition": [],
+                  "effect": "Allow",
+                  "not_actions": [],
+                  "not_principals": [],
+                  "not_resources": [],
+                  "principals": [],
+                  "resources": [
+                    "arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl"
+                  ],
+                  "sid": "ListAccountsInSandboxOU"
+                }
+              ],
+              "version": "2012-10-17"
+            },
+            "sensitive_values": {
+              "statement": [
+                {
+                  "actions": [false],
+                  "condition": [],
+                  "not_actions": [],
+                  "not_principals": [],
+                  "not_resources": [],
+                  "principals": [],
+                  "resources": [false]
+                }
+              ]
+            }
+          }
+        ],
+        "child_modules": [
+          {
+            "resources": [
+              {
+                "address": "module.OIDC_Roles.aws_iam_role.this[\"listAccountsInSandboxOUForNuke\"]",
+                "mode": "managed",
+                "type": "aws_iam_role",
+                "name": "this",
+                "index": "listAccountsInSandboxOUForNuke",
+                "provider_name": "registry.terraform.io/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "arn": "arn:aws:iam::659087519042:role/listAccountsInSandboxOUForNuke",
+                  "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRoleWithWebIdentity\",\"Condition\":{\"StringLike\":{\"token.actions.githubusercontent.com:sub\":[\"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"]}},\"Effect\":\"Allow\",\"Principal\":{\"Federated\":\"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"},\"Sid\":\"\"}],\"Version\":\"2012-10-17\"}",
+                  "create_date": "2023-01-19T15:53:45Z",
+                  "description": "",
+                  "force_detach_policies": false,
+                  "id": "listAccountsInSandboxOUForNuke",
+                  "inline_policy": [],
+                  "managed_policy_arns": [
+                    "arn:aws:iam::659087519042:policy/listAccountsInSandboxOUForNuke"
+                  ],
+                  "max_session_duration": 3600,
+                  "name": "listAccountsInSandboxOUForNuke",
+                  "name_prefix": "",
+                  "path": "/",
+                  "permissions_boundary": null,
+                  "tags": {
+                    "CostCentre": "cds-aws-lz-production",
+                    "Terraform": "true"
+                  },
+                  "tags_all": {
+                    "CostCentre": "cds-aws-lz-production",
+                    "Terraform": "true"
+                  },
+                  "unique_id": "AROAZS5FNNVBOFMX2HMXF"
+                },
+                "sensitive_values": {
+                  "inline_policy": [],
+                  "managed_policy_arns": [false],
+                  "tags": {},
+                  "tags_all": {}
+                },
+                "depends_on": [
+                  "module.OIDC_Roles.aws_iam_openid_connect_provider.github",
+                  "module.OIDC_Roles.data.aws_caller_identity.current",
+                  "module.OIDC_Roles.data.aws_iam_policy_document.assume_role_policy",
+                  "module.OIDC_Roles.data.aws_iam_policy_document.oidc_assume_role_policy",
+                  "module.OIDC_Roles.data.tls_certificate.thumprint"
+                ]
+              },
+              {
+                "address": "module.OIDC_Roles.data.aws_caller_identity.current",
+                "mode": "data",
+                "type": "aws_caller_identity",
+                "name": "current",
+                "provider_name": "registry.terraform.io/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "account_id": "659087519042",
+                  "arn": "arn:aws:sts::659087519042:assumed-role/AWSReservedSSO_AWSAdministratorAccess_3a0a13131cabe836/calvin.rodo@cds-snc.ca",
+                  "id": "659087519042",
+                  "user_id": "AROAZS5FNNVBJ6GPC44UH:calvin.rodo@cds-snc.ca"
+                },
+                "sensitive_values": {}
+              },
+              {
+                "address": "module.OIDC_Roles.data.aws_iam_policy_document.assume_role_policy[\"listAccountsInSandboxOUForNuke\"]",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "assume_role_policy",
+                "index": "listAccountsInSandboxOUForNuke",
+                "provider_name": "registry.terraform.io/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "id": "512559201",
+                  "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Condition\": {\n        \"StringLike\": {\n          \"token.actions.githubusercontent.com:sub\": [\n            \"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"\n          ]\n        }\n      }\n    }\n  ]\n}",
+                  "override_json": null,
+                  "override_policy_documents": null,
+                  "policy_id": null,
+                  "source_json": null,
+                  "source_policy_documents": [
+                    "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Condition\": {\n        \"StringLike\": {\n          \"token.actions.githubusercontent.com:sub\": \"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"\n        }\n      }\n    }\n  ]\n}",
+                    "{}"
+                  ],
+                  "statement": null,
+                  "version": "2012-10-17"
+                },
+                "sensitive_values": {
+                  "source_policy_documents": [false, false]
+                }
+              },
+              {
+                "address": "module.OIDC_Roles.data.aws_iam_policy_document.oidc_assume_role_policy[\"listAccountsInSandboxOUForNuke\"]",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "oidc_assume_role_policy",
+                "index": "listAccountsInSandboxOUForNuke",
+                "provider_name": "registry.terraform.io/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "id": "457719155",
+                  "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRoleWithWebIdentity\",\n      \"Principal\": {\n        \"Federated\": \"arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com\"\n      },\n      \"Condition\": {\n        \"StringLike\": {\n          \"token.actions.githubusercontent.com:sub\": \"repo:cds-snc/site-reliability-engineering:ref:refs/heads/main\"\n        }\n      }\n    }\n  ]\n}",
+                  "override_json": null,
+                  "override_policy_documents": null,
+                  "policy_id": null,
+                  "source_json": null,
+                  "source_policy_documents": null,
+                  "statement": [
+                    {
+                      "actions": ["sts:AssumeRoleWithWebIdentity"],
+                      "condition": [
+                        {
+                          "test": "StringLike",
+                          "values": [
+                            "repo:cds-snc/site-reliability-engineering:ref:refs/heads/main"
+                          ],
+                          "variable": "token.actions.githubusercontent.com:sub"
+                        }
+                      ],
+                      "effect": "Allow",
+                      "not_actions": [],
+                      "not_principals": [],
+                      "not_resources": [],
+                      "principals": [
+                        {
+                          "identifiers": [
+                            "arn:aws:iam::659087519042:oidc-provider/token.actions.githubusercontent.com"
+                          ],
+                          "type": "Federated"
+                        }
+                      ],
+                      "resources": [],
+                      "sid": ""
+                    }
+                  ],
+                  "version": "2012-10-17"
+                },
+                "sensitive_values": {
+                  "statement": [
+                    {
+                      "actions": [false],
+                      "condition": [
+                        {
+                          "values": [false]
+                        }
+                      ],
+                      "not_actions": [],
+                      "not_principals": [],
+                      "not_resources": [],
+                      "principals": [
+                        {
+                          "identifiers": [false]
+                        }
+                      ],
+                      "resources": []
+                    }
+                  ]
+                }
+              },
+              {
+                "address": "module.OIDC_Roles.data.tls_certificate.thumprint",
+                "mode": "data",
+                "type": "tls_certificate",
+                "name": "thumprint",
+                "provider_name": "registry.terraform.io/hashicorp/tls",
+                "schema_version": 0,
+                "values": {
+                  "certificates": [
+                    {
+                      "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIE6jCCA9KgAwIBAgIQCjUI1VwpKwF9+K1lwA/35DANBgkqhkiG9w0BAQsFADBh\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\nd3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBD\nQTAeFw0yMDA5MjQwMDAwMDBaFw0zMDA5MjMyMzU5NTlaME8xCzAJBgNVBAYTAlVT\nMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxKTAnBgNVBAMTIERpZ2lDZXJ0IFRMUyBS\nU0EgU0hBMjU2IDIwMjAgQ0ExMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC\nAQEAwUuzZUdwvN1PWNvsnO3DZuUfMRNUrUpmRh8sCuxkB+Uu3Ny5CiDt3+PE0J6a\nqXodgojlEVbbHp9YwlHnLDQNLtKS4VbL8Xlfs7uHyiUDe5pSQWYQYE9XE0nw6Ddn\ng9/n00tnTCJRpt8OmRDtV1F0JuJ9x8piLhMbfyOIJVNvwTRYAIuE//i+p1hJInuW\nraKImxW8oHzf6VGo1bDtN+I2tIJLYrVJmuzHZ9bjPvXj1hJeRPG/cUJ9WIQDgLGB\nAfr5yjK7tI4nhyfFK3TUqNaX3sNk+crOU6JWvHgXjkkDKa77SU+kFbnO8lwZV21r\neacroicgE7XQPUDTITAHk+qZ9QIDAQABo4IBrjCCAaowHQYDVR0OBBYEFLdrouqo\nqoSMeeq02g+YssWVdrn0MB8GA1UdIwQYMBaAFAPeUDVW0Uy7ZvCj4hsbw5eyPdFV\nMA4GA1UdDwEB/wQEAwIBhjAdBgNVHSUEFjAUBggrBgEFBQcDAQYIKwYBBQUHAwIw\nEgYDVR0TAQH/BAgwBgEB/wIBADB2BggrBgEFBQcBAQRqMGgwJAYIKwYBBQUHMAGG\nGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBABggrBgEFBQcwAoY0aHR0cDovL2Nh\nY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0R2xvYmFsUm9vdENBLmNydDB7BgNV\nHR8EdDByMDegNaAzhjFodHRwOi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRH\nbG9iYWxSb290Q0EuY3JsMDegNaAzhjFodHRwOi8vY3JsNC5kaWdpY2VydC5jb20v\nRGlnaUNlcnRHbG9iYWxSb290Q0EuY3JsMDAGA1UdIAQpMCcwBwYFZ4EMAQEwCAYG\nZ4EMAQIBMAgGBmeBDAECAjAIBgZngQwBAgMwDQYJKoZIhvcNAQELBQADggEBAHer\nt3onPa679n/gWlbJhKrKW3EX3SJH/E6f7tDBpATho+vFScH90cnfjK+URSxGKqNj\nOSD5nkoklEHIqdninFQFBstcHL4AGw+oWv8Zu2XHFq8hVt1hBcnpj5h232sb0HIM\nULkwKXq/YFkQZhM6LawVEWwtIwwCPgU7/uWhnOKK24fXSuhe50gG66sSmvKvhMNb\ng0qZgYOrAKHKCjxMoiWJKiKnpPMzTFuMLhoClw+dj20tlQj7T9rxkTgl4ZxuYRiH\nas6xuwAwapu3r9rxxZf+ingkquqTgLozZXq8oXfpf2kUCwA/d5KxTVtzhwoT0JzI\n8ks5T1KESaZMkE4f97Q=\n-----END CERTIFICATE-----\n",
+                      "is_ca": true,
+                      "issuer": "CN=DigiCert Global Root CA,OU=www.digicert.com,O=DigiCert Inc,C=US",
+                      "not_after": "2030-09-23T23:59:59Z",
+                      "not_before": "2020-09-24T00:00:00Z",
+                      "public_key_algorithm": "RSA",
+                      "serial_number": "13567650854749339296468135199911180260",
+                      "sha1_fingerprint": "6938fd4d98bab03faadb97b34396831e3780aea1",
+                      "signature_algorithm": "SHA256-RSA",
+                      "subject": "CN=DigiCert TLS RSA SHA256 2020 CA1,O=DigiCert Inc,C=US",
+                      "version": 3
+                    },
+                    {
+                      "cert_pem": "-----BEGIN CERTIFICATE-----\nMIIG8jCCBdqgAwIBAgIQCn5zvdee2Vg6XXlzFLM1XDANBgkqhkiG9w0BAQsFADBP\nMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMSkwJwYDVQQDEyBE\naWdpQ2VydCBUTFMgUlNBIFNIQTI1NiAyMDIwIENBMTAeFw0yMjExMDQwMDAwMDBa\nFw0yMzExMDcyMzU5NTlaMHsxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9y\nbmlhMRYwFAYDVQQHEw1TYW4gRnJhbmNpc2NvMRUwEwYDVQQKEwxHaXRIdWIsIElu\nYy4xKDAmBgNVBAMMHyouYWN0aW9ucy5naXRodWJ1c2VyY29udGVudC5jb20wggEi\nMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC94vT0wbk+S/Pr5WRRN7NA5dGS\n5aZv3ww34dnFTUiwf8DKYaAnR2TrV3OGDg7Sb7D/laMMhg2gzCyK45RIoqJI3bcN\nX2IPp36ewyyZczV76SD4/BXDqnO6SQ/wFIv4fCKS2jQjqNHG+HUtJNp0/sII4uLn\n2DyMgE06/vTXleTDxRGfTSgOLdLjjM3uftP3VO3hYUOEogmgFtRVl7ggkLgJ+ZWi\n0I9LO039/zsbnygpL+d5HhLBK3Tb4E11wCEen5582rohs1dhPS/Vu1zyXcGIW7n8\nbLV4acK+KyGEnRBbLp890hw+BABQf/C9Uo6F9t/jNtCnTTw+4rkzCY1M8/a1AgMB\nAAGjggOcMIIDmDAfBgNVHSMEGDAWgBS3a6LqqKqEjHnqtNoPmLLFlXa59DAdBgNV\nHQ4EFgQUQgJD/1vA//F/LF4NGvO+N9cN7mIwSQYDVR0RBEIwQIIfKi5hY3Rpb25z\nLmdpdGh1YnVzZXJjb250ZW50LmNvbYIdYWN0aW9ucy5naXRodWJ1c2VyY29udGVu\ndC5jb20wDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEF\nBQcDAjCBjwYDVR0fBIGHMIGEMECgPqA8hjpodHRwOi8vY3JsMy5kaWdpY2VydC5j\nb20vRGlnaUNlcnRUTFNSU0FTSEEyNTYyMDIwQ0ExLTQuY3JsMECgPqA8hjpodHRw\nOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRUTFNSU0FTSEEyNTYyMDIwQ0Ex\nLTQuY3JsMD4GA1UdIAQ3MDUwMwYGZ4EMAQICMCkwJwYIKwYBBQUHAgEWG2h0dHA6\nLy93d3cuZGlnaWNlcnQuY29tL0NQUzB/BggrBgEFBQcBAQRzMHEwJAYIKwYBBQUH\nMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBJBggrBgEFBQcwAoY9aHR0cDov\nL2NhY2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0VExTUlNBU0hBMjU2MjAyMENB\nMS0xLmNydDAJBgNVHRMEAjAAMIIBfAYKKwYBBAHWeQIEAgSCAWwEggFoAWYAdQDo\nPtDaPvUGNTLnVyi8iWvJA9PL0RFr7Otp4Xd9bQa9bgAAAYRErGRdAAAEAwBGMEQC\nHy+p/x51ZahWaQt+UfDcxTyJnRQaO7T/+X90x+3kkmYCIQC7IDygd0wCyBaYeGVc\nnH8Hj76j3logQZVyDAotBT1Y/QB2ALNzdwfhhFD4Y4bWBancEQlKeS2xZwwLh9zw\nAw55NqWaAAABhESsZIoAAAQDAEcwRQIhAMmnFDlLuSOA/UJ/TlIWcj3m8u3EXujf\njG5cfWIGXAs9AiAQnjXxxnebYM0IANOySg/+dHxDNVgGq/px8RvtxoPfZQB1ALc+\n+yTfnE26dfI5xbpY9Gxd/ELPep81xJ4dCYEl7bSZAAABhESsZEcAAAQDAEYwRAIg\nfOzkC+UGgdW08pfaBR18OGq4moGKK+j4/C93RFDev44CIDI0TxiDfya551M/N0pm\naQQNLr5t96xiFVY3aSMfv2qHMA0GCSqGSIb3DQEBCwUAA4IBAQA+duG+V4+gv9eT\nOA/ZSjU+6h29oS2i991HhjD2qDno3IksmGZqJ47cxSC2uJbf04LWcShVOslOp5e6\nlq+lxOEW+Cj65+Y+ORsp4sbSILVn8mj9+kfxTnEPD+A8Ii0YJoj98fc/u5UDM2B1\n00c6TPiKzUtYRBMoitFhAAB4H93d5illIHK2/RYZUPN3hMcDhv3GFxC0j40OBAUA\nuJ5ZrAXfh48ZtVq/qmjfCX7f0ntUcsm85S2oNKAaKqqlGuwjA7ye80O3WHKQLXXM\nevZ35QEWOlwhphLyHhUL6QFCuAe0wL2arESMXnxgaYE7Ka+SexxEiT5ZmdyrcFwg\nBL7FKjOM\n-----END CERTIFICATE-----\n",
+                      "is_ca": false,
+                      "issuer": "CN=DigiCert TLS RSA SHA256 2020 CA1,O=DigiCert Inc,C=US",
+                      "not_after": "2023-11-07T23:59:59Z",
+                      "not_before": "2022-11-04T00:00:00Z",
+                      "public_key_algorithm": "RSA",
+                      "serial_number": "13948856879982995920425685801082500444",
+                      "sha1_fingerprint": "f879abce0008e4eb126e0097e46620f5aaae26ad",
+                      "signature_algorithm": "SHA256-RSA",
+                      "subject": "CN=*.actions.githubusercontent.com,O=GitHub\\, Inc.,L=San Francisco,ST=California,C=US",
+                      "version": 3
+                    }
+                  ],
+                  "content": null,
+                  "id": "2f98b9dddcf0778622dc6788373a7f8c02e3a2c3",
+                  "url": "https://token.actions.githubusercontent.com",
+                  "verify_chain": true
+                },
+                "sensitive_values": {
+                  "certificates": [{}, {}]
+                }
+              }
+            ],
+            "address": "module.OIDC_Roles"
+          },
+          {
+            "resources": [
+              {
+                "address": "module.assume_plan_role.data.aws_iam_policy_document.this",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "this",
+                "provider_name": "registry.terraform.io/hashicorp/aws",
+                "schema_version": 0,
+                "values": {
+                  "id": "3452277541",
+                  "json": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"\",\n      \"Effect\": \"Allow\",\n      \"Action\": \"sts:AssumeRole\",\n      \"Principal\": {\n        \"AWS\": \"arn:aws:iam::794722365809:role/ListAccountsInOrg\"\n      }\n    }\n  ]\n}",
+                  "override_json": null,
+                  "override_policy_documents": null,
+                  "policy_id": null,
+                  "source_json": null,
+                  "source_policy_documents": null,
+                  "statement": [
+                    {
+                      "actions": ["sts:AssumeRole"],
+                      "condition": [],
+                      "effect": "Allow",
+                      "not_actions": [],
+                      "not_principals": [],
+                      "not_resources": [],
+                      "principals": [
+                        {
+                          "identifiers": [
+                            "arn:aws:iam::794722365809:role/ListAccountsInOrg"
+                          ],
+                          "type": "AWS"
+                        }
+                      ],
+                      "resources": [],
+                      "sid": ""
+                    }
+                  ],
+                  "version": "2012-10-17"
+                },
+                "sensitive_values": {
+                  "statement": [
+                    {
+                      "actions": [false],
+                      "condition": [],
+                      "not_actions": [],
+                      "not_principals": [],
+                      "not_resources": [],
+                      "principals": [
+                        {
+                          "identifiers": [false]
+                        }
+                      ],
+                      "resources": []
+                    }
+                  ]
+                }
+              }
+            ],
+            "address": "module.assume_plan_role"
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "version_constraint": "\u003e= 4.40.0, \u003c 5.0.0",
+        "expressions": {
+          "allowed_account_ids": {
+            "references": ["var.account_id"]
+          },
+          "region": {
+            "references": ["var.region"]
+          }
+        }
+      },
+      "aws.us-east-1": {
+        "name": "aws",
+        "alias": "us-east-1",
+        "version_constraint": "\u003e= 4.40.0, \u003c 5.0.0",
+        "expressions": {
+          "allowed_account_ids": {
+            "references": ["var.account_id"]
+          },
+          "region": {
+            "constant_value": "us-east-1"
+          }
+        }
+      },
+      "aws.us-west-2": {
+        "name": "aws",
+        "alias": "us-west-2",
+        "version_constraint": "\u003e= 4.40.0, \u003c 5.0.0",
+        "expressions": {
+          "allowed_account_ids": {
+            "references": ["var.account_id"]
+          },
+          "region": {
+            "constant_value": "us-west-2"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_iam_policy.org_account_list",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "org_account_list",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "ListAccountsInOrg"
+            },
+            "policy": {
+              "references": [
+                "data.aws_iam_policy_document.org_account_list.json",
+                "data.aws_iam_policy_document.org_account_list"
+              ]
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_iam_policy.org_account_list_in_sandbox",
+          "mode": "managed",
+          "type": "aws_iam_policy",
+          "name": "org_account_list_in_sandbox",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "references": ["local.org_account_list_name"]
+            },
+            "policy": {
+              "references": [
+                "data.aws_iam_policy_document.org_account_list_in_sandbox.json",
+                "data.aws_iam_policy_document.org_account_list_in_sandbox"
+              ]
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_iam_role_policy_attachment.attach_list_accounts",
+          "mode": "managed",
+          "type": "aws_iam_role_policy_attachment",
+          "name": "attach_list_accounts",
+          "provider_config_key": "aws",
+          "expressions": {
+            "policy_arn": {
+              "references": [
+                "aws_iam_policy.org_account_list.arn",
+                "aws_iam_policy.org_account_list"
+              ]
+            },
+            "role": {
+              "references": ["local.org_account_list_name"]
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_iam_role_policy_attachment.attach_list_accounts_in_sandbox",
+          "mode": "managed",
+          "type": "aws_iam_role_policy_attachment",
+          "name": "attach_list_accounts_in_sandbox",
+          "provider_config_key": "aws",
+          "expressions": {
+            "policy_arn": {
+              "references": [
+                "aws_iam_policy.org_account_list_in_sandbox.arn",
+                "aws_iam_policy.org_account_list_in_sandbox"
+              ]
+            },
+            "role": {
+              "references": ["local.org_account_list_name"]
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "data.aws_iam_policy_document.org_account_list",
+          "mode": "data",
+          "type": "aws_iam_policy_document",
+          "name": "org_account_list",
+          "provider_config_key": "aws",
+          "expressions": {
+            "statement": [
+              {
+                "actions": {
+                  "constant_value": ["organizations:ListAccounts"]
+                },
+                "effect": {
+                  "constant_value": "Allow"
+                },
+                "resources": {
+                  "constant_value": ["*"]
+                },
+                "sid": {
+                  "constant_value": "ListAccountsInOrg"
+                }
+              }
+            ]
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "data.aws_iam_policy_document.org_account_list_in_sandbox",
+          "mode": "data",
+          "type": "aws_iam_policy_document",
+          "name": "org_account_list_in_sandbox",
+          "provider_config_key": "aws",
+          "expressions": {
+            "statement": [
+              {
+                "actions": {
+                  "constant_value": ["organizations:ListAccountsForParent"]
+                },
+                "resources": {
+                  "constant_value": [
+                    "arn:aws:organizations::659087519042:ou/o-625no8z3dd/ou-5gsq-qhvjdryl"
+                  ]
+                },
+                "sid": {
+                  "constant_value": "ListAccountsInSandboxOU"
+                }
+              }
+            ]
+          },
+          "schema_version": 0
+        }
+      ],
+      "module_calls": {
+        "OIDC_Roles": {
+          "source": "github.com/cds-snc/terraform-modules?ref=v5.0.0//gh_oidc_role",
+          "expressions": {
+            "billing_tag_value": {
+              "references": ["var.billing_code"]
+            },
+            "oidc_exists": {
+              "constant_value": true
+            },
+            "roles": {
+              "references": ["local.org_account_list_name"]
+            }
+          },
+          "module": {
+            "outputs": {
+              "roles": {
+                "expression": {
+                  "references": ["aws_iam_role.this"]
+                },
+                "description": "Returns all the roles created accessed by the name passed in to the module."
+              }
+            },
+            "resources": [
+              {
+                "address": "aws_iam_openid_connect_provider.github",
+                "mode": "managed",
+                "type": "aws_iam_openid_connect_provider",
+                "name": "github",
+                "provider_config_key": "OIDC_Roles:aws",
+                "expressions": {
+                  "client_id_list": {
+                    "constant_value": ["sts.amazonaws.com"]
+                  },
+                  "tags": {
+                    "references": ["local.common_tags"]
+                  },
+                  "thumbprint_list": {
+                    "references": [
+                      "data.tls_certificate.thumprint.certificates[0].sha1_fingerprint",
+                      "data.tls_certificate.thumprint.certificates[0]",
+                      "data.tls_certificate.thumprint.certificates",
+                      "data.tls_certificate.thumprint"
+                    ]
+                  },
+                  "url": {
+                    "references": ["local.gh_url"]
+                  }
+                },
+                "schema_version": 0,
+                "count_expression": {
+                  "references": ["var.oidc_exists"]
+                }
+              },
+              {
+                "address": "aws_iam_role.this",
+                "mode": "managed",
+                "type": "aws_iam_role",
+                "name": "this",
+                "provider_config_key": "OIDC_Roles:aws",
+                "expressions": {
+                  "assume_role_policy": {
+                    "references": [
+                      "data.aws_iam_policy_document.assume_role_policy",
+                      "each.key"
+                    ]
+                  },
+                  "name": {
+                    "references": ["each.value.name", "each.value"]
+                  },
+                  "tags": {
+                    "references": ["local.common_tags"]
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": ["local.roles_kv"]
+                }
+              },
+              {
+                "address": "data.aws_caller_identity.current",
+                "mode": "data",
+                "type": "aws_caller_identity",
+                "name": "current",
+                "provider_config_key": "OIDC_Roles:aws",
+                "schema_version": 0
+              },
+              {
+                "address": "data.aws_iam_policy_document.assume_role_policy",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "assume_role_policy",
+                "provider_config_key": "OIDC_Roles:aws",
+                "expressions": {
+                  "source_policy_documents": {
+                    "references": [
+                      "each.value.json",
+                      "each.value",
+                      "var.assume_policy"
+                    ]
+                  }
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": [
+                    "data.aws_iam_policy_document.oidc_assume_role_policy"
+                  ]
+                }
+              },
+              {
+                "address": "data.aws_iam_policy_document.oidc_assume_role_policy",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "oidc_assume_role_policy",
+                "provider_config_key": "OIDC_Roles:aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": ["sts:AssumeRoleWithWebIdentity"]
+                      },
+                      "condition": [
+                        {
+                          "test": {
+                            "constant_value": "StringLike"
+                          },
+                          "values": {
+                            "references": [
+                              "var.org_name",
+                              "each.value.repo_name",
+                              "each.value",
+                              "each.value.claim",
+                              "each.value"
+                            ]
+                          },
+                          "variable": {
+                            "constant_value": "token.actions.githubusercontent.com:sub"
+                          }
+                        }
+                      ],
+                      "effect": {
+                        "constant_value": "Allow"
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "references": [
+                              "var.oidc_exists",
+                              "data.aws_caller_identity.current.account_id",
+                              "data.aws_caller_identity.current",
+                              "aws_iam_openid_connect_provider.github[0].arn",
+                              "aws_iam_openid_connect_provider.github[0]",
+                              "aws_iam_openid_connect_provider.github"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "Federated"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema_version": 0,
+                "for_each_expression": {
+                  "references": ["local.roles_kv"]
+                }
+              },
+              {
+                "address": "data.tls_certificate.thumprint",
+                "mode": "data",
+                "type": "tls_certificate",
+                "name": "thumprint",
+                "provider_config_key": "OIDC_Roles:tls",
+                "expressions": {
+                  "url": {
+                    "references": ["local.gh_url"]
+                  }
+                },
+                "schema_version": 0
+              }
+            ],
+            "variables": {
+              "assume_policy": {
+                "default": "{}",
+                "description": "(Optional) Assume role JSON policy to attach to the oidc role"
+              },
+              "billing_tag_key": {
+                "default": "CostCentre",
+                "description": "(Optional, default 'CostCentre') The name of the billing tag"
+              },
+              "billing_tag_value": {
+                "description": "(Required) The value of the billing tag"
+              },
+              "oidc_exists": {
+                "default": true,
+                "description": "    (Optional, default true) If false, the OIDC provider will be created.\n    If you are not on the new Control Tower Landing zone you may need to set this to false as your account may not have an OIDC Github Identity Provider configured.\n"
+              },
+              "org_name": {
+                "default": "cds-snc",
+                "description": "    (Optional)  The name of the org the workflow will be called from.\n    In the format of http://github.com/`org_name`\n"
+              },
+              "roles": {
+                "default": [],
+                "description": "  (Optional) The list of roles to create for GH OIDC\n\n  name: The name of the role to create\n\n  repo_name: The name of the repo to authenticate\n  If you use `*` this will allow this role to be used in any repo in the org identified in `org_name`\n\n  claim: The claim that the token is allowed to be authorized from. \n  This allows you to further restrict where this role is allowed to be used.\n  If you wanted to restrict to the main branch you could use a value like `ref:refs/heads/main`, if you don't want to restrict you can use `*`\n"
+              }
+            }
+          }
+        },
+        "assume_plan_role": {
+          "source": "../../modules/assume_role",
+          "expressions": {
+            "assume_policy_name": {
+              "constant_value": "AssumePlanRole"
+            },
+            "billing_tag_value": {
+              "references": ["var.billing_code"]
+            },
+            "org_account": {
+              "constant_value": 794722365809
+            },
+            "org_account_role_name": {
+              "constant_value": "ListAccountsInOrg"
+            },
+            "role_name": {
+              "constant_value": "assumeCartographyOrg"
+            }
+          },
+          "module": {
+            "outputs": {
+              "role_name": {
+                "expression": {
+                  "references": ["aws_iam_role.this.name", "aws_iam_role.this"]
+                }
+              }
+            },
+            "resources": [
+              {
+                "address": "aws_iam_role.this",
+                "mode": "managed",
+                "type": "aws_iam_role",
+                "name": "this",
+                "provider_config_key": "assume_plan_role:aws",
+                "expressions": {
+                  "assume_role_policy": {
+                    "references": [
+                      "data.aws_iam_policy_document.this.json",
+                      "data.aws_iam_policy_document.this"
+                    ]
+                  },
+                  "name": {
+                    "references": ["var.role_name"]
+                  },
+                  "tags": {
+                    "references": [
+                      "var.billing_tag_key",
+                      "var.billing_tag_value"
+                    ]
+                  }
+                },
+                "schema_version": 0
+              },
+              {
+                "address": "data.aws_iam_policy_document.this",
+                "mode": "data",
+                "type": "aws_iam_policy_document",
+                "name": "this",
+                "provider_config_key": "assume_plan_role:aws",
+                "expressions": {
+                  "statement": [
+                    {
+                      "actions": {
+                        "constant_value": ["sts:AssumeRole"]
+                      },
+                      "principals": [
+                        {
+                          "identifiers": {
+                            "references": [
+                              "var.org_account",
+                              "var.org_account_role_name",
+                              "var.extra_roles"
+                            ]
+                          },
+                          "type": {
+                            "constant_value": "AWS"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "schema_version": 0
+              }
+            ],
+            "variables": {
+              "assume_policy_name": {
+                "description": "(Required) The name of the policy"
+              },
+              "billing_tag_key": {
+                "default": "CostCentre",
+                "description": "The key of the tag to be used for billing purposes"
+              },
+              "billing_tag_value": {
+                "description": "The value of the tag to be used for billing purposes"
+              },
+              "extra_roles": {
+                "default": [],
+                "description": "A list of extra roles that can assume this role"
+              },
+              "org_account": {
+                "description": "(Required) The account number of the organization allowed to assume the role"
+              },
+              "org_account_role_name": {
+                "description": "(Required) The name of the role allowed to assume this role"
+              },
+              "role_name": {
+                "description": "(Required) The name of the role allowed to assume this role"
+              }
+            }
+          }
+        }
+      },
+      "variables": {
+        "account_id": {
+          "description": "(Required) The account ID to perform actions on."
+        },
+        "admin_sso_role_arn": {
+          "description": "(Required) The ARN for the admin SSO role",
+          "sensitive": true
+        },
+        "billing_code": {
+          "description": "The billing code to tag our resources with"
+        },
+        "env": {
+          "description": "The current running environment"
+        },
+        "org_account": {
+          "description": "The account ID of the main organization account"
+        },
+        "product_name": {
+          "description": "(Required) The name of the product you are deploying."
+        },
+        "region": {
+          "description": "The current AWS region"
+        }
+      }
+    }
+  }
+}
