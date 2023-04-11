@@ -36,7 +36,7 @@ jobs:
             allow-failure: true
             skip-plan: false
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
 
       - name: Setup terraform tools
         uses: cds-snc/terraform-tools-setup@v1
@@ -135,7 +135,7 @@ jobs:
   test-directory-failure:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3 # v3.5.0
 
       - name: Setup terraform tools
         uses: cds-snc/terraform-tools-setup@v1
