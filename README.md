@@ -18,12 +18,16 @@ Use the following to control the action:
 | `comment`        | Add comment with changes to the PR                                 | true         |
 | `comment-delete` | Delete previous comments made by the bot on the PR                 | false        |
 | `comment-title`  | The title to give the PR comment                                   | Plan changes |
+| `conftest-character-limit` | Character limit for Conftest output                      | 2000         |
+| `conftest-checks`| Location of custom conftest check definitions                      | git::https://github.com/cds-snc/opa_checks.git//aws_terraform |
 | `directory`      | Directory with the `*.tf` files to validate                        | .            |
 | `github-token`   | GitHub Token used to add comment to PR (required to add comments). |              |
+| `plan-character-limit` | Character limit for Terraform plan output                    | 30000        |
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
-| `plan-character-limit` | Character limit for Terraform plan output                    | 30000        |
-| `conftest-character-limit` | Character limit for Conftest output                      | 2000         |
+| `skip-conftest`  | Skip the Conftest step                                             | false        |
+| `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
+
 
 # Examples
 ```yaml

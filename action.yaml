@@ -19,6 +19,14 @@ inputs:
     description: 'The title to give the PR comment'
     required: false
     default: 'Plan changes'
+  conftest-character-limit:
+    description: 'Character limit for Conftest output '
+    required: false
+    default: '2000'
+  conftest-checks:
+    description: 'Location of custom conftest check definitions, e.g. `git::https://github.com/user/repository.git`, `./conftest-checks`'
+    required: false
+    default: 'git::https://github.com/cds-snc/opa_checks.git//aws_terraform'
   directory:
     description: 'Directory with the *.tf files to validate'
     required: false
@@ -27,6 +35,10 @@ inputs:
     description: 'GitHub Token used to add comment to PR'
     required: false
     default: 'false'
+  plan-character-limit:
+    description: 'Character limit for Terraform plan output'
+    required: false
+    default: '30000'    
   terraform-init:
     description: 'Custom Terraform init args'
     required: false
@@ -35,18 +47,14 @@ inputs:
     description: 'Use Terragrunt instead of Terraform'
     required: false
     default: 'false'
-  skip-plan:
-    description: 'Skip the planning step, used for repos that do not specifically have a remote backend'
-    required: false
-    default: 'false'
   skip-conftest:
     description: 'Skip the conftest step'
     required: false
     default: 'false'
-  conftest-checks:
-    description: 'Location of custom conftest check definitions, e.g. `git::https://github.com/user/repository.git`, `./conftest-checks`'
+  skip-plan:
+    description: 'Skip the planning step, used for repos that do not specifically have a remote backend'
     required: false
-    default: 'git::https://github.com/cds-snc/opa_checks.git//aws_terraform'
+    default: 'false'
 runs:
   using: 'node16'
   main: 'dist/index.js'
