@@ -16092,8 +16092,11 @@ const action = async () => {
           results[command.key] = { isSuccess: true, output: "" };
           continue;
       }
-    } else if (command.key === "conftest" && skipConftest) {
+    }
+
+    if (skipConftest && command.key === "conftest") {
       results[command.key] = { isSuccess: true, output: "" };
+      continue;
     }
 
     if (!command.depends || results[command.depends].isSuccess) {
