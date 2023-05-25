@@ -23,6 +23,9 @@ jobs:
           - test: conftest-deny
             allow-failure: true
             skip-plan: false
+          - test: skip-conftest
+            allow-failure: false
+            skip-conftest: true            
           - test: skip-plan
             allow-failure: false
             skip-plan: true
@@ -92,6 +95,10 @@ jobs:
                 exist: true,
                 title: /Test conftest-deny/g,
                 state: /FAIL/g
+              },{
+                exist: false,
+                title: /Test skip-conftest/g,
+                state: /Conftest:\*\*/gm                
               },{
                 exist: true,
                 title: /Test skip-plan/g,

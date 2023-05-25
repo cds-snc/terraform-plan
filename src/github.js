@@ -74,7 +74,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 
 </details>
 
-{% if results.conftest.output -%}
+{% if not skipConftest and results.conftest.output -%}
 <details>
 <summary>Show Conftest results</summary>
 
