@@ -35,7 +35,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("conftest-checks")
       .mockReturnValue(
-        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     when(core.getMultilineInput)
       .calledWith("terraform-init")
@@ -122,7 +122,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("conftest-checks")
       .mockReturnValue(
-        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
 
@@ -267,7 +267,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("conftest-checks")
       .mockReturnValue(
-        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     await action();
 
@@ -323,7 +323,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
 
     expect(core.setFailed.mock.calls.length).toBe(1);
     expect(core.setFailed.mock.calls[0][0]).toBe(
-      `Directory ${directory} does not exist`
+      `Directory ${directory} does not exist`,
     );
   });
 
@@ -336,7 +336,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
 
     expect(core.setFailed.mock.calls.length).toBe(1);
     expect(core.setFailed.mock.calls[0][0]).toBe(
-      "You must pass a GitHub token to comment on PRs"
+      "You must pass a GitHub token to comment on PRs",
     );
   });
 

@@ -16128,7 +16128,7 @@ const action = async () => {
     // Check for hashicorp/setup-terraform action's terraform_wrapper output
     if (results[command.key].output.indexOf("::debug::exitcode:") > -1) {
       core.setFailed(
-        "Error: `hashicorp/setup-terraform` must have `terraform_wrapper: false`"
+        "Error: `hashicorp/setup-terraform` must have `terraform_wrapper: false`",
       );
       return;
     }
@@ -16160,7 +16160,7 @@ const action = async () => {
       planLimit,
       conftestLimit,
       skipPlan,
-      skipConftest
+      skipConftest,
     );
   }
 
@@ -16169,7 +16169,7 @@ const action = async () => {
       .filter((c) => !results[c.key].isSuccess)
       .map((c) => c.exec);
     core.setFailed(
-      `The following commands failed:\n${failedCommands.join("\n")}`
+      `The following commands failed:\n${failedCommands.join("\n")}`,
     );
   }
 };
@@ -16346,7 +16346,7 @@ const addComment = async (
   planLimit,
   conftestLimit,
   skipPlan,
-  skipConftest
+  skipConftest,
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
@@ -16384,7 +16384,8 @@ const deleteComment = async (octokit, context, title) => {
 
   // Find the bot's comment
   const comment = comments.find(
-    (comment) => comment.user.type === "Bot" && comment.body.indexOf(title) > -1
+    (comment) =>
+      comment.user.type === "Bot" && comment.body.indexOf(title) > -1,
   );
   if (comment) {
     console.log(`Deleting comment '${title}: ${comment.id}'`);
@@ -16457,7 +16458,7 @@ const noChangesFound = (resources, outputs) => {
 
 const countResourceChanges = (tfPlan, action) => {
   const actions = tfPlan.resource_changes.filter((res) =>
-    res.change.actions.includes(action)
+    res.change.actions.includes(action),
   );
   return actions.length;
 };

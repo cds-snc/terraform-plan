@@ -38,7 +38,7 @@ describe("execCommand", () => {
       };
     });
     expect(
-      execCommand({ exec: "terragrunt init", output: false }, ".")
+      execCommand({ exec: "terragrunt init", output: false }, "."),
     ).toEqual({
       isSuccess: false,
       output: "well this is awkward",

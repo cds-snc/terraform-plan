@@ -150,7 +150,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
       changes,
       10000,
       10000,
-      false
+      false,
     );
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
@@ -304,7 +304,7 @@ Hello there
       {},
       1000,
       1000,
-      true
+      true,
     );
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
@@ -381,7 +381,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
       changes,
       10,
       10000,
-      false
+      false,
     );
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
