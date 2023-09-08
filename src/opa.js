@@ -10,7 +10,7 @@ const noChangesFound = (resources, outputs) => {
 
 const countResourceChanges = (tfPlan, action) => {
   const actions = tfPlan.resource_changes.filter((res) =>
-    res.change.actions.includes(action)
+    res.change.actions.includes(action),
   );
   return actions.length;
 };

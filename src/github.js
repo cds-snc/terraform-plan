@@ -107,7 +107,7 @@ const addComment = async (
   planLimit,
   conftestLimit,
   skipPlan,
-  skipConftest
+  skipConftest,
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
@@ -145,7 +145,8 @@ const deleteComment = async (octokit, context, title) => {
 
   // Find the bot's comment
   const comment = comments.find(
-    (comment) => comment.user.type === "Bot" && comment.body.indexOf(title) > -1
+    (comment) =>
+      comment.user.type === "Bot" && comment.body.indexOf(title) > -1,
   );
   if (comment) {
     console.log(`Deleting comment '${title}: ${comment.id}'`);

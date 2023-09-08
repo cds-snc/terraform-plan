@@ -126,7 +126,7 @@ const action = async () => {
     // Check for hashicorp/setup-terraform action's terraform_wrapper output
     if (results[command.key].output.indexOf("::debug::exitcode:") > -1) {
       core.setFailed(
-        "Error: `hashicorp/setup-terraform` must have `terraform_wrapper: false`"
+        "Error: `hashicorp/setup-terraform` must have `terraform_wrapper: false`",
       );
       return;
     }
@@ -158,7 +158,7 @@ const action = async () => {
       planLimit,
       conftestLimit,
       skipPlan,
-      skipConftest
+      skipConftest,
     );
   }
 
@@ -167,7 +167,7 @@ const action = async () => {
       .filter((c) => !results[c.key].isSuccess)
       .map((c) => c.exec);
     core.setFailed(
-      `The following commands failed:\n${failedCommands.join("\n")}`
+      `The following commands failed:\n${failedCommands.join("\n")}`,
     );
   }
 };
