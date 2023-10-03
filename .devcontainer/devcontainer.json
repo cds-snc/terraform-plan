@@ -3,7 +3,7 @@
     "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye",
     "features": {
         "node": {
-            "version": "lts",
+            "version": "20.7.0",
             "nodeGypDependencies": true
         },
         "terraform": {
