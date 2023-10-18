@@ -3,6 +3,9 @@
   "extends": [
     "local>cds-snc/renovate-config"
   ],
+  "allowedPostUpgradeCommands": [
+    "npm run build"
+  ],
   "postUpgradeTasks": {
     "commands": [
       "npm run build"
