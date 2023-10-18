@@ -2,5 +2,14 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "local>cds-snc/renovate-config"
-  ]
+  ],
+  "postUpgradeTasks": {
+    "commands": [
+      "npm run build"
+    ],
+    "fileFilters": [
+      "package.json", 
+      "package-lock.json"
+    ]
+  }
 }
