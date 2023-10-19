@@ -5,6 +5,7 @@
   ],
   "postUpgradeTasks": {
     "commands": [
+      "npm install",
       "npm run build"
     ],
     "fileFilters": [
