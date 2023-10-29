@@ -4,27 +4,36 @@ on:
   schedule:
     - cron: "0 6 * * *"
 
-env:
-  BACKUP_BRANCH: main
-
 jobs:
   s3-backup:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Checkout
+      uses: actions/checkout@8ade135a41bc03ea155e62e844d188df1ea18608 # v4.1.0
+      with:
+        fetch-depth: 0 # retrieve all history
+
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@50ac8dd1e1b10d09dac7b8727528b91bed831ac0 # v3.0.2
+      uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4.0.1
       with:
         aws-access-key-id: ${{ secrets.AWS_S3_BACKUP_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_S3_BACKUP_SECRET_ACCESS_KEY }}
         aws-region: ca-central-1
 
-    - name: Get ZIP bundle
+    - name: Create ZIP bundle
       run: |
+        ZIP_FILE=`basename ${{ github.repository }}`-`date '+%Y-%m-%d'`.zip
+        zip -rq "${ZIP_FILE}" .
         mkdir -p ${{ github.repository }}
-        curl -Lo ${{ github.repository }}/`basename ${{ github.repository }}`-`date '+%Y-%m-%d'`.zip \
-          https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}/archive/${{ env.BACKUP_BRANCH }}.zip
+        mv "${ZIP_FILE}" ${{ github.repository }}
 
     - name: Upload to S3 bucket
       run: |
         aws s3 sync . s3://${{ secrets.AWS_S3_BACKUP_BUCKET }} --exclude='*' --include='${{ github.repository }}/*'
+
+    - name: Notify Slack channel if this job failed
+      if: ${{ failure() }}
+      run: |
+        json='{"text":"S3 backup failed in <https://github.com/${{ github.repository }}>!"}'
+        curl -X POST -H 'Content-type: application/json' --data "$json"  ${{ secrets.SLACK_NOTIFY_WEBHOOK }}
