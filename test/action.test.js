@@ -9,11 +9,6 @@ const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
 const { action } = require("../src/action.js");
 
-mock_fs({
-  foo: {},
-  bar: {},
-});
-
 jest.mock("@actions/core");
 jest.mock("@actions/github");
 jest.mock("../src/command.js");
@@ -21,12 +16,16 @@ jest.mock("../src/github.js");
 jest.mock("../src/opa.js");
 
 describe("action", () => {
-  afterAll(() => {
+  afterEach(() => {
     mock_fs.restore();
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
+    mock_fs({
+      foo: {},
+      bar: {},
+    });
   });
 
   test("default flow", async () => {
