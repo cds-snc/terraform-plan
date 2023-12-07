@@ -1,6 +1,14 @@
 name: Test action
 on: pull_request
 
+env:
+  AWS_REGION: ca-central-1
+
+permissions:
+  id-token: write
+  pull-requests: write
+  contents: read
+
 jobs:
   terraform-plan:
     runs-on: ubuntu-latest
@@ -46,10 +54,14 @@ jobs:
           && chmod +x tf-summarize \
           && mv tf-summarize /usr/local/bin
 
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4.0.1
+        with:
+          role-to-assume: arn:aws:iam::124044056575:role/terraform-plan-plan
+          role-session-name: TFPlan
+          aws-region: ${{ env.AWS_REGION }}
+
       - name: Test ${{ matrix.test }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         uses: ./
         with:
           directory: test/${{ matrix.test }}
