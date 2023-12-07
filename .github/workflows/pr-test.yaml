@@ -58,6 +58,7 @@ jobs:
           comment-delete: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
+          skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
 
   test-action-comments:
@@ -96,13 +97,13 @@ jobs:
                 title: /Test skip-conftest/g,
                 state: /Conftest:\*\*/gm
               },{
-                exist: false,
+                exist: true,
                 title: /Test skip-fmt/g,
-                state: /Terraform Format:/gm                               
+                state: /Terraform Validate:\*\* `success`\n✅ &nbsp; Terraform Plan/gm                               
               },{
-                exist: false,
+                exist: true,
                 title: /Test skip-plan/g,
-                state: /Terraform Plan:/gm
+                state: /Terraform Format:\*\* `success`\n/gm
               },{
                 exist: true,
                 title: /Test truncate-plan/g,
