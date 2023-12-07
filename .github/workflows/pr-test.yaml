@@ -20,7 +20,10 @@ jobs:
             allow-failure: true
           - test: skip-conftest
             allow-failure: false
-            skip-conftest: true            
+            skip-conftest: true
+          - test: skip-fmt
+            allow-failure: false
+            skip-fmt: true                        
           - test: skip-plan
             allow-failure: false
             skip-plan: true
@@ -91,11 +94,15 @@ jobs:
               },{
                 exist: false,
                 title: /Test skip-conftest/g,
-                state: /Conftest:\*\*/gm                
+                state: /Conftest:\*\*/gm
               },{
-                exist: true,
+                exist: false,
+                title: /Test skip-fmt/g,
+                state: /Terraform Format:/gm                               
+              },{
+                exist: false,
                 title: /Test skip-plan/g,
-                state: /Terraform Format:\*\* `success`\n/gm
+                state: /Terraform Plan:/gm
               },{
                 exist: true,
                 title: /Test truncate-plan/g,

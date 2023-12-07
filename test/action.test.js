@@ -230,6 +230,7 @@ describe("action", () => {
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
@@ -256,6 +257,7 @@ describe("action", () => {
       { isChanges: true },
       30000,
       2000,
+      false,
       false,
     ]);
   });
@@ -348,6 +350,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(true);
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
@@ -373,6 +376,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       {},
       30000,
       2000,
+      false,
       true,
     ]);
   });

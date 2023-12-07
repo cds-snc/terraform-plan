@@ -23,6 +23,7 @@ const action = async () => {
   const isComment = core.getBooleanInput("comment");
   const isCommentDelete = core.getBooleanInput("comment-delete");
   const isTerragrunt = core.getBooleanInput("terragrunt");
+  const skipFormat = core.getBooleanInput("skip-fmt");
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
 
@@ -111,6 +112,11 @@ const action = async () => {
       }
     }
 
+    if (skipFormat && command.key === "fmt") {
+      results[command.key] = { isSuccess: true, output: "" };
+      continue;
+    }
+
     if (skipConftest && command.key === "conftest") {
       results[command.key] = { isSuccess: true, output: "" };
       continue;
@@ -157,6 +163,7 @@ const action = async () => {
       changes,
       planLimit,
       conftestLimit,
+      skipFormat,
       skipPlan,
       skipConftest,
     );
