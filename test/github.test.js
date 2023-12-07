@@ -304,6 +304,7 @@ Hello there
       {},
       1000,
       1000,
+      false,
       true,
     );
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
@@ -313,6 +314,84 @@ Hello there
       issue_number: 42,
       body: comment,
     });
+  });
+
+  test("don't render format results if skip-fmt is true", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "< Hello there >" },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "< General Kenobi >" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: true,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 1,
+      },
+    };
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
+**✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\` 
+
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
+\`\`\`terraform
+Plan: 1 to add, 0 to change, 0 to destroy
+\`\`\`
+
+<details>
+<summary>Show summary</summary>
+
+
+
+</details>
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+< Hello there >
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+< General Kenobi >
+\`\`\`
+
+</details>
+`;
+
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      results,
+      changes,
+      10000,
+      10000,
+      true,
+      false,
+    );
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
+      {
+        owner: "foo",
+        repo: "bar",
+        issue_number: 42,
+        body: comment,
+      },
+    ]);
   });
 
   test("add a truncated plan comment", async () => {
@@ -381,6 +460,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
       changes,
       10,
       10000,
+      false,
       false,
     );
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);

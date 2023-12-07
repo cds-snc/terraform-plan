@@ -4,7 +4,9 @@ const nunjucks = require("nunjucks");
 const commentTemplate = `## {{ title }}
 **{{ "✅" if results.init.isSuccess else "❌" }} &nbsp; Terraform Init:** \`{{ "success" if results.init.isSuccess else "failed" }}\`
 **{{ "✅" if results.validate.isSuccess else "❌" }} &nbsp; Terraform Validate:** \`{{ "success" if results.validate.isSuccess else "failed" }}\`
+{% if not skipFormat -%}
 **{{ "✅" if results.fmt.isSuccess else "❌" }} &nbsp; Terraform Format:** \`{{ "success" if results.fmt.isSuccess else "failed" }}\`
+{% endif -%}
 {% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
 {% if not skipConftest -%}
@@ -96,6 +98,7 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
  * @param {Object} changes Resource and output changes for the plan
  * @param {number} planLimit the number of characters to render
  * @param {number} conftestPlanLimit the nubmer of characters to render
+ * @param {boolean} skipFormat Skip runnting terraform fmt check
  * @param {boolean} skipPlan Skip the rendering of the plan output
  */
 const addComment = async (
@@ -106,6 +109,7 @@ const addComment = async (
   changes,
   planLimit,
   conftestLimit,
+  skipFormat,
   skipPlan,
   skipConftest,
 ) => {
@@ -119,6 +123,7 @@ const addComment = async (
     title: title,
     planLimit: planLimit,
     conftestLimit: conftestLimit,
+    skipFormat: skipFormat,
     skipPlan: skipPlan,
     skipConftest: skipConftest,
     runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,

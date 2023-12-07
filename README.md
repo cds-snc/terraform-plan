@@ -26,6 +26,7 @@ Use the following to control the action:
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 | `skip-conftest`  | Skip the Conftest step                                             | false        |
+| `skip-fmt`       | Skip the Terraform format check                                    | false        |
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
 
 
