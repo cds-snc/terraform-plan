@@ -111,7 +111,7 @@ jobs:
               },{
                 exist: true,
                 title: /Test skip-fmt/g,
-                state: /Terraform Validate:\*\* `success`\n✅ &nbsp; Terraform Plan/gm                               
+                state: /Terraform Validate:\*\* `success`\n\*\*✅ &nbsp; Terraform Plan/gm                               
               },{
                 exist: true,
                 title: /Test skip-plan/g,
