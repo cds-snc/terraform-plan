@@ -3,6 +3,10 @@ on: pull_request
 
 env:
   AWS_REGION: ca-central-1
+  TERRAFORM_VERSION: 1.6.6
+  TERRAGRUNT_VERSION: 0.54.5
+  TF_SUMMARIZE_VERSION: 0.3.5
+
 
 permissions:
   id-token: write
@@ -48,13 +52,6 @@ jobs:
 
       - name: Setup terraform tools
         uses: cds-snc/terraform-tools-setup@v1
-
-      - name: Install TF-Summarize
-        run: |
-          curl -L -o tf-summarize.zip https://github.com/dineshba/tf-summarize/releases/download/v0.2.3/tf-summarize_linux_amd64.zip \
-          && unzip tf-summarize.zip tf-summarize \
-          && chmod +x tf-summarize \
-          && mv tf-summarize /usr/local/bin
 
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@010d0da01d0b5a38af31e9c3470dbfdabdecca3a # v4.0.1
