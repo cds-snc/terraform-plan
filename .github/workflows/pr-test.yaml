@@ -41,6 +41,8 @@ jobs:
             allow-failure: true
           - test: validate-fail
             allow-failure: true
+          - test: import
+            allow-failure: true
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
@@ -128,6 +130,10 @@ jobs:
                 exist: true,
                 title: /Test validate-fail/g,
                 state: /Terraform Validate:\*\* `failed`\n/gm
+              },{
+                exist: true,
+                title: /Test import/g,
+                state: /`success`[^`]+`success`/g
               }
             ];
 
