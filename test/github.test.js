@@ -72,6 +72,7 @@ describe("commentTemplate", () => {
           create: 10,
           update: 10,
           delete: 10,
+          import: 0,
         },
       },
       plan: "x".repeat(66000),
@@ -85,7 +86,7 @@ describe("commentTemplate", () => {
 });
 
 describe("addComment", () => {
-  test("add a success comment with changes", async () => {
+  test("add a success comment with changes and no imports", async () => {
     const results = {
       init: { isSuccess: true, output: "" },
       validate: { isSuccess: true, output: "" },
@@ -101,6 +102,7 @@ describe("addComment", () => {
         update: 0,
         delete: 0,
         create: 1,
+        import: 0,
       },
     };
     const comment = `## Foobar
@@ -113,6 +115,85 @@ describe("addComment", () => {
 **⚠️ &nbsp; Warning:** resources will be destroyed by this change!
 \`\`\`terraform
 Plan: 1 to add, 0 to change, 0 to destroy
+\`\`\`
+
+<details>
+<summary>Show summary</summary>
+
+
+
+</details>
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+< Hello there >
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+< General Kenobi >
+\`\`\`
+
+</details>
+`;
+
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      results,
+      changes,
+      10000,
+      10000,
+      false,
+    );
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
+      {
+        owner: "foo",
+        repo: "bar",
+        issue_number: 42,
+        body: comment,
+      },
+    ]);
+  });
+
+  test("add a success comment with imports", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "< Hello there >" },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "< General Kenobi >" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: true,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 0,
+        import: 1,
+      },
+    };
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
+**✅ &nbsp; Terraform Format:** \`success\`
+**✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\` 
+
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
+\`\`\`terraform
+Plan: 1 to import, 0 to add, 0 to change, 0 to destroy
 \`\`\`
 
 <details>
@@ -332,6 +413,7 @@ Hello there
         update: 0,
         delete: 0,
         create: 1,
+        import: 0,
       },
     };
     const comment = `## Foobar
@@ -410,6 +492,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
         update: 0,
         delete: 0,
         create: 1,
+        import: 0,
       },
     };
     const comment = `## Foobar
