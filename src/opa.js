@@ -1,11 +1,21 @@
 const noChangesFound = (resources, outputs) => {
   const noChangeResource = () =>
-    resources.create === 0 && resources.update === 0 && resources.delete === 0;
+    resources.create === 0 &&
+    resources.update === 0 &&
+    resources.delete === 0 &&
+    resources.import === 0;
 
   const noChangeOutput = () =>
     outputs.create === 0 && outputs.update === 0 && outputs.delete === 0;
 
   return noChangeResource() && noChangeOutput();
+};
+
+const countImports = (tfplan) => {
+  const imports = tfplan.resource_changes.filter((res) => {
+    return res.change.importing !== undefined;
+  });
+  return imports.length;
 };
 
 const countResourceChanges = (tfPlan, action) => {
@@ -38,6 +48,7 @@ const getPlanChanges = async (planJson) => {
     create: 0,
     update: 0,
     delete: 0,
+    import: 0,
   };
 
   let outputs = {
@@ -50,6 +61,7 @@ const getPlanChanges = async (planJson) => {
       create: countResourceChanges(planJson, "create"),
       update: countResourceChanges(planJson, "update"),
       delete: countResourceChanges(planJson, "delete"),
+      import: countImports(planJson),
     };
   }
 

@@ -38277,7 +38277,7 @@ const commentTemplate = `## {{ title }}
 
 {% if changes.isChanges -%}
 \`\`\`terraform
-Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to change, {{ changes.resources.delete }} to destroy
+Plan: {{ changesLine }}
 \`\`\`
 
 <details>
@@ -38315,6 +38315,23 @@ Plan: {{ changes.resources.create }} to add, {{ changes.resources.update }} to c
 {% endif -%}`;
 
 /**
+ *
+ * @param {*} resources
+ * @returns
+ */
+const generateChangesLine = (changes) => {
+  if (Object.keys(changes).length === 0) {
+    return "";
+  }
+  const resources = changes.resources;
+  if (resources.import === 0) {
+    return `${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
+  } else {
+    return `${resources.import} to import, ${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
+  }
+};
+
+/**
  * Adds a comment to the Pull Request with the Terraform plan changes
  * and result of the format/validate checks.
  * @param {Object} octokit GitHub API object
@@ -38343,6 +38360,7 @@ const addComment = async (
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
   const comment = nunjucks.renderString(commentTemplate, {
     changes: changes,
+    changesLine: generateChangesLine(changes),
     plan: plan,
     format: format,
     results: results,
@@ -38440,12 +38458,22 @@ module.exports = {
 
 const noChangesFound = (resources, outputs) => {
   const noChangeResource = () =>
-    resources.create === 0 && resources.update === 0 && resources.delete === 0;
+    resources.create === 0 &&
+    resources.update === 0 &&
+    resources.delete === 0 &&
+    resources.import === 0;
 
   const noChangeOutput = () =>
     outputs.create === 0 && outputs.update === 0 && outputs.delete === 0;
 
   return noChangeResource() && noChangeOutput();
+};
+
+const countImports = (tfplan) => {
+  const imports = tfplan.resource_changes.filter((res) => {
+    return res.change.importing !== undefined;
+  });
+  return imports.length;
 };
 
 const countResourceChanges = (tfPlan, action) => {
@@ -38478,6 +38506,7 @@ const getPlanChanges = async (planJson) => {
     create: 0,
     update: 0,
     delete: 0,
+    import: 0,
   };
 
   let outputs = {
@@ -38490,6 +38519,7 @@ const getPlanChanges = async (planJson) => {
       create: countResourceChanges(planJson, "create"),
       update: countResourceChanges(planJson, "update"),
       delete: countResourceChanges(planJson, "delete"),
+      import: countImports(planJson),
     };
   }
 
