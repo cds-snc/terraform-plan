@@ -5,7 +5,12 @@ metadata:
   description: GitHub Action to run Terraform plan and add a comment with the changes.
   labels:
     license: MIT
+  tags:
+    - "github-action"
+    - "terraform"
 spec:
   type: website
   lifecycle: experimental
-  owner: cds-snc
+  owner: group:cds-snc/internal-sre
+  domain: site-reliability-engineering
+  system: cds-alm
