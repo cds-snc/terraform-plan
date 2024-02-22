@@ -38195,7 +38195,7 @@ const execCommand = (command, directory) => {
     output = proc
       .execSync(command.exec, {
         cwd: directory,
-        maxBuffer: 1024 * 5000,
+        maxBuffer: 1024 * 10000,
       })
       .toString("utf8");
   } catch (error) {
