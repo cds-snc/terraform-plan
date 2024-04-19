@@ -24,6 +24,8 @@ jobs:
             allow-failure: false
           - test: no-changes
             allow-failure: false
+          - test: plan-with-args
+            allow-failure: false
           - test: format-error
             allow-failure: true
           - test: invalid
@@ -88,6 +90,11 @@ jobs:
                 title: /Test changes/g,
                 state: /`success`[^`]+`success`/g
               },{
+                exist: true,
+                title: /Test plan with args/g,
+                state: /`failed`[^`]+`success`/g
+              },
+              {
                 exist: true,
                 title: /Test format-error/g,
                 state: /`failed`[^`]+`success`/g

@@ -262,7 +262,6 @@ describe("action", () => {
     ]);
   });
 
-
   test("failed command", async () => {
     execCommand.mockReturnValue({ isSuccess: false, output: "" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
@@ -391,10 +390,9 @@ test("plan with args", async () => {
   when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
   when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
   when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
-    github.getOctokit.mockReturnValue("octokit");
+  github.getOctokit.mockReturnValue("octokit");
   github.context = "context";
 
   await action();
   expect(getPlanChanges.mock.calls.length).toBe(1);
-
 });
