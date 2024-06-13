@@ -15,6 +15,7 @@ Use the following to control the action:
 | Setting          |      Description                                                   |  Default     |
 |------------------|--------------------------------------------------------------------|--------------|
 | `allow-failure`  | Allow the action to fail                                           | false        |
+| `args`           | Additional arguments to pass to TF Plan                            |              |
 | `comment`        | Add comment with changes to the PR                                 | true         |
 | `comment-delete` | Delete previous comments made by the bot on the PR                 | false        |
 | `comment-title`  | The title to give the PR comment                                   | Plan changes |
@@ -41,6 +42,13 @@ Use the following to control the action:
   uses: cds-snc/terraform-plan
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
+
+# Run Terraform plan and add a comment with changes on the PR with additional arguments
+- name: Terraform plan
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    args: -var-file /path/to/varfile
 
 # Use Terragrunt, allow failure and set a custom PR comment title
 - name: Terraform plan

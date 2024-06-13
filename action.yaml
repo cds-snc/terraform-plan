@@ -7,6 +7,10 @@ inputs:
     description: 'Allow the action to fail'
     required: false
     default: 'false'
+  args:
+    description: 'Additional arguments to pass to the Terraform command'
+    required: false
+    default: ''
   comment:
     description: 'Add comment with changes to the PR'
     required: false

@@ -381,3 +381,18 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
     ]);
   });
 });
+
+test("plan with args", async () => {
+  execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+  getPlanChanges.mockReturnValue({ isChanges: true });
+  when(core.getInput).calledWith("directory").mockReturnValue("plan-args");
+  when(core.getInput).calledWith("args").mockReturnValue("-var testvar='asdf'");
+  when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+  when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
+  when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
+  github.getOctokit.mockReturnValue("octokit");
+  github.context = "context";
+
+  await action();
+  expect(getPlanChanges.mock.calls.length).toBe(1);
+});

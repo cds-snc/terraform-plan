@@ -34,6 +34,7 @@ const action = async () => {
   const terraformInit = core.getMultilineInput("terraform-init");
   const conftestChecks = core.getInput("conftest-checks");
   const token = core.getInput("github-token");
+  const args = core.getInput("args") || "";
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const planCharLimit = core.getInput("plan-character-limit");
@@ -56,7 +57,7 @@ const action = async () => {
     },
     {
       key: "plan",
-      exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
+      exec: `${binary} plan -no-color -input=false -out=plan.tfplan ${args}`,
     },
     {
       key: "show",
