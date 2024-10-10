@@ -21,7 +21,7 @@
     "nunjucks": "^3.2.3"
   },
   "devDependencies": {
-    "@vercel/ncc": "0.38.1",
+    "@vercel/ncc": "0.38.2",
     "eslint": "8.57.1",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-security": "2.1.1",
