@@ -15,7 +15,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@actions/core": "^1.8.1",
+    "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
     "@open-policy-agent/opa-wasm": "^1.6.1",
     "nunjucks": "^3.2.3"
