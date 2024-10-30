@@ -38783,6 +38783,10 @@ const handleError = (err) => {
   core.setFailed(`Unhandled error: ${err}`);
 };
 
+// Prevent Terragrunt from altering Terraform output
+// https://terragrunt.gruntwork.io/docs/reference/cli-options/#terragrunt-forward-tf-stdout
+core.exportVariable("TERRAGRUNT_FORWARD_TF_STDOUT", "true");
+
 process.on("unhandledRejection", handleError);
 action().catch(handleError);
 
