@@ -223,21 +223,21 @@ describe("action", () => {
       [
         {
           key: "validate",
-          exec: "terragrunt validate -no-color", // Modified to include `run-all`
+          exec: "terragrunt validate -no-color",
         },
         "bar",
       ],
       [
         {
           key: "fmt",
-          exec: "terragrunt fmt --check", // Modified to include `run-all`
+          exec: "terragrunt fmt --check",
         },
         "bar",
       ],
       [
         {
           key: "plan",
-          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan", // Modified to include `run-all`
+          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan",
         },
         "bar",
       ],
