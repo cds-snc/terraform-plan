@@ -204,7 +204,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("conftest-checks")
       .mockReturnValue(
-        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
     when(core.getBooleanInput).calledWith("run-all").mockReturnValue(true); // Mocking `run-all` as true
@@ -288,7 +288,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("conftest-checks")
       .mockReturnValue(
-        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("run-all").mockReturnValue(true); // Mocking `run-all` as true but not terragrunt

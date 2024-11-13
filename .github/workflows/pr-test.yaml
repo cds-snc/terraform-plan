@@ -47,6 +47,8 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
+          - test: run-all
+            run-all: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -131,6 +133,10 @@ jobs:
                 exist: true,
                 title: /Test import/g,
                 state: /`success`[^`]+`success`/g
+              },{
+                exist: true,
+                title: /Test run-all/g,
+                state: /`success`[^`]+`success`/g 
               }
             ];
 

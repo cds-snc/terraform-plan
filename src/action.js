@@ -26,7 +26,7 @@ const action = async () => {
   const skipFormat = core.getBooleanInput("skip-fmt");
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
-  const runAll = core.getBooleanInput("run-all")
+  const runAll = core.getBooleanInput("run-all");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
   const summarizeBinary = "tf-summarize";
@@ -43,8 +43,9 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary}${isTerragrunt && runAll ? " run-all" : ""} init -no-color ${terraformInit ? terraformInit.join(" ") : ""
-        }`.trim(),
+      exec: `${binary}${isTerragrunt && runAll ? " run-all" : ""} init -no-color ${
+        terraformInit ? terraformInit.join(" ") : ""
+      }`.trim(),
     },
     {
       key: "validate",
