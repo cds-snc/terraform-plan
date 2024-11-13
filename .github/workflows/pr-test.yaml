@@ -137,7 +137,7 @@ jobs:
               },{
                 exist: true,
                 title: /Test run-all/g,
-                state: /`success`[^`]+`success`/g 
+                state: /Terraform Init:\*\* `success`\n/gm 
               }
             ];
 
