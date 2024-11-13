@@ -132,7 +132,7 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terragrunt init -no-color ",
+          exec: "terragrunt init -no-color",
         },
         "bar",
       ],
@@ -300,28 +300,28 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terraform init -no-color", // Modified to include `run-all`
+          exec: "terraform init -no-color",
         },
         "bar",
       ],
       [
         {
           key: "validate",
-          exec: "terraform validate -no-color", // Modified to include `run-all`
+          exec: "terraform validate -no-color",
         },
         "bar",
       ],
       [
         {
           key: "fmt",
-          exec: "terraform fmt --check", // Modified to include `run-all`
+          exec: "terraform fmt --check",
         },
         "bar",
       ],
       [
         {
           key: "plan",
-          exec: "terraform plan -no-color -input=false -out=plan.tfplan", // Modified to include `run-all`
+          exec: "terraform plan -no-color -input=false -out=plan.tfplan",
         },
         "bar",
       ],
@@ -442,7 +442,7 @@ describe("action", () => {
 
     expect(core.setFailed.mock.calls.length).toBe(1);
     expect(core.setFailed.mock.calls[0][0]).toBe(`The following commands failed:
-terraform init -no-color 
+terraform init -no-color
 terraform validate -no-color
 terraform fmt --check
 terraform plan -no-color -input=false -out=plan.tfplan

@@ -29,7 +29,6 @@ const action = async () => {
   const runAll = core.getBooleanInput("run-all")
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
-  const terragruntRunAll = isTerragrunt && runAll ? "run-all" : "";
   const summarizeBinary = "tf-summarize";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
@@ -44,9 +43,8 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      // exec: `${binary}${terragruntRunAll ? ` ${terragruntRunAll}` : ""} init -no-color ${terraformInit ? terraformInit.join(" ") : ""}`,
       exec: `${binary}${isTerragrunt && runAll ? " run-all" : ""} init -no-color ${terraformInit ? terraformInit.join(" ") : ""
-        }`,
+        }`.trim(),
     },
     {
       key: "validate",
