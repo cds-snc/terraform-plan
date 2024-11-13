@@ -198,6 +198,174 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
+  test("terragrunt flow with run-all", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+      );
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
+    when(core.getBooleanInput).calledWith("run-all").mockReturnValue(true); // Mocking `run-all` as true
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls).toEqual([
+      [
+        {
+          key: "init",
+          exec: "terragrunt run-all init -no-color", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terragrunt validate -no-color", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terragrunt fmt --check", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terragrunt show -no-color -json plan.tfplan",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show-json-out",
+          exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "summary",
+          depends: "show-json-out",
+          exec: "cat plan.json | tf-summarize -md",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "conftest",
+          depends: "show-json-out",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
+        },
+        "bar",
+      ],
+    ]);
+    expect(getPlanChanges.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls.length).toBe(0);
+    expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
+  test("terraform flow with run-all", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform"
+      );
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(false);
+    when(core.getBooleanInput).calledWith("run-all").mockReturnValue(true); // Mocking `run-all` as true but not terragrunt
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls).toEqual([
+      [
+        {
+          key: "init",
+          exec: "terraform init -no-color", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terraform validate -no-color", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terraform fmt --check", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terraform plan -no-color -input=false -out=plan.tfplan", // Modified to include `run-all`
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terraform show -no-color -json plan.tfplan",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show-json-out",
+          exec: "terraform show -no-color -json plan.tfplan > plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "summary",
+          depends: "show-json-out",
+          exec: "cat plan.json | tf-summarize -md",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "conftest",
+          depends: "show-json-out",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
+        },
+        "bar",
+      ],
+    ]);
+    expect(getPlanChanges.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls.length).toBe(0);
+    expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
   test("delete comment", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getBooleanInput)
