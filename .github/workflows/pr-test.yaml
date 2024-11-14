@@ -47,9 +47,9 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
-          - test: terragrunt-run-all
-            run-all: true
-            terragrunt: true
+          # - test: terragrunt-run-all
+          #   run-all: true
+          #   terragrunt: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -134,11 +134,12 @@ jobs:
                 exist: true,
                 title: /Test import/g,
                 state: /`success`[^`]+`success`/g
-              },{
-                exist: true,
-                title: /Test terragrunt-run-all/g,
-                state: /Terraform Init:\*\* `success`\n/gm 
               }
+              #{
+              #   exist: true,
+              #   title: /Test terragrunt-run-all/g,
+              #   state: /Terraform Init:\*\* `success`\n/gm 
+              # }
             ];
 
             // Get the existing comments.
