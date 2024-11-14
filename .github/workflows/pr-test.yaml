@@ -73,6 +73,7 @@ jobs:
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
+          run-all: ${{ matrix.run-all}}
 
   test-action-comments:
     needs: terraform-plan
@@ -137,7 +138,7 @@ jobs:
               {
                 exist: true,
                 title: /Test run-all-fail/g,
-                state: /Terraform Init:\*\* `failed`\n/gm
+                state: /`success`[^`]+`success`/g
               }
             ];
 
