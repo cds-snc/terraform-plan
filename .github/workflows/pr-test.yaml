@@ -48,7 +48,7 @@ jobs:
           - test: import
             allow-failure: true
           - test: run-all-fail
-            allow-failure: true 
+            allow-failure: false 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -73,7 +73,6 @@ jobs:
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
-          run-all: ${{ matrix.run-all}}
 
   test-action-comments:
     needs: terraform-plan
