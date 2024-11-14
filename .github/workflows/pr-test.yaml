@@ -137,7 +137,7 @@ jobs:
                 state: /`success`[^`]+`success`/g
               },
               {
-                exist: true,
+                exist: false,
                 title: /Test run-all-fail/g,
                 state: /`success`[^`]+`success`/g
               }
