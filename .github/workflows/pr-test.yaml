@@ -75,6 +75,7 @@ jobs:
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
+          run-all: ${{ matrix.run-all || 'true' }}
 
   test-action-comments:
     needs: terraform-plan
