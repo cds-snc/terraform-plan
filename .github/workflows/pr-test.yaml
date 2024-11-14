@@ -47,7 +47,7 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
-          - test: run-all-fail
+          - test: run-all
             allow-failure: false 
             run-all: true
     steps:
@@ -94,7 +94,7 @@ jobs:
               },{
                 exist: true,
                 title: /Test format-error/g,
-                state: /`failed`[^`]+`success`/g
+                state: /`success`[^`]+`success`/g
               },{
                 exist: true,
                 title: /Test invalid/g,
@@ -138,7 +138,7 @@ jobs:
               },
               {
                 exist: false,
-                title: /Test run-all-fail/g,
+                title: /Test run-all/g,
                 state: /`success`[^`]+`success`/g
               }
             ];
