@@ -47,7 +47,7 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
-          - test: terragrunt-run-all
+          - test: run-all
             run-all: true
             terragrunt: true
     steps:
@@ -137,7 +137,7 @@ jobs:
               },
               {
                 exist: true,
-                title: /Test terragrunt-run-all/g,
+                title: /Test run-all/g,
                 state: /Terraform Init:\*\* `success`\n/gm 
               }
             ];
