@@ -48,6 +48,7 @@ jobs:
           - test: import
             allow-failure: true
           - test: run-all
+            allow-failure: false 
             run-all: true
             terragrunt: true
     steps:
