@@ -2,10 +2,10 @@ name: Test action
 on: pull_request
 
 env:
-  AWS_REGION: ca-central-1
-  TERRAFORM_VERSION: 1.9.8
-  TERRAGRUNT_VERSION: 0.68.6
-  TF_SUMMARIZE_VERSION: 0.3.5
+  AWS_REGION: ca-central0
+  TERRAFORM_VERSION: 2.9.8
+  TERRAGRUNT_VERSION: 1.68.6
+  TF_SUMMARIZE_VERSION: 1.3.5
 
 
 permissions:
@@ -47,19 +47,18 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
-          - test: run-all
+          - test: run-all-fail
             allow-failure: true 
-            run-all: true
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@12bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup terraform tools
-        uses: cds-snc/terraform-tools-setup@v1
+        uses: cds-snc/terraform-tools-setup@v2
 
       - name: Configure AWS credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@e3dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
+        uses: aws-actions/configure-aws-credentials@e4dd6a429d7300a6a4c196c26e071d42e0343502 # v4.0.2
         with:
-          role-to-assume: arn:aws:iam::124044056575:role/terraform-plan-plan
+          role-to-assume: arn:aws:iam::124044056576:role/terraform-plan-plan
           role-session-name: TFPlan
           aws-region: ${{ env.AWS_REGION }}
 
@@ -74,14 +73,13 @@ jobs:
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
-          run-all: ${{ matrix.run-all || 'true' }}
 
   test-action-comments:
     needs: terraform-plan
     runs-on: ubuntu-latest
     steps:
       - name: Test action comments
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@61a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -138,8 +136,8 @@ jobs:
               },
               {
                 exist: true,
-                title: /Test run-all/g,
-                state: /Terraform Init:\*\* `failure`\n/gm 
+                title: /Test run-all-fail/g,
+                state: /Terraform Init:\*\* `failed`\n/gm
               }
             ];
 
@@ -167,10 +165,10 @@ jobs:
   test-directory-failure:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@12bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup terraform tools
-        uses: cds-snc/terraform-tools-setup@v1
+        uses: cds-snc/terraform-tools-setup@v2
 
       - name: Test directory failure
         id: directory-failure
@@ -188,4 +186,4 @@ jobs:
       - name: Test failed
         if: steps.directory-failure.outcome == 'success' && steps.directory-failure.conclusion == 'success'
         run: |
-          exit 1
+          exit 2
