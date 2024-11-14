@@ -28,7 +28,7 @@ Use the following to control the action:
 | `skip-conftest`  | Skip the Conftest step                                             | false        |
 | `skip-fmt`       | Skip the Terraform format check                                    | false        |
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
-| `run-all`        | Run init across all modules (only applicable for terragrunt).      | false        |
+| `init-run-all`        | Run init across all modules (only applicable for terragrunt).      | false        |
 
 
 # Examples
