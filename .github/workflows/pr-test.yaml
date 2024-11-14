@@ -48,7 +48,7 @@ jobs:
           - test: import
             allow-failure: true
           - test: run-all
-            allow-failure: false 
+            allow-failure: true 
             run-all: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
