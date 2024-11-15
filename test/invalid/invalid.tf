@@ -9,5 +9,5 @@ terraform {
 }
 
 resource "random_id" "id" {
-  muffin = "blueberry"
+   muffin = "blueberry"
 }

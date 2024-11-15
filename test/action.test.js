@@ -198,7 +198,7 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
-  test("terragrunt flow with run-all", async () => {
+  test("terragrunt flow with init-run-all", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
     when(core.getInput)
@@ -207,7 +207,7 @@ describe("action", () => {
         "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
-    when(core.getBooleanInput).calledWith("run-all").mockReturnValue(true); // Mocking `run-all` as true
+    when(core.getBooleanInput).calledWith("init-run-all").mockReturnValue(true); // Mocking `init-run-all` as true
 
     await action();
 
@@ -282,7 +282,7 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
-  test("terraform flow with run-all", async () => {
+  test("terraform flow with init-run-all", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
     when(core.getInput)
@@ -291,7 +291,7 @@ describe("action", () => {
         "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(false);
-    when(core.getBooleanInput).calledWith("run-all").mockReturnValue(true); // Mocking `run-all` as true but not terragrunt
+    when(core.getBooleanInput).calledWith("init-run-all").mockReturnValue(true); // Mocking `init-run-all` as true but not terragrunt
 
     await action();
 
