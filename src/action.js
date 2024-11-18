@@ -26,6 +26,7 @@ const action = async () => {
   const skipFormat = core.getBooleanInput("skip-fmt");
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
+  const initRunAll = core.getBooleanInput("init-run-all");
 
   const binary = isTerragrunt ? "terragrunt" : "terraform";
   const summarizeBinary = "tf-summarize";
@@ -42,9 +43,9 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary} init -no-color ${
+      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${
         terraformInit ? terraformInit.join(" ") : ""
-      }`,
+      }`.trim(),
     },
     {
       key: "validate",
@@ -84,6 +85,13 @@ const action = async () => {
   ];
   let results = {};
   let isError = false;
+
+  // if not terragrunt and init-run-all is true, then notify the user that this command is only valid for terragrunt
+  if (!isTerragrunt && initRunAll) {
+    core.error(
+      "init-run-all is only valid when using terragrunt, skipping this option",
+    );
+  }
 
   // Validate that directory exists
   // eslint-disable-next-line security/detect-non-literal-fs-filename

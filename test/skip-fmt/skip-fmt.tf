@@ -9,9 +9,9 @@ required_version = ">= 1.0.0"
 }
 
 resource "random_id" "id" {
-byte_length = 8
+ byte_length = 8
 }
 
 output "id" {
-value = random_id.id.hex
+ value = random_id.id.hex
 }

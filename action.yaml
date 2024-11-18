@@ -59,6 +59,11 @@ inputs:
     description: 'Skip the planning step, used for repos that do not specifically have a remote backend'
     required: false
     default: 'false'
+  init-run-all:
+    description: 'Initialize all terragrunt modules by passing the run-all command to init. Only applicable when using terragrunt'
+    required: false
+    default: 'false'
+
 runs:
   using: 'node20'
   main: 'dist/index.js'

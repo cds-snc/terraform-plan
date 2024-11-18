@@ -25,7 +25,7 @@ jobs:
           - test: no-changes
             allow-failure: false
           - test: format-error
-            allow-failure: true
+            allow-failure: true 
           - test: invalid
             allow-failure: true
           - test: conftest-deny
@@ -47,6 +47,13 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
+          - test: terragrunt
+            allow-failure: false
+            terragrunt: true
+          - test: init-run-all
+            allow-failure: false 
+            terragrunt: true
+            init-run-all: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -71,6 +78,8 @@ jobs:
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
+          terragrunt: ${{ matrix.terragrunt || 'false' }}
+          init-run-all: ${{ matrix.init-run-all || 'false'}}
 
   test-action-comments:
     needs: terraform-plan
@@ -130,6 +139,16 @@ jobs:
               },{
                 exist: true,
                 title: /Test import/g,
+                state: /`success`[^`]+`success`/g
+              },
+              {
+                exist: true,
+                title: /Test terragrunt/g,
+                state: /`success`[^`]+`success`/g
+              },
+              {
+                exist: true,
+                title: /Test init-run-all/g,
                 state: /`success`[^`]+`success`/g
               }
             ];
