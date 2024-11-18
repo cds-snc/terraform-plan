@@ -36321,8 +36321,9 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${terraformInit ? terraformInit.join(" ") : ""
-        }`.trim(),
+      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${
+        terraformInit ? terraformInit.join(" ") : ""
+      }`.trim(),
     },
     {
       key: "validate",
