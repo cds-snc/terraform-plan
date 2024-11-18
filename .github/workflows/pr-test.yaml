@@ -99,7 +99,7 @@ jobs:
               },{
                 exist: true,
                 title: /Test format-error/g,
-                state: /`success`[^`]+`success`/g
+                state: /`failed`[^`]+`success`/g
               },{
                 exist: true,
                 title: /Test invalid/g,
