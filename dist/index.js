@@ -36321,9 +36321,8 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${
-        terraformInit ? terraformInit.join(" ") : ""
-      }`.trim(),
+      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${terraformInit ? terraformInit.join(" ") : ""
+        }`.trim(),
     },
     {
       key: "validate",
@@ -36366,7 +36365,7 @@ const action = async () => {
 
   // if not terragrunt and init-run-all is true, then notify the user that this command is only valid for terragrunt
   if (!isTerragrunt && initRunAll) {
-    core.warning(
+    core.error(
       "init-run-all is only valid when using terragrunt, skipping this option",
     );
   }
