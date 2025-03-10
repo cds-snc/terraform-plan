@@ -3,7 +3,7 @@
     "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye@sha256:f485b76ec2971017849252b494e61f4b7d97cd75d094db8161c34343edc026e9",
     "features": {
         "node": {
-            "version": "20.7.0",
+            "version": "22.14.0",
             "nodeGypDependencies": true
         },
         "terraform": {
@@ -13,30 +13,30 @@
         },
         "github-cli": "latest"
     },
-    "mounts": [
-        "source=${env:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached",
-        "source=/run/host-services/ssh-auth.sock,target=/run/host-services/ssh-auth.sock,type=bind,consistency=cached"
-    ],
     "containerEnv": {
         "SHELL": "/bin/zsh",
         "SSH_AUTH_SOCK": "/run/host-services/ssh-auth.sock"
     },
-    "settings": {
-        "[javascript]": {
-            "editor.formatOnSave": true
-        },
-        "[terraform]": {
-            "editor.formatOnSave": true
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "[javascript]": {
+                    "editor.formatOnSave": true
+                },
+                "[terraform]": {
+                    "editor.formatOnSave": true
+                }
+            },
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "redhat.vscode-yaml",
+                "timonwong.shellcheck",
+                "hashicorp.terraform",
+                "github.copilot",
+                "orta.vscode-jest"
+            ]
         }
     },
-    "extensions": [
-        "dbaeumer.vscode-eslint",
-        "redhat.vscode-yaml",
-        "timonwong.shellcheck",
-        "hashicorp.terraform",
-        "github.copilot",
-        "orta.vscode-jest"
-    ],
     "remoteUser": "vscode",
     "postCreateCommand": "sudo .devcontainer/post-create-command.sh"
 }
