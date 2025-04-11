@@ -56,7 +56,7 @@ jobs:
             init-run-all: true
           - test: var-file
             allow-failure: false
-            terraform-var-file: prod.tfvars
+            terraform-var-file: test/var-file/test.tfvars
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -69,11 +69,6 @@ jobs:
           role-to-assume: arn:aws:iam::124044056575:role/terraform-plan-plan
           role-session-name: TFPlan
           aws-region: ${{ env.AWS_REGION }}
-
-      - name: Create var file for test
-        if: ${{ matrix.terraform-var-file != '' }}
-        run: |
-          echo 'test_var = "test_value"' > test/${{ matrix.test }}/prod.tfvars
 
       - name: Test ${{ matrix.test }}
         uses: ./
