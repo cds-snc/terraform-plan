@@ -36291,6 +36291,39 @@ const github = __nccwpck_require__(3228);
 const { execCommand } = __nccwpck_require__(792);
 const { addComment, deleteComment } = __nccwpck_require__(6474);
 const { getPlanChanges } = __nccwpck_require__(659);
+const path = __nccwpck_require__(6928);
+
+// Sanitize input to prevent command injection
+function sanitizeInput(input, options = {}) {
+  const {
+    allowedExtensions = [],
+    allowEmpty = true,
+    allowedChars = /[^a-zA-Z0-9\-_/.=]/g,
+  } = options;
+
+  // Check if the input is empty
+  if (!input) {
+    return allowEmpty ? "" : null;
+  }
+
+  // Remove any potentially malicious characters
+  const sanitized = input.replace(allowedChars, "");
+
+  // If extensions are specified, validate the file has one of the allowed extensions
+  if (allowedExtensions.length > 0) {
+    const hasValidExtension = allowedExtensions.some((ext) =>
+      sanitized.endsWith(ext),
+    );
+    if (!hasValidExtension) {
+      core.warning(
+        `Input ${input} does not have a valid extension (${allowedExtensions.join(", ")}). Ignoring.`,
+      );
+      return "";
+    }
+  }
+
+  return sanitized;
+}
 
 function parseInputInt(str, def) {
   const parsed = parseInt(str, 10);
@@ -36318,12 +36351,17 @@ const action = async () => {
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
+  const terraformVarFile = sanitizeInput(core.getInput("terraform-var-file"), {
+    allowedExtensions: [".tfvars", ".tfvars.json"],
+  });
   const conftestChecks = core.getInput("conftest-checks");
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const planCharLimit = core.getInput("plan-character-limit");
   const conftestCharLimit = core.getInput("conftest-character-limit");
+
+  const varFileOption = terraformVarFile ? `-var-file=${terraformVarFile}` : "";
 
   const commands = [
     {
@@ -36342,7 +36380,7 @@ const action = async () => {
     },
     {
       key: "plan",
-      exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
+      exec: `${binary} plan -no-color -input=false -out=plan.tfplan ${varFileOption}`.trim(),
     },
     {
       key: "show",
@@ -36376,6 +36414,16 @@ const action = async () => {
     core.error(
       "init-run-all is only valid when using terragrunt, skipping this option",
     );
+  }
+
+  // If var-file is provided, check if it exists in the specified directory
+  if (terraformVarFile) {
+    const varFilePath = path.join(directory, terraformVarFile);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    if (!fs.existsSync(varFilePath)) {
+      core.setFailed(`Var file ${varFilePath} does not exist`);
+      return;
+    }
   }
 
   // Validate that directory exists
@@ -36474,6 +36522,7 @@ const action = async () => {
 
 module.exports = {
   action: action,
+  sanitizeInput: sanitizeInput,
 };
 
 

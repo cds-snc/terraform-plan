@@ -7,7 +7,7 @@ const mock_fs = require("mock-fs");
 const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
-const { action } = require("../src/action.js");
+const { action, sanitizeInput } = require("../src/action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
@@ -23,7 +23,10 @@ describe("action", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mock_fs({
-      foo: {},
+      foo: {
+        "prod.tfvars": 'env = "prod"',
+        "test.tfvars.json": 'env = "test"',
+      },
       bar: {},
     });
   });
@@ -115,6 +118,30 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
+  test("flow with var-file", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput)
+      .calledWith("terraform-var-file")
+      .mockReturnValue("prod.tfvars");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      );
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls[3]).toEqual([
+      {
+        key: "plan",
+        exec: "terraform plan -no-color -input=false -out=plan.tfplan -var-file=prod.tfvars",
+      },
+      "foo",
+    ]);
+  });
+
   test("terragrunt flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
@@ -123,6 +150,7 @@ describe("action", () => {
       .mockReturnValue(
         "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
+    when(core.getInput).calledWith("terraform-var-file").mockReturnValue("");
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
 
     await action();
@@ -206,6 +234,7 @@ describe("action", () => {
       .mockReturnValue(
         "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
+    when(core.getInput).calledWith("terraform-var-file").mockReturnValue("");
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
     when(core.getBooleanInput).calledWith("init-run-all").mockReturnValue(true); // Mocking `init-run-all` as true
 
@@ -282,6 +311,46 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
+  test("terragrunt flow with var-file", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput)
+      .calledWith("terraform-var-file")
+      .mockReturnValue("test.tfvars.json");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      );
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls[3]).toEqual([
+      {
+        key: "plan",
+        exec: "terragrunt plan -no-color -input=false -out=plan.tfplan -var-file=test.tfvars.json",
+      },
+      "foo",
+    ]);
+  });
+
+  test("var-file with non-existent file", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput)
+      .calledWith("terraform-var-file")
+      .mockReturnValue("non-existent.tfvars");
+
+    await action();
+
+    expect(core.setFailed).toHaveBeenCalledWith(
+      "Var file foo/non-existent.tfvars does not exist",
+    );
+    expect(execCommand.mock.calls.length).toBe(0); // No commands should be executed
+  });
+
   test("terraform flow with init-run-all", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("bar");
@@ -290,6 +359,7 @@ describe("action", () => {
       .mockReturnValue(
         "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
       );
+    when(core.getInput).calledWith("terraform-var-file").mockReturnValue("");
     when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("init-run-all").mockReturnValue(true); // Mocking `init-run-all` as true but not terragrunt
 
@@ -547,5 +617,53 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       false,
       true,
     ]);
+  });
+});
+
+describe("sanitizeInput", () => {
+  test("handles empty input", () => {
+    expect(sanitizeInput("")).toBe("");
+    expect(sanitizeInput(null)).toBe("");
+    expect(sanitizeInput(undefined)).toBe("");
+    expect(sanitizeInput("", { allowEmpty: false })).toBe(null);
+  });
+
+  test("allows valid inputs with no extension requirements", () => {
+    expect(sanitizeInput("simple-input")).toBe("simple-input");
+    expect(sanitizeInput("path/to/file.txt")).toBe("path/to/file.txt");
+    expect(sanitizeInput("config_123.json")).toBe("config_123.json");
+  });
+
+  test("sanitizes special characters", () => {
+    expect(sanitizeInput("input with spaces")).toBe("inputwithspaces");
+    expect(sanitizeInput("file;with|bad:chars")).toBe("filewithbadchars");
+    expect(sanitizeInput("`rm -rf *`")).toBe("rm-rf");
+  });
+
+  test("validates extensions when required", () => {
+    core.warning = jest.fn();
+
+    expect(
+      sanitizeInput("file.txt", { allowedExtensions: [".json", ".yaml"] }),
+    ).toBe("");
+    expect(core.warning).toHaveBeenCalledWith(
+      "Input file.txt does not have a valid extension (.json, .yaml). Ignoring.",
+    );
+
+    expect(
+      sanitizeInput("config.json", { allowedExtensions: [".json", ".yaml"] }),
+    ).toBe("config.json");
+    expect(
+      sanitizeInput("settings.yaml", { allowedExtensions: [".json", ".yaml"] }),
+    ).toBe("settings.yaml");
+  });
+
+  test("uses custom allowed characters regex", () => {
+    expect(
+      sanitizeInput("test-file_123.txt", { allowedChars: /[^a-zA-Z0-9.]/g }),
+    ).toBe("testfile123.txt");
+    expect(sanitizeInput("version-1.2.3", { allowedChars: /[^0-9.]/g })).toBe(
+      "1.2.3",
+    );
   });
 });
