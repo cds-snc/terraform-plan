@@ -13,7 +13,7 @@ function sanitizeInput(input, options = {}) {
   const {
     allowedExtensions = [],
     allowEmpty = true,
-    allowedChars = /[^a-zA-Z0-9\-_/.=]/g,
+    allowedChars = /[^a-zA-Z0-9\-_/.=:'"]/g,
   } = options;
 
   // Check if the input is empty
@@ -69,7 +69,7 @@ const action = async () => {
   const terraformVarFile = sanitizeInput(core.getInput("terraform-var-file"), {
     allowedExtensions: [".tfvars", ".tfvars.json"],
   });
-  const conftestChecks = core.getInput("conftest-checks");
+  const conftestChecks = sanitizeInput(core.getInput("conftest-checks"));
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
@@ -77,13 +77,14 @@ const action = async () => {
   const conftestCharLimit = core.getInput("conftest-character-limit");
 
   const varFileOption = terraformVarFile ? `-var-file=${terraformVarFile}` : "";
+  const terraformInitOption = terraformInit
+    ? terraformInit.map((item) => sanitizeInput(item)).join(" ")
+    : "";
 
   const commands = [
     {
       key: "init",
-      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${
-        terraformInit ? terraformInit.join(" ") : ""
-      }`.trim(),
+      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${terraformInitOption}`.trim(),
     },
     {
       key: "validate",

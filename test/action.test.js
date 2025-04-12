@@ -636,8 +636,16 @@ describe("sanitizeInput", () => {
 
   test("sanitizes special characters", () => {
     expect(sanitizeInput("input with spaces")).toBe("inputwithspaces");
-    expect(sanitizeInput("file;with|bad:chars")).toBe("filewithbadchars");
+    expect(sanitizeInput("file;with|bad&chars$`")).toBe("filewithbadchars");
     expect(sanitizeInput("`rm -rf *`")).toBe("rm-rf");
+    expect(
+      sanitizeInput(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      ),
+    ).toBe("git::https://github.com/cds-snc/opa_checks.git//aws_terraform");
+    expect(
+      sanitizeInput('-backend-config="key=aws/backend/default.tfstate"'),
+    ).toBe('-backend-config="key=aws/backend/default.tfstate"');
   });
 
   test("validates extensions when required", () => {
