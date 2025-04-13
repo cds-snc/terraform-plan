@@ -36332,7 +36332,6 @@ const action = async () => {
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
   const terraformPlan = core.getMultilineInput("terraform-plan");
-
   const conftestChecks = sanitizeInput(core.getInput("conftest-checks"));
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;

@@ -45,6 +45,9 @@ describe("action", () => {
         "-backend-config='bucket=some-bucket'",
         "-backend-config='region=ca-central-1'",
       ]);
+    when(core.getMultilineInput)
+      .calledWith("terraform-plan")
+      .mockReturnValue(["-refresh=true", "-var-file='prod.tfvars'"]);
 
     await action();
 
@@ -74,7 +77,7 @@ describe("action", () => {
       [
         {
           key: "plan",
-          exec: "terraform plan -no-color -input=false -out=plan.tfplan",
+          exec: "terraform plan -no-color -input=false -out=plan.tfplan -refresh=true -var-file='prod.tfvars'",
         },
         "foo",
       ],
