@@ -83,7 +83,7 @@ jobs:
           skip-plan: ${{ matrix.skip-plan || 'false' }}
           terragrunt: ${{ matrix.terragrunt || 'false' }}
           init-run-all: ${{ matrix.init-run-all || 'false'}}
-          terraform-plan: ${{ matrix.plan-options || '' }}
+          terraform-plan: ${{ matrix.terraform-plan || '' }}
 
   test-action-comments:
     needs: terraform-plan
