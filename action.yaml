@@ -43,8 +43,8 @@ inputs:
     description: 'Custom Terraform init args'
     required: false
     default: ''
-  terraform-var-file:
-    description: 'Path to a Terraform var file to use with the plan command (var file must end with .tfvars or .tfvars.json)'
+  terraform-plan:
+    description: 'Custom Terraform plan args'
     required: false
     default: ''
   terragrunt:

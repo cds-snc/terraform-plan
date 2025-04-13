@@ -54,9 +54,9 @@ jobs:
             allow-failure: false 
             terragrunt: true
             init-run-all: true
-          - test: var-file
+          - test: plan-options
             allow-failure: false
-            terraform-var-file: test.tfvars
+            terraform-plan: -var-file='plan_options.tfvars'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -83,7 +83,7 @@ jobs:
           skip-plan: ${{ matrix.skip-plan || 'false' }}
           terragrunt: ${{ matrix.terragrunt || 'false' }}
           init-run-all: ${{ matrix.init-run-all || 'false'}}
-          terraform-var-file: ${{ matrix.terraform-var-file || '' }}
+          terraform-plan: ${{ matrix.plan-options || '' }}
 
   test-action-comments:
     needs: terraform-plan
@@ -157,7 +157,7 @@ jobs:
               },
               {
                 exist: true,
-                title: /Test var-file/g,
+                title: /Test plan-options/g,
                 state: /`success`[^`]+`success`/g
               }
             ];
