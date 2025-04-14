@@ -565,7 +565,7 @@ describe("sanitizeInput", () => {
   });
 
   test("allows valid inputs", () => {
-    expect(sanitizeInput("simple-input")).toBe("simple-input");
+    expect(sanitizeInput("simple-input+")).toBe("simple-input+");
     expect(sanitizeInput("path/to/file.txt")).toBe("path/to/file.txt");
     expect(sanitizeInput("config_123.json")).toBe("config_123.json");
   });
