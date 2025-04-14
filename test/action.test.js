@@ -7,7 +7,7 @@ const mock_fs = require("mock-fs");
 const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
-const { action } = require("../src/action.js");
+const { action, sanitizeInput } = require("../src/action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
@@ -23,7 +23,10 @@ describe("action", () => {
   beforeEach(() => {
     jest.resetAllMocks();
     mock_fs({
-      foo: {},
+      foo: {
+        "prod.tfvars": 'env = "prod"',
+        "test.tfvars.json": 'env = "test"',
+      },
       bar: {},
     });
   });
@@ -42,6 +45,9 @@ describe("action", () => {
         "-backend-config='bucket=some-bucket'",
         "-backend-config='region=ca-central-1'",
       ]);
+    when(core.getMultilineInput)
+      .calledWith("terraform-plan")
+      .mockReturnValue(["-refresh=true", "-var-file='prod.tfvars'"]);
 
     await action();
 
@@ -71,7 +77,7 @@ describe("action", () => {
       [
         {
           key: "plan",
-          exec: "terraform plan -no-color -input=false -out=plan.tfplan",
+          exec: "terraform plan -no-color -input=false -out=plan.tfplan -refresh=true -var-file='prod.tfvars'",
         },
         "foo",
       ],
@@ -547,5 +553,43 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       false,
       true,
     ]);
+  });
+});
+
+describe("sanitizeInput", () => {
+  test("handles empty input", () => {
+    expect(sanitizeInput("")).toBe("");
+    expect(sanitizeInput(null)).toBe("");
+    expect(sanitizeInput(undefined)).toBe("");
+    expect(sanitizeInput("", { allowEmpty: false })).toBe(null);
+  });
+
+  test("allows valid inputs", () => {
+    expect(sanitizeInput("simple-input")).toBe("simple-input");
+    expect(sanitizeInput("path/to/file.txt")).toBe("path/to/file.txt");
+    expect(sanitizeInput("config_123.json")).toBe("config_123.json");
+  });
+
+  test("sanitizes special characters", () => {
+    expect(sanitizeInput("input with spaces")).toBe("inputwithspaces");
+    expect(sanitizeInput("file;with|bad&chars$`")).toBe("filewithbadchars");
+    expect(sanitizeInput("`rm -rf *`")).toBe("rm-rf");
+    expect(
+      sanitizeInput(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      ),
+    ).toBe("git::https://github.com/cds-snc/opa_checks.git//aws_terraform");
+    expect(
+      sanitizeInput('-backend-config="key=aws/backend/default.tfstate"'),
+    ).toBe('-backend-config="key=aws/backend/default.tfstate"');
+  });
+
+  test("uses custom allowed characters regex", () => {
+    expect(
+      sanitizeInput("test-file_123.txt", { allowedChars: /[^a-zA-Z0-9.]/g }),
+    ).toBe("testfile123.txt");
+    expect(sanitizeInput("version-1.2.3", { allowedChars: /[^0-9.]/g })).toBe(
+      "1.2.3",
+    );
   });
 });

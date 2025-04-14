@@ -43,6 +43,10 @@ inputs:
     description: 'Custom Terraform init args'
     required: false
     default: ''
+  terraform-plan:
+    description: 'Custom Terraform plan args'
+    required: false
+    default: ''
   terragrunt:
     description: 'Use Terragrunt instead of Terraform'
     required: false

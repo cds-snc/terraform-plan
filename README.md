@@ -24,6 +24,7 @@ Use the following to control the action:
 | `github-token`   | GitHub Token used to add comment to PR (required to add comments). |              |
 | `plan-character-limit` | Character limit for Terraform plan output                    | 30000        |
 | `terraform-init` | Custom Terraform init args                                         |              |
+| `terraform-plan` | Custom Terraform plan args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 | `skip-conftest`  | Skip the Conftest step                                             | false        |
 | `skip-fmt`       | Skip the Terraform format check                                    | false        |
@@ -75,6 +76,14 @@ Use the following to control the action:
     terraform-init: |
       -backend-config="bucket=your-state-bucket-name"
       -backend-config="region=ca-central-1"
+
+# Run Terraform plan custom Terraform plan args
+- name: Terraform plan with variable file
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    terraform-plan: |
+      -var-file="path/to/terraform.tfvars"
 ```
 
 # Contributing

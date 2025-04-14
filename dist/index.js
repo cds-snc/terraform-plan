@@ -36292,6 +36292,19 @@ const { execCommand } = __nccwpck_require__(792);
 const { addComment, deleteComment } = __nccwpck_require__(6474);
 const { getPlanChanges } = __nccwpck_require__(659);
 
+// Sanitize input to prevent command injection
+function sanitizeInput(input, options = {}) {
+  const { allowEmpty = true, allowedChars = /[^a-zA-Z0-9\-_/.=:'"]/g } =
+    options;
+
+  // Check if the input is empty
+  if (!input) {
+    return allowEmpty ? "" : null;
+  }
+
+  return input.replace(allowedChars, "");
+}
+
 function parseInputInt(str, def) {
   const parsed = parseInt(str, 10);
   if (isNaN(parsed)) {
@@ -36318,19 +36331,25 @@ const action = async () => {
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
-  const conftestChecks = core.getInput("conftest-checks");
+  const terraformPlan = core.getMultilineInput("terraform-plan");
+  const conftestChecks = sanitizeInput(core.getInput("conftest-checks"));
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
 
   const planCharLimit = core.getInput("plan-character-limit");
   const conftestCharLimit = core.getInput("conftest-character-limit");
 
+  const terraformInitOption = terraformInit
+    ? terraformInit.map((item) => sanitizeInput(item)).join(" ")
+    : "";
+  const terraformPlanOption = terraformPlan
+    ? terraformPlan.map((item) => sanitizeInput(item)).join(" ")
+    : "";
+
   const commands = [
     {
       key: "init",
-      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${
-        terraformInit ? terraformInit.join(" ") : ""
-      }`.trim(),
+      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${terraformInitOption}`.trim(),
     },
     {
       key: "validate",
@@ -36342,7 +36361,7 @@ const action = async () => {
     },
     {
       key: "plan",
-      exec: `${binary} plan -no-color -input=false -out=plan.tfplan`,
+      exec: `${binary} plan -no-color -input=false -out=plan.tfplan ${terraformPlanOption}`.trim(),
     },
     {
       key: "show",
@@ -36474,6 +36493,7 @@ const action = async () => {
 
 module.exports = {
   action: action,
+  sanitizeInput: sanitizeInput,
 };
 
 
