@@ -9,7 +9,7 @@ const { getPlanChanges } = require("./opa.js");
 
 // Sanitize input to prevent command injection
 function sanitizeInput(input, options = {}) {
-  const { allowEmpty = true, allowedChars = /[^a-zA-Z0-9\-_/.+=:'"]/g } =
+  const { allowEmpty = true, allowedChars = /[^a-zA-Z0-9\-_/.+=:'"@]/g } =
     options;
 
   // Check if the input is empty
