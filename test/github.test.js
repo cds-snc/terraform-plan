@@ -244,6 +244,160 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy
     ]);
   });
 
+  test("add a success comment with moved resources", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "< Hello there >" },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "< General Kenobi >" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: false,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 0,
+        import: 0,
+        move: 1,
+      },
+    };
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
+**✅ &nbsp; Terraform Format:** \`success\`
+**✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\` 
+
+\`\`\`terraform
+Plan: 1 to move, 0 to add, 0 to change, 0 to destroy
+\`\`\`
+
+<details>
+<summary>Show summary</summary>
+
+
+
+</details>
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+< Hello there >
+\`\`\`
+
+</details>
+
+<details>
+<summary>Show Conftest results</summary>
+
+\`\`\`sh
+< General Kenobi >
+\`\`\`
+
+</details>
+`;
+
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      results,
+      changes,
+      10000,
+      10000,
+      false,
+    );
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
+      {
+        owner: "foo",
+        repo: "bar",
+        issue_number: 42,
+        body: comment,
+      },
+    ]);
+  });
+
+  test("add a success comment with combined resources (import, move, add, update, delete)", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: {
+        isSuccess: true,
+        output: "< Complex plan with multiple actions >",
+      },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: true,
+      resources: {
+        update: 1,
+        delete: 1,
+        create: 2,
+        import: 2,
+        move: 2,
+      },
+    };
+    const comment = `## Foobar
+**✅ &nbsp; Terraform Init:** \`success\`
+**✅ &nbsp; Terraform Validate:** \`success\`
+**✅ &nbsp; Terraform Format:** \`success\`
+**✅ &nbsp; Terraform Plan:** \`success\`
+**✅ &nbsp; Conftest:** \`success\` 
+
+**⚠️ &nbsp; Warning:** resources will be destroyed by this change!
+\`\`\`terraform
+Plan: 2 to import, 2 to move, 2 to add, 1 to change, 1 to destroy
+\`\`\`
+
+<details>
+<summary>Show summary</summary>
+
+
+
+</details>
+
+
+<details>
+<summary>Show plan</summary>
+
+\`\`\`terraform
+< Complex plan with multiple actions >
+\`\`\`
+
+</details>
+
+`;
+
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      results,
+      changes,
+      10000,
+      10000,
+      false,
+    );
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
+      {
+        owner: "foo",
+        repo: "bar",
+        issue_number: 42,
+        body: comment,
+      },
+    ]);
+  });
+
   test("add a failed comment with changes", async () => {
     const results = {
       init: { isSuccess: false, output: "I love you" },

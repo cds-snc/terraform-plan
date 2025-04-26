@@ -19,6 +19,7 @@ describe("getPlanChanges", () => {
       delete: 0,
       create: 1,
       import: 0,
+      move: 0,
     });
     expect(changes.ouputs).toEqual({
       update: 0,
@@ -38,6 +39,7 @@ describe("getPlanChanges", () => {
       delete: 0,
       create: 0,
       import: 0,
+      move: 0,
     });
     expect(changes.ouputs).toEqual({
       update: 0,
@@ -57,6 +59,7 @@ describe("getPlanChanges", () => {
       delete: 0,
       create: 0,
       import: 0,
+      move: 0,
     });
     expect(changes.ouputs).toEqual({
       update: 0,
@@ -76,6 +79,7 @@ describe("getPlanChanges", () => {
       delete: 0,
       create: 0,
       import: 0,
+      move: 0,
     });
     expect(changes.ouputs).toEqual({
       update: 1,
@@ -96,6 +100,28 @@ describe("getPlanChanges", () => {
       delete: 0,
       import: 2,
       create: 1,
+      move: 0,
+    });
+    expect(changes.ouputs).toEqual({
+      update: 0,
+      delete: 0,
+      create: 0,
+    });
+  });
+
+  test("plan with moved resources only", async () => {
+    const planJson = fs.readFileSync("./test/moved-resources/moved.json");
+    const changes = await getPlanChanges(JSON.parse(planJson));
+
+    expect(changes.isChanges).toBe(true);
+    expect(changes.isDeletes).toBe(false);
+
+    expect(changes.resources).toEqual({
+      update: 0,
+      delete: 0,
+      import: 0,
+      create: 0,
+      move: 1,
     });
     expect(changes.ouputs).toEqual({
       update: 0,

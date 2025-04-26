@@ -1,0 +1,89 @@
+{
+  "format_version": "1.1",
+  "terraform_version": "1.5.0",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_iam_role_policy_attachment.platform_data_lake_export",
+          "mode": "managed",
+          "type": "aws_iam_role_policy_attachment",
+          "name": "platform_data_lake_export",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "id": "NotifyExportToPlatformDataLake-20250324132626689600000001",
+            "policy_arn": "arn:aws:iam::123456789012:policy/NotifyExportToPlatformDataLake",
+            "role": "NotificationProcessor"
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_iam_role_policy_attachment.platform_data_lake_export",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "platform_data_lake_export",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["move"],
+        "before": {
+          "id": "NotifyExportToPlatformDataLake-20250324132626689600000001",
+          "policy_arn": "arn:aws:iam::123456789012:policy/NotifyExportToPlatformDataLake",
+          "role": "NotificationProcessor"
+        },
+        "after": {
+          "id": "NotifyExportToPlatformDataLake-20250324132626689600000001",
+          "policy_arn": "arn:aws:iam::123456789012:policy/NotifyExportToPlatformDataLake",
+          "role": "NotificationProcessor"
+        },
+        "after_unknown": {},
+        "before_sensitive": {},
+        "after_sensitive": {}
+      },
+      "action_reason": "resource_moved"
+    }
+  ],
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "version_constraint": "~> 4.0",
+        "expressions": {
+          "region": {
+            "constant_value": "us-west-2"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_iam_role_policy_attachment.platform_data_lake_export",
+          "mode": "managed",
+          "type": "aws_iam_role_policy_attachment",
+          "name": "platform_data_lake_export",
+          "provider_config_key": "aws",
+          "expressions": {
+            "policy_arn": {
+              "constant_value": "arn:aws:iam::123456789012:policy/NotifyExportToPlatformDataLake"
+            },
+            "role": {
+              "constant_value": "NotificationProcessor"
+            }
+          },
+          "schema_version": 0
+        }
+      ],
+      "moved_blocks": [
+        {
+          "from": "aws_iam_role_policy_attachment.platform_data_lake_export[0]",
+          "to": "aws_iam_role_policy_attachment.platform_data_lake_export"
+        }
+      ]
+    }
+  }
+}
