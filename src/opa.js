@@ -90,7 +90,7 @@ const getPlanChanges = async (planJson) => {
     isChanges: !noChanges,
     isDeletes: resources.delete > 0,
     resources: resources,
-    ouputs: outputs,
+    outputs: outputs,
   };
 
   return changes;

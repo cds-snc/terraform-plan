@@ -21,7 +21,7 @@ describe("getPlanChanges", () => {
       import: 0,
       move: 0,
     });
-    expect(changes.ouputs).toEqual({
+    expect(changes.outputs).toEqual({
       update: 0,
       delete: 0,
       create: 1,
@@ -41,7 +41,7 @@ describe("getPlanChanges", () => {
       import: 0,
       move: 0,
     });
-    expect(changes.ouputs).toEqual({
+    expect(changes.outputs).toEqual({
       update: 0,
       delete: 0,
       create: 0,
@@ -61,7 +61,7 @@ describe("getPlanChanges", () => {
       import: 0,
       move: 0,
     });
-    expect(changes.ouputs).toEqual({
+    expect(changes.outputs).toEqual({
       update: 0,
       delete: 0,
       create: 2,
@@ -81,7 +81,7 @@ describe("getPlanChanges", () => {
       import: 0,
       move: 0,
     });
-    expect(changes.ouputs).toEqual({
+    expect(changes.outputs).toEqual({
       update: 1,
       delete: 1,
       create: 1,
@@ -102,7 +102,7 @@ describe("getPlanChanges", () => {
       create: 1,
       move: 0,
     });
-    expect(changes.ouputs).toEqual({
+    expect(changes.outputs).toEqual({
       update: 0,
       delete: 0,
       create: 0,
@@ -123,7 +123,7 @@ describe("getPlanChanges", () => {
       create: 0,
       move: 1,
     });
-    expect(changes.ouputs).toEqual({
+    expect(changes.outputs).toEqual({
       update: 0,
       delete: 0,
       create: 0,
