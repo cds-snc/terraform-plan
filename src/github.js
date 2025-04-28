@@ -98,11 +98,19 @@ const generateChangesLine = (changes) => {
     return "";
   }
   const resources = changes.resources;
-  if (resources.import === 0) {
-    return `${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
-  } else {
-    return `${resources.import} to import, ${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
+  let result = "";
+
+  if (resources.import > 0) {
+    result += `${resources.import} to import, `;
   }
+
+  if (resources.move > 0) {
+    result += `${resources.move} to move, `;
+  }
+
+  result += `${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
+
+  return result;
 };
 
 /**
@@ -190,6 +198,7 @@ const removePlanRefresh = (plan) => {
     "No changes. Infrastructure is up-to-date",
     "Resource actions are indicated with the following symbols",
     "Changes to Outputs",
+    "Terraform will perform the following actions:",
   ];
 
   // This will only strip the first refresh token it finds in the plan ouput

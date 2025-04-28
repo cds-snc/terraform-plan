@@ -36655,11 +36655,19 @@ const generateChangesLine = (changes) => {
     return "";
   }
   const resources = changes.resources;
-  if (resources.import === 0) {
-    return `${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
-  } else {
-    return `${resources.import} to import, ${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
+  let result = "";
+
+  if (resources.import > 0) {
+    result += `${resources.import} to import, `;
   }
+
+  if (resources.move > 0) {
+    result += `${resources.move} to move, `;
+  }
+
+  result += `${resources.create} to add, ${resources.update} to change, ${resources.delete} to destroy`;
+
+  return result;
 };
 
 /**
@@ -36747,6 +36755,7 @@ const removePlanRefresh = (plan) => {
     "No changes. Infrastructure is up-to-date",
     "Resource actions are indicated with the following symbols",
     "Changes to Outputs",
+    "Terraform will perform the following actions:",
   ];
 
   // This will only strip the first refresh token it finds in the plan ouput
@@ -36792,7 +36801,8 @@ const noChangesFound = (resources, outputs) => {
     resources.create === 0 &&
     resources.update === 0 &&
     resources.delete === 0 &&
-    resources.import === 0;
+    resources.import === 0 &&
+    resources.move === 0;
 
   const noChangeOutput = () =>
     outputs.create === 0 && outputs.update === 0 && outputs.delete === 0;
@@ -36812,6 +36822,13 @@ const countResourceChanges = (tfPlan, action) => {
     res.change.actions.includes(action),
   );
   return actions.length;
+};
+
+const countMoves = (tfPlan) => {
+  const moves = tfPlan.resource_changes.filter(
+    (res) => res.previous_address !== undefined,
+  );
+  return moves.length;
 };
 
 const countOutputChanges = (tfPlan, action) => {
@@ -36838,6 +36855,7 @@ const getPlanChanges = async (planJson) => {
     update: 0,
     delete: 0,
     import: 0,
+    move: 0,
   };
 
   let outputs = {
@@ -36851,6 +36869,7 @@ const getPlanChanges = async (planJson) => {
       update: countResourceChanges(planJson, "update"),
       delete: countResourceChanges(planJson, "delete"),
       import: countImports(planJson),
+      move: countMoves(planJson),
     };
   }
 
@@ -36868,7 +36887,7 @@ const getPlanChanges = async (planJson) => {
     isChanges: !noChanges,
     isDeletes: resources.delete > 0,
     resources: resources,
-    ouputs: outputs,
+    outputs: outputs,
   };
 
   return changes;
@@ -38827,8 +38846,9 @@ const handleError = (err) => {
 };
 
 // Prevent Terragrunt from altering Terraform output
-// https://terragrunt.gruntwork.io/docs/reference/cli-options/#terragrunt-forward-tf-stdout
-core.exportVariable("TERRAGRUNT_FORWARD_TF_STDOUT", "true");
+// https://terragrunt.gruntwork.io/docs/reference/cli-options/#tf-forward-stdout
+core.exportVariable("TG_TF_FORWARD_STDOUT", "true");
+core.exportVariable("TERRAGRUNT_FORWARD_TF_STDOUT", "true"); // Deprecated
 
 process.on("unhandledRejection", handleError);
 action().catch(handleError);
