@@ -36755,6 +36755,7 @@ const removePlanRefresh = (plan) => {
     "No changes. Infrastructure is up-to-date",
     "Resource actions are indicated with the following symbols",
     "Changes to Outputs",
+    "Terraform will perform the following actions:",
   ];
 
   // This will only strip the first refresh token it finds in the plan ouput

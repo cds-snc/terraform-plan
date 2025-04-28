@@ -814,6 +814,31 @@ describe("removePlanRefresh", () => {
     expect(removeRefreshOutput(plan)).toBe(expected);
   });
 
+  test("remove refresh for plan with only moved changes", async () => {
+    const plan = `aws_lambda_permission.api: Refreshing state... [id=AllowAPIGatewayInvoke]
+    aws_api_gateway_integration.integration: Refreshing state... [id=agi]
+
+    Terraform will perform the following actions:
+
+      # aws_ecr_lifecycle_policy.superset_docs has moved to aws_ecr_lifecycle_policy.superset_docs_test
+        resource "aws_ecr_lifecycle_policy" "superset_docs_test" {
+            id          = "cds-superset-docs"
+            # (3 unchanged attributes hidden)
+        }
+
+    Plan: 0 to add, 0 to change, 0 to destroy.`;
+    const expected = `Terraform will perform the following actions:
+
+      # aws_ecr_lifecycle_policy.superset_docs has moved to aws_ecr_lifecycle_policy.superset_docs_test
+        resource "aws_ecr_lifecycle_policy" "superset_docs_test" {
+            id          = "cds-superset-docs"
+            # (3 unchanged attributes hidden)
+        }
+
+    Plan: 0 to add, 0 to change, 0 to destroy.`;
+    expect(removeRefreshOutput(plan)).toBe(expected);
+  });
+
   test("no change if start tokens do not exist", async () => {
     const plan = `This is a string without any plan start tokens
     for good measure, there's a line break in the mix`;
