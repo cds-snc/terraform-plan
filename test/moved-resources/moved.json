@@ -23,12 +23,13 @@
   "resource_changes": [
     {
       "address": "aws_iam_role_policy_attachment.platform_data_lake_export",
+      "previous_address": "aws_iam_role_policy_attachment.platform_data_lake_export[0]",
       "mode": "managed",
       "type": "aws_iam_role_policy_attachment",
       "name": "platform_data_lake_export",
       "provider_name": "registry.terraform.io/hashicorp/aws",
       "change": {
-        "actions": ["move"],
+        "actions": ["no-op"],
         "before": {
           "id": "NotifyExportToPlatformDataLake-20250324132626689600000001",
           "policy_arn": "arn:aws:iam::123456789012:policy/NotifyExportToPlatformDataLake",

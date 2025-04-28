@@ -36824,9 +36824,8 @@ const countResourceChanges = (tfPlan, action) => {
 };
 
 const countMoves = (tfPlan) => {
-  // Look for resources that have 'move' in their actions list
-  const moves = tfPlan.resource_changes.filter((res) =>
-    res.change.actions.includes("move"),
+  const moves = tfPlan.resource_changes.filter(
+    (res) => res.previous_address !== undefined,
   );
   return moves.length;
 };
@@ -38846,8 +38845,9 @@ const handleError = (err) => {
 };
 
 // Prevent Terragrunt from altering Terraform output
-// https://terragrunt.gruntwork.io/docs/reference/cli-options/#terragrunt-forward-tf-stdout
-core.exportVariable("TERRAGRUNT_FORWARD_TF_STDOUT", "true");
+// https://terragrunt.gruntwork.io/docs/reference/cli-options/#tf-forward-stdout
+core.exportVariable("TG_TF_FORWARD_STDOUT", "true");
+core.exportVariable("TERRAGRUNT_FORWARD_TF_STDOUT", "true"); // Deprecated
 
 process.on("unhandledRejection", handleError);
 action().catch(handleError);

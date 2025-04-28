@@ -27,9 +27,8 @@ const countResourceChanges = (tfPlan, action) => {
 };
 
 const countMoves = (tfPlan) => {
-  // Look for resources that have 'move' in their actions list
-  const moves = tfPlan.resource_changes.filter((res) =>
-    res.change.actions.includes("move"),
+  const moves = tfPlan.resource_changes.filter(
+    (res) => res.previous_address !== undefined,
   );
   return moves.length;
 };
