@@ -1,6 +1,6 @@
 {
     "name": "terraform-plan",
-    "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye@sha256:d67d4d2a118fea52115908e777f3881b296622ae30777c3a43b8e6a1e95a7241",
+    "image": "mcr.microsoft.com/vscode/devcontainers/base:bullseye@sha256:76a2d99e1e5aacfbf0e148656ed31110c70ffed074f6e141295d8b65b1b25702",
     "features": {
         "node": {
             "version": "22.14.0",
