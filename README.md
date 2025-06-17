@@ -7,7 +7,7 @@ terraform fmt --check
 terraform plan -out=plan.tfplan
 terraform show -json plan.tfplan 
 ```
-This action **does not** install Terraform or Terragrunt, but can be installed using [Terraform tools setup action](https://github.com/cds-snc/terraform-tools-setup).  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/pr-test.yaml).
+This action **does not** install [Terraform](https://github.com/hashicorp/terraform), [Terragrunt](https://github.com/gruntwork-io/terragrunt) or [TF Summarize](https://github.com/dineshba/tf-summarize), but these can be installed using the [CDS Terraform tools setup action](https://github.com/cds-snc/terraform-tools-setup).  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/pr-test.yaml).
 
 # Settings
 Use the following to control the action:
@@ -34,16 +34,19 @@ Use the following to control the action:
 
 # Examples
 ```yaml
-# Setup Terraform, Terragrunt, and Conftest
+# Prep
+# Setup Terraform, Terragrunt, TF Sumamry and Conftest
 - name: Setup terraform tools
   uses: cds-snc/terraform-tools-setup@v1
 
+# Example 1
 # Run Terraform plan and add a comment with changes on the PR
 - name: Terraform plan
   uses: cds-snc/terraform-plan
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+# Example 2
 # Use Terragrunt, allow failure and set a custom PR comment title
 - name: Terraform plan
   uses: cds-snc/terraform-plan
@@ -53,6 +56,7 @@ Use the following to control the action:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     terragrunt: true
 
+# Example 3
 # Run on a sub project folder, deleting previous PR comments made by the action
 - name: Terraform plan
   uses: cds-snc/terraform-plan
@@ -61,6 +65,7 @@ Use the following to control the action:
     comment-delete: true
     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+# Example 4
 # Run Terraform plan with no PR comment
 # Plan will still availabe in the workflow logs
 - name: Terraform plan
@@ -68,6 +73,7 @@ Use the following to control the action:
   with:
     add-comment: false
 
+# Example 5
 # Run Terraform plan custom Terraform init args
 - name: Terraform plan
   uses: cds-snc/terraform-plan
@@ -77,6 +83,7 @@ Use the following to control the action:
       -backend-config="bucket=your-state-bucket-name"
       -backend-config="region=ca-central-1"
 
+# Example 6
 # Run Terraform plan custom Terraform plan args
 - name: Terraform plan with variable file
   uses: cds-snc/terraform-plan
