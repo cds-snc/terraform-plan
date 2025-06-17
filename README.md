@@ -10,7 +10,7 @@ terraform show -json plan.tfplan
 This action **does not** install [Terraform](https://github.com/hashicorp/terraform), [Terragrunt](https://github.com/gruntwork-io/terragrunt) or [TF Summarize](https://github.com/dineshba/tf-summarize), but these can be installed using the [CDS Terraform tools setup action](https://github.com/cds-snc/terraform-tools-setup).  You can see how it's used in the [pr-test.yaml workflow](.github/workflows/pr-test.yaml).
 
 # Settings
-Use the following to control the action:
+Use the following settings to control the action:
 
 | Setting          |      Description                                                   |  Default     |
 |------------------|--------------------------------------------------------------------|--------------|
