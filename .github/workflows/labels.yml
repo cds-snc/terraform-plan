@@ -4,6 +4,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Sync repository labels
     steps:
-      - uses: cds-snc/sre-labels@v1
+      - uses: cds-snc/labels@8d95ffe4ae0bd4f148da0b5f082f1e5aa6cb72bf # v1
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
