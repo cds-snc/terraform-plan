@@ -35,6 +35,10 @@ inputs:
     description: 'GitHub Token used to add comment to PR'
     required: false
     default: 'false'
+  open-tofu:
+    descriptiop: 'Use OpenTofu instead of Terraform'
+    required: false
+    default: 'false'
   plan-character-limit:
     description: 'Character limit for Terraform plan output'
     required: false
