@@ -170,8 +170,8 @@ jobs:
               { exist: true, title: /Test import/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test plan-options/g, state: /`success`[^`]+`success`/g },
               // Terragrunt
-              { exist: true, title: /Test terragrunt \(terragrunt\)/g, state: /`success`[^`]+`success`/g },
-              { exist: true, title: /Test init-run-all \(terragrunt\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test terragrunt/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test init-run-all/g, state: /`success`[^`]+`success`/g },
               // OpenTofu
               { exist: true, title: /Test changes-open-tofu/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test format-error-open-tofu/g, state: /`failed`[^`]+`success`/g },
