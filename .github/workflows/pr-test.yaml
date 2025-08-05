@@ -20,48 +20,107 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - test: changes
+          # Standard tests (terraform)
+          - test: changes (terraform)
             allow-failure: false
-          - test: no-changes
+          - test: no-changes (terraform)
             allow-failure: false
-          - test: format-error
+          - test: format-error (terraform)
             allow-failure: true 
-          - test: invalid
+          - test: invalid (terraform)
             allow-failure: true
-          - test: conftest-deny
+          - test: conftest-deny (terraform)
             allow-failure: true
-          - test: skip-conftest
+          - test: skip-conftest (terraform)
             allow-failure: false
             skip-conftest: true
-          - test: skip-fmt
+          - test: skip-fmt (terraform)
             allow-failure: false
             skip-fmt: true                        
-          - test: skip-plan
+          - test: skip-plan (terraform)
             allow-failure: false
             skip-plan: true
-          - test: truncate-plan
+          - test: truncate-plan (terraform)
             allow-failure: false
-          - test: init-fail
+          - test: init-fail (terraform)
             allow-failure: true
-          - test: validate-fail
+          - test: validate-fail (terraform)
             allow-failure: true
-          - test: import
+          - test: import (terraform)
             allow-failure: true
-          - test: terragrunt
+          # Terragrunt tests
+          - test: terragrunt (terragrunt)
             allow-failure: false
             terragrunt: true
-          - test: init-run-all
+          - test: init-run-all (terragrunt)
             allow-failure: false 
             terragrunt: true
             init-run-all: true
-          - test: plan-options
+          - test: plan-options (terraform)
             allow-failure: false
             terraform-plan: -var-file='plan_options.tfvars'
+          # OpenTofu tests
+          - test: changes (open-tofu)
+            allow-failure: false
+            open-tofu: true
+          - test: no-changes (open-tofu)
+            allow-failure: false
+            open-tofu: true
+          - test: format-error (open-tofu)
+            allow-failure: true
+            open-tofu: true
+          - test: invalid (open-tofu)
+            allow-failure: true
+            open-tofu: true
+          - test: conftest-deny (open-tofu)
+            allow-failure: true
+            open-tofu: true
+          - test: skip-conftest (open-tofu)
+            allow-failure: false
+            skip-conftest: true
+            open-tofu: true
+          - test: skip-fmt (open-tofu)
+            allow-failure: false
+            skip-fmt: true
+            open-tofu: true
+          - test: skip-plan (open-tofu)
+            allow-failure: false
+            skip-plan: true
+            open-tofu: true
+          - test: truncate-plan (open-tofu)
+            allow-failure: false
+            open-tofu: true
+          - test: init-fail (open-tofu)
+            allow-failure: true
+            open-tofu: true
+          - test: validate-fail (open-tofu)
+            allow-failure: true
+            open-tofu: true
+          - test: import (open-tofu)
+            allow-failure: true
+            open-tofu: true
+          # Terragrunt + OpenTofu tests
+          - test: terragrunt (terragrunt+open-tofu)
+            allow-failure: false
+            terragrunt: true
+            open-tofu: true
+          - test: init-run-all (terragrunt+open-tofu)
+            allow-failure: false
+            terragrunt: true
+            init-run-all: true
+            open-tofu: true
+          - test: plan-options (open-tofu)
+            allow-failure: false
+            terraform-plan: -var-file='plan_options.tfvars'
+            open-tofu: true
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Setup terraform tools
         uses: cds-snc/terraform-tools-setup@v1
+
+      - name: Setup open Tofu CLI
+        uses: opentofu/setup-opentofu@000eeb8522f0572907c393e8151076c205fdba1b
 
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@b47578312673ae6fa5b5096b330d9fbac3d116df # v4.2.1
@@ -96,70 +155,41 @@ jobs:
           script: |
             let isFailed = false;
             const testComments = [
-              {
-                exist: true,
-                title: /Test changes/g,
-                state: /`success`[^`]+`success`/g
-              },{
-                exist: true,
-                title: /Test format-error/g,
-                state: /`failed`[^`]+`success`/g
-              },{
-                exist: true,
-                title: /Test invalid/g,
-                state: /`failed`[^`]+`failed`/g
-              },{
-                exist: false,
-                title: /Test no-changes/g,
-                state: /./g
-              },{
-                exist: true,
-                title: /Test conftest-deny/g,
-                state: /FAIL/g
-              },{
-                exist: false,
-                title: /Test skip-conftest/g,
-                state: /Conftest:\*\*/gm
-              },{
-                exist: true,
-                title: /Test skip-fmt/g,
-                state: /Terraform Validate:\*\* `success`\n\*\*✅ &nbsp; Terraform Plan/gm                               
-              },{
-                exist: true,
-                title: /Test skip-plan/g,
-                state: /Terraform Format:\*\* `success`\n/gm
-              },{
-                exist: true,
-                title: /Test truncate-plan/g,
-                state: /plan has been truncated/gm
-              },{
-                exist: true,
-                title: /Test init-fail/g,
-                state: /Terraform Init:\*\* `failed`\n/gm
-              },{
-                exist: true,
-                title: /Test validate-fail/g,
-                state: /Terraform Validate:\*\* `failed`\n/gm
-              },{
-                exist: true,
-                title: /Test import/g,
-                state: /`success`[^`]+`success`/g
-              },
-              {
-                exist: true,
-                title: /Test terragrunt/g,
-                state: /`success`[^`]+`success`/g
-              },
-              {
-                exist: true,
-                title: /Test init-run-all/g,
-                state: /`success`[^`]+`success`/g
-              },
-              {
-                exist: true,
-                title: /Test plan-options/g,
-                state: /`success`[^`]+`success`/g
-              }
+              // Terraform
+              { exist: true, title: /Test changes \(terraform\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test format-error \(terraform\)/g, state: /`failed`[^`]+`success`/g },
+              { exist: true, title: /Test invalid \(terraform\)/g, state: /`failed`[^`]+`failed`/g },
+              { exist: false, title: /Test no-changes \(terraform\)/g, state: /./g },
+              { exist: true, title: /Test conftest-deny \(terraform\)/g, state: /FAIL/g },
+              { exist: false, title: /Test skip-conftest \(terraform\)/g, state: /Conftest:\*\*/gm },
+              { exist: true, title: /Test skip-fmt \(terraform\)/g, state: /Terraform Validate:\*\* `success`\n\*\*✅ &nbsp; Terraform Plan/gm },
+              { exist: true, title: /Test skip-plan \(terraform\)/g, state: /Terraform Format:\*\* `success`\n/gm },
+              { exist: true, title: /Test truncate-plan \(terraform\)/g, state: /plan has been truncated/gm },
+              { exist: true, title: /Test init-fail \(terraform\)/g, state: /Terraform Init:\*\* `failed`\n/gm },
+              { exist: true, title: /Test validate-fail \(terraform\)/g, state: /Terraform Validate:\*\* `failed`\n/gm },
+              { exist: true, title: /Test import \(terraform\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test plan-options \(terraform\)/g, state: /`success`[^`]+`success`/g },
+              // Terragrunt
+              { exist: true, title: /Test terragrunt \(terragrunt\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test init-run-all \(terragrunt\)/g, state: /`success`[^`]+`success`/g },
+              // OpenTofu
+              { exist: true, title: /Test changes \(open-tofu\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test format-error \(open-tofu\)/g, state: /`failed`[^`]+`success`/g },
+              { exist: true, title: /Test invalid \(open-tofu\)/g, state: /`failed`[^`]+`failed`/g },
+              { exist: false, title: /Test no-changes \(open-tofu\)/g, state: /./g },
+              { exist: true, title: /Test conftest-deny \(open-tofu\)/g, state: /FAIL/g },
+              { exist: false, title: /Test skip-conftest \(open-tofu\)/g, state: /Conftest:\*\*/gm },
+              { exist: true, title: /Test skip-fmt \(open-tofu\)/g, state: /Terraform Validate:\*\* `success`\n\*\*✅ &nbsp; Terraform Plan/gm },
+              { exist: true, title: /Test skip-plan \(open-tofu\)/g, state: /Terraform Format:\*\* `success`\n/gm },
+              { exist: true, title: /Test truncate-plan \(open-tofu\)/g, state: /plan has been truncated/gm },
+              { exist: true, title: /Test init-fail \(open-tofu\)/g, state: /Terraform Init:\*\* `failed`\n/gm },
+              { exist: true, title: /Test validate-fail \(open-tofu\)/g, state: /Terraform Validate:\*\* `failed`\n/gm },
+              { exist: true, title: /Test import \(open-tofu\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test plan-options \(open-tofu\)/g, state: /`success`[^`]+`success`/g },
+              // Terragrunt + OpenTofu
+              { exist: true, title: /Test terragrunt \(terragrunt\+open-tofu\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test init-run-all \(terragrunt\+open-tofu\)/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test plan-options \(open-tofu\)/g, state: /`success`[^`]+`success`/g },
             ];
 
             // Get the existing comments.
