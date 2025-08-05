@@ -21,95 +21,95 @@ jobs:
       matrix:
         include:
           # Standard tests (terraform)
-          - test: changes (terraform)
+          - test: changes
             allow-failure: false
-          - test: no-changes (terraform)
+          - test: no-changes
             allow-failure: false
-          - test: format-error (terraform)
+          - test: format-error
             allow-failure: true 
-          - test: invalid (terraform)
+          - test: invalid
             allow-failure: true
-          - test: conftest-deny (terraform)
+          - test: conftest-deny
             allow-failure: true
-          - test: skip-conftest (terraform)
+          - test: skip-conftest
             allow-failure: false
             skip-conftest: true
-          - test: skip-fmt (terraform)
+          - test: skip-fmt
             allow-failure: false
             skip-fmt: true                        
-          - test: skip-plan (terraform)
+          - test: skip-plan
             allow-failure: false
             skip-plan: true
-          - test: truncate-plan (terraform)
+          - test: truncate-plan
             allow-failure: false
-          - test: init-fail (terraform)
+          - test: init-fail
             allow-failure: true
-          - test: validate-fail (terraform)
+          - test: validate-fail
             allow-failure: true
-          - test: import (terraform)
+          - test: import
             allow-failure: true
           # Terragrunt tests
-          - test: terragrunt (terragrunt)
+          - test: terragrunt
             allow-failure: false
             terragrunt: true
-          - test: init-run-all (terragrunt)
-            allow-failure: false 
+          - test: init-run-all
+            allow-failure: false
             terragrunt: true
             init-run-all: true
-          - test: plan-options (terraform)
+          - test: plan-options
             allow-failure: false
             terraform-plan: -var-file='plan_options.tfvars'
           # OpenTofu tests
-          - test: changes (open-tofu)
+          - test: changes-open-tofu
             allow-failure: false
             open-tofu: true
-          - test: no-changes (open-tofu)
+          - test: no-changes-open-tofu
             allow-failure: false
             open-tofu: true
-          - test: format-error (open-tofu)
+          - test: format-error-open-tofu
             allow-failure: true
             open-tofu: true
-          - test: invalid (open-tofu)
+          - test: invalid-open-tofu
             allow-failure: true
             open-tofu: true
-          - test: conftest-deny (open-tofu)
+          - test: conftest-deny-open-tofu
             allow-failure: true
             open-tofu: true
-          - test: skip-conftest (open-tofu)
+          - test: skip-conftest-open-tofu
             allow-failure: false
             skip-conftest: true
             open-tofu: true
-          - test: skip-fmt (open-tofu)
+          - test: skip-fmt-open-tofu
             allow-failure: false
             skip-fmt: true
             open-tofu: true
-          - test: skip-plan (open-tofu)
+          - test: skip-plan-open-tofu
             allow-failure: false
             skip-plan: true
             open-tofu: true
-          - test: truncate-plan (open-tofu)
+          - test: truncate-plan-open-tofu
             allow-failure: false
             open-tofu: true
-          - test: init-fail (open-tofu)
+          - test: init-fail-open-tofu
             allow-failure: true
             open-tofu: true
-          - test: validate-fail (open-tofu)
+          - test: validate-fail-open-tofu
             allow-failure: true
             open-tofu: true
-          - test: import (open-tofu)
+          - test: import-open-tofu
             allow-failure: true
             open-tofu: true
           # Terragrunt + OpenTofu tests
-          - test: terragrunt (terragrunt+open-tofu)
+          - test: terragrunt-open-tofu
             allow-failure: false
             terragrunt: true
             open-tofu: true
-          - test: init-run-all (terragrunt+open-tofu)
+          - test: init-run-all-open-tofu
             allow-failure: false
             terragrunt: true
             init-run-all: true
             open-tofu: true
-          - test: plan-options (open-tofu)
+          - test: plan-options-open-tofu
             allow-failure: false
             terraform-plan: -var-file='plan_options.tfvars'
             open-tofu: true
