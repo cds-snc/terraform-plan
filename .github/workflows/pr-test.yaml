@@ -144,6 +144,7 @@ jobs:
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
           terragrunt: ${{ matrix.terragrunt || 'false' }}
+          open-tofu: ${{ matrix.open-tofu || 'false' }}
           init-run-all: ${{ matrix.init-run-all || 'false'}}
           terraform-plan: ${{ matrix.terraform-plan || '' }}
 
