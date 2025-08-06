@@ -196,18 +196,17 @@ jobs:
             ];
 
             // Get the existing comments.
-            const comments = await github.paginate(github.rest.issues.listComments.endpoint.method, {
+            const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.payload.number,
             });
+            console.log(`Found ${comments.length} comments`);
 
             // Run through the tests
             let botComment;
             for(let test of testComments){
               botComment = comments.find(comment => comment.body.match(test.title) && comment.body.match(test.state));
-              console.log(`Title: ${test.title}`);
-              console.log(`Comment: ${botComment ? botComment.body : 'No comment found'}`);
               if((botComment && !test.exist) || (!botComment && test.exist)){
                 console.log(`Failed '${test.title}'`);
                 isFailed = true;
