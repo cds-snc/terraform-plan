@@ -36335,16 +36335,6 @@ const action = async () => {
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
 
-  // Determine binary: support all combinations
-  let binary = "terraform";
-  if (isOpenTofu && isTerragrunt) {
-    binary = "terragrunt"; // terragrunt will call tofu if configured
-  } else if (isOpenTofu) {
-    binary = "tofu";
-  } else if (isTerragrunt) {
-    binary = "terragrunt";
-  }
-  const summarizeBinary = "tf-summarize";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
@@ -36355,6 +36345,15 @@ const action = async () => {
 
   const planCharLimit = core.getInput("plan-character-limit");
   const conftestCharLimit = core.getInput("conftest-character-limit");
+
+  // Determine binary: support all combinations
+  let binary = "terraform";
+  if (isTerragrunt) {
+    binary = "terragrunt"; // terragrunt will call tofu if configured
+  } else if (isOpenTofu) {
+    binary = "tofu";
+  }
+  const summarizeBinary = "tf-summarize";
 
   const terraformInitOption = terraformInit
     ? terraformInit.map((item) => sanitizeInput(item)).join(" ")
