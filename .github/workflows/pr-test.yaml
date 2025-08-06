@@ -206,8 +206,8 @@ jobs:
             let botComment;
             for(let test of testComments){
               botComment = comments.find(comment => comment.body.match(test.title) && comment.body.match(test.state));
-              console.log(`Testing comment: ${test.title}`);
-              console.log(`Comment: ${botComment}`);
+              console.log(`Title: ${test.title}`);
+              console.log(`Comment: ${botComment ? botComment.body : 'No comment found'}`);
               if((botComment && !test.exist) || (!botComment && test.exist)){
                 console.log(`Failed '${test.title}'`);
                 isFailed = true;
