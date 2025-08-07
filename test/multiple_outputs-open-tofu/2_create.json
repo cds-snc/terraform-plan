@@ -1,0 +1,72 @@
+{
+  "format_version": "1.1",
+  "terraform_version": "1.4.0",
+  "planned_values": {
+    "outputs": {
+      "bar": {
+        "sensitive": false,
+        "type": "string",
+        "value": "bar"
+      },
+      "foo": {
+        "sensitive": false,
+        "type": "string",
+        "value": "foo"
+      }
+    },
+    "root_module": {}
+  },
+  "output_changes": {
+    "bar": {
+      "actions": ["create"],
+      "before": null,
+      "after": "bar",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    },
+    "foo": {
+      "actions": ["create"],
+      "before": null,
+      "after": "foo",
+      "after_unknown": false,
+      "before_sensitive": false,
+      "after_sensitive": false
+    }
+  },
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.4.0",
+    "values": {
+      "outputs": {
+        "bar": {
+          "sensitive": false,
+          "value": "bar",
+          "type": "string"
+        },
+        "foo": {
+          "sensitive": false,
+          "value": "foo",
+          "type": "string"
+        }
+      },
+      "root_module": {}
+    }
+  },
+  "configuration": {
+    "root_module": {
+      "outputs": {
+        "bar": {
+          "expression": {
+            "constant_value": "bar"
+          }
+        },
+        "foo": {
+          "expression": {
+            "constant_value": "foo"
+          }
+        }
+      }
+    }
+  }
+}

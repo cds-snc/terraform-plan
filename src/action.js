@@ -36,13 +36,12 @@ const action = async () => {
   const isComment = core.getBooleanInput("comment");
   const isCommentDelete = core.getBooleanInput("comment-delete");
   const isTerragrunt = core.getBooleanInput("terragrunt");
+  const isOpenTofu = core.getBooleanInput("open-tofu");
   const skipFormat = core.getBooleanInput("skip-fmt");
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
 
-  const binary = isTerragrunt ? "terragrunt" : "terraform";
-  const summarizeBinary = "tf-summarize";
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
@@ -54,6 +53,15 @@ const action = async () => {
   const planCharLimit = core.getInput("plan-character-limit");
   const conftestCharLimit = core.getInput("conftest-character-limit");
 
+  // Determine binary: support all combinations
+  let binary = "terraform";
+  if (isTerragrunt) {
+    binary = "terragrunt"; // terragrunt will call tofu if configured
+  } else if (isOpenTofu) {
+    binary = "tofu";
+  }
+  const summarizeBinary = "tf-summarize";
+
   const terraformInitOption = terraformInit
     ? terraformInit.map((item) => sanitizeInput(item)).join(" ")
     : "";
@@ -64,7 +72,9 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary}${isTerragrunt && initRunAll ? " run-all" : ""} init -no-color ${terraformInitOption}`.trim(),
+      exec: `${binary}${
+        isTerragrunt && initRunAll ? " run-all" : ""
+      } init -no-color ${terraformInitOption}`.trim(),
     },
     {
       key: "validate",

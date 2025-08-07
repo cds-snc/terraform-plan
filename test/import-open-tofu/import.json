@@ -1,0 +1,449 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.7.1",
+  "planned_values": {
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_cloudwatch_log_group.controltower-notificationforwarder",
+          "mode": "managed",
+          "type": "aws_cloudwatch_log_group",
+          "name": "controltower-notificationforwarder",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "arn": "arn:aws:logs:ca-central-1:124044056575:log-group:/aws/lambda/aws-controltower-NotificationForwarder",
+            "id": "/aws/lambda/aws-controltower-NotificationForwarder",
+            "kms_key_id": "",
+            "log_group_class": "STANDARD",
+            "name": "/aws/lambda/aws-controltower-NotificationForwarder",
+            "name_prefix": "",
+            "retention_in_days": 14,
+            "skip_destroy": false,
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_values": {
+            "tags": {},
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_cloudwatch_log_group.topic",
+          "mode": "managed",
+          "type": "aws_cloudwatch_log_group",
+          "name": "topic",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "kms_key_id": null,
+            "name": "topic",
+            "retention_in_days": 14,
+            "skip_destroy": false,
+            "tags": null
+          },
+          "sensitive_values": {
+            "tags_all": {}
+          }
+        },
+        {
+          "address": "aws_sns_topic.controltower-notificationforwarder",
+          "mode": "managed",
+          "type": "aws_sns_topic",
+          "name": "controltower-notificationforwarder",
+          "provider_name": "registry.terraform.io/hashicorp/aws",
+          "schema_version": 0,
+          "values": {
+            "application_failure_feedback_role_arn": "",
+            "application_success_feedback_role_arn": "",
+            "application_success_feedback_sample_rate": 0,
+            "archive_policy": "",
+            "arn": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+            "beginning_archive_time": "",
+            "content_based_deduplication": false,
+            "delivery_policy": "",
+            "display_name": "",
+            "fifo_topic": false,
+            "firehose_failure_feedback_role_arn": "",
+            "firehose_success_feedback_role_arn": "",
+            "firehose_success_feedback_sample_rate": 0,
+            "http_failure_feedback_role_arn": "",
+            "http_success_feedback_role_arn": "",
+            "http_success_feedback_sample_rate": 0,
+            "id": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+            "kms_master_key_id": "",
+            "lambda_failure_feedback_role_arn": "",
+            "lambda_success_feedback_role_arn": "",
+            "lambda_success_feedback_sample_rate": 0,
+            "name": "internal-sre-alert",
+            "name_prefix": "",
+            "owner": "124044056575",
+            "policy": "{\"Id\":\"SNS Access Policy\",\"Statement\":[{\"Action\":[\"SNS:Subscribe\",\"SNS:SetTopicAttributes\",\"SNS:RemovePermission\",\"SNS:Receive\",\"SNS:Publish\",\"SNS:ListSubscriptionsByTopic\",\"SNS:GetTopicAttributes\",\"SNS:AddPermission\"],\"Condition\":{\"StringEquals\":{\"aws:SourceOwner\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAccountToUse\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"StringEquals\":{\"aws:SourceAccount\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudwatch.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowCloudWatchToPublish\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:ca-central-1:124044056575:rule/internal-sre-alerts-abuse-rule\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAbuseEventsToPublish\"}],\"Version\":\"2012-10-17\"}",
+            "signature_version": 0,
+            "sqs_failure_feedback_role_arn": "",
+            "sqs_success_feedback_role_arn": "",
+            "sqs_success_feedback_sample_rate": 0,
+            "tags": {
+              "CostCentre": "SRE",
+              "Terraform": "true",
+              "managed_by": "AFT"
+            },
+            "tags_all": {
+              "CostCentre": "SRE",
+              "Terraform": "true",
+              "managed_by": "AFT"
+            },
+            "tracing_config": ""
+          },
+          "sensitive_values": {
+            "tags": {},
+            "tags_all": {}
+          }
+        }
+      ]
+    }
+  },
+  "resource_changes": [
+    {
+      "address": "aws_cloudwatch_log_group.controltower-notificationforwarder",
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "controltower-notificationforwarder",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "arn": "arn:aws:logs:ca-central-1:124044056575:log-group:/aws/lambda/aws-controltower-NotificationForwarder",
+          "id": "/aws/lambda/aws-controltower-NotificationForwarder",
+          "kms_key_id": "",
+          "log_group_class": "STANDARD",
+          "name": "/aws/lambda/aws-controltower-NotificationForwarder",
+          "name_prefix": "",
+          "retention_in_days": 14,
+          "skip_destroy": false,
+          "tags": {},
+          "tags_all": {}
+        },
+        "after": {
+          "arn": "arn:aws:logs:ca-central-1:124044056575:log-group:/aws/lambda/aws-controltower-NotificationForwarder",
+          "id": "/aws/lambda/aws-controltower-NotificationForwarder",
+          "kms_key_id": "",
+          "log_group_class": "STANDARD",
+          "name": "/aws/lambda/aws-controltower-NotificationForwarder",
+          "name_prefix": "",
+          "retention_in_days": 14,
+          "skip_destroy": false,
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        },
+        "importing": {
+          "id": "/aws/lambda/aws-controltower-NotificationForwarder"
+        }
+      }
+    },
+    {
+      "address": "aws_cloudwatch_log_group.topic",
+      "mode": "managed",
+      "type": "aws_cloudwatch_log_group",
+      "name": "topic",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["create"],
+        "before": null,
+        "after": {
+          "kms_key_id": null,
+          "name": "topic",
+          "retention_in_days": 14,
+          "skip_destroy": false,
+          "tags": null
+        },
+        "after_unknown": {
+          "arn": true,
+          "id": true,
+          "log_group_class": true,
+          "name_prefix": true,
+          "tags_all": true
+        },
+        "before_sensitive": false,
+        "after_sensitive": {
+          "tags_all": {}
+        }
+      }
+    },
+    {
+      "address": "aws_sns_topic.controltower-notificationforwarder",
+      "mode": "managed",
+      "type": "aws_sns_topic",
+      "name": "controltower-notificationforwarder",
+      "provider_name": "registry.terraform.io/hashicorp/aws",
+      "change": {
+        "actions": ["no-op"],
+        "before": {
+          "application_failure_feedback_role_arn": "",
+          "application_success_feedback_role_arn": "",
+          "application_success_feedback_sample_rate": 0,
+          "archive_policy": "",
+          "arn": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+          "beginning_archive_time": "",
+          "content_based_deduplication": false,
+          "delivery_policy": "",
+          "display_name": "",
+          "fifo_topic": false,
+          "firehose_failure_feedback_role_arn": "",
+          "firehose_success_feedback_role_arn": "",
+          "firehose_success_feedback_sample_rate": 0,
+          "http_failure_feedback_role_arn": "",
+          "http_success_feedback_role_arn": "",
+          "http_success_feedback_sample_rate": 0,
+          "id": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+          "kms_master_key_id": "",
+          "lambda_failure_feedback_role_arn": "",
+          "lambda_success_feedback_role_arn": "",
+          "lambda_success_feedback_sample_rate": 0,
+          "name": "internal-sre-alert",
+          "name_prefix": "",
+          "owner": "124044056575",
+          "policy": "{\"Id\":\"SNS Access Policy\",\"Statement\":[{\"Action\":[\"SNS:Subscribe\",\"SNS:SetTopicAttributes\",\"SNS:RemovePermission\",\"SNS:Receive\",\"SNS:Publish\",\"SNS:ListSubscriptionsByTopic\",\"SNS:GetTopicAttributes\",\"SNS:AddPermission\"],\"Condition\":{\"StringEquals\":{\"aws:SourceOwner\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAccountToUse\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"StringEquals\":{\"aws:SourceAccount\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudwatch.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowCloudWatchToPublish\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:ca-central-1:124044056575:rule/internal-sre-alerts-abuse-rule\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAbuseEventsToPublish\"}],\"Version\":\"2012-10-17\"}",
+          "signature_version": 0,
+          "sqs_failure_feedback_role_arn": "",
+          "sqs_success_feedback_role_arn": "",
+          "sqs_success_feedback_sample_rate": 0,
+          "tags": {
+            "CostCentre": "SRE",
+            "Terraform": "true",
+            "managed_by": "AFT"
+          },
+          "tags_all": {
+            "CostCentre": "SRE",
+            "Terraform": "true",
+            "managed_by": "AFT"
+          },
+          "tracing_config": ""
+        },
+        "after": {
+          "application_failure_feedback_role_arn": "",
+          "application_success_feedback_role_arn": "",
+          "application_success_feedback_sample_rate": 0,
+          "archive_policy": "",
+          "arn": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+          "beginning_archive_time": "",
+          "content_based_deduplication": false,
+          "delivery_policy": "",
+          "display_name": "",
+          "fifo_topic": false,
+          "firehose_failure_feedback_role_arn": "",
+          "firehose_success_feedback_role_arn": "",
+          "firehose_success_feedback_sample_rate": 0,
+          "http_failure_feedback_role_arn": "",
+          "http_success_feedback_role_arn": "",
+          "http_success_feedback_sample_rate": 0,
+          "id": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+          "kms_master_key_id": "",
+          "lambda_failure_feedback_role_arn": "",
+          "lambda_success_feedback_role_arn": "",
+          "lambda_success_feedback_sample_rate": 0,
+          "name": "internal-sre-alert",
+          "name_prefix": "",
+          "owner": "124044056575",
+          "policy": "{\"Id\":\"SNS Access Policy\",\"Statement\":[{\"Action\":[\"SNS:Subscribe\",\"SNS:SetTopicAttributes\",\"SNS:RemovePermission\",\"SNS:Receive\",\"SNS:Publish\",\"SNS:ListSubscriptionsByTopic\",\"SNS:GetTopicAttributes\",\"SNS:AddPermission\"],\"Condition\":{\"StringEquals\":{\"aws:SourceOwner\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAccountToUse\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"StringEquals\":{\"aws:SourceAccount\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudwatch.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowCloudWatchToPublish\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:ca-central-1:124044056575:rule/internal-sre-alerts-abuse-rule\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAbuseEventsToPublish\"}],\"Version\":\"2012-10-17\"}",
+          "signature_version": 0,
+          "sqs_failure_feedback_role_arn": "",
+          "sqs_success_feedback_role_arn": "",
+          "sqs_success_feedback_sample_rate": 0,
+          "tags": {
+            "CostCentre": "SRE",
+            "Terraform": "true",
+            "managed_by": "AFT"
+          },
+          "tags_all": {
+            "CostCentre": "SRE",
+            "Terraform": "true",
+            "managed_by": "AFT"
+          },
+          "tracing_config": ""
+        },
+        "after_unknown": {},
+        "before_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        },
+        "after_sensitive": {
+          "tags": {},
+          "tags_all": {}
+        },
+        "importing": {
+          "id": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert"
+        }
+      }
+    }
+  ],
+  "prior_state": {
+    "format_version": "1.0",
+    "terraform_version": "1.7.1",
+    "values": {
+      "root_module": {
+        "resources": [
+          {
+            "address": "aws_cloudwatch_log_group.controltower-notificationforwarder",
+            "mode": "managed",
+            "type": "aws_cloudwatch_log_group",
+            "name": "controltower-notificationforwarder",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "arn": "arn:aws:logs:ca-central-1:124044056575:log-group:/aws/lambda/aws-controltower-NotificationForwarder",
+              "id": "/aws/lambda/aws-controltower-NotificationForwarder",
+              "kms_key_id": "",
+              "log_group_class": "STANDARD",
+              "name": "/aws/lambda/aws-controltower-NotificationForwarder",
+              "name_prefix": "",
+              "retention_in_days": 14,
+              "skip_destroy": false,
+              "tags": {},
+              "tags_all": {}
+            },
+            "sensitive_values": {
+              "tags": {},
+              "tags_all": {}
+            }
+          },
+          {
+            "address": "aws_sns_topic.controltower-notificationforwarder",
+            "mode": "managed",
+            "type": "aws_sns_topic",
+            "name": "controltower-notificationforwarder",
+            "provider_name": "registry.terraform.io/hashicorp/aws",
+            "schema_version": 0,
+            "values": {
+              "application_failure_feedback_role_arn": "",
+              "application_success_feedback_role_arn": "",
+              "application_success_feedback_sample_rate": 0,
+              "archive_policy": "",
+              "arn": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+              "beginning_archive_time": "",
+              "content_based_deduplication": false,
+              "delivery_policy": "",
+              "display_name": "",
+              "fifo_topic": false,
+              "firehose_failure_feedback_role_arn": "",
+              "firehose_success_feedback_role_arn": "",
+              "firehose_success_feedback_sample_rate": 0,
+              "http_failure_feedback_role_arn": "",
+              "http_success_feedback_role_arn": "",
+              "http_success_feedback_sample_rate": 0,
+              "id": "arn:aws:sns:ca-central-1:124044056575:internal-sre-alert",
+              "kms_master_key_id": "",
+              "lambda_failure_feedback_role_arn": "",
+              "lambda_success_feedback_role_arn": "",
+              "lambda_success_feedback_sample_rate": 0,
+              "name": "internal-sre-alert",
+              "name_prefix": "",
+              "owner": "124044056575",
+              "policy": "{\"Id\":\"SNS Access Policy\",\"Statement\":[{\"Action\":[\"SNS:Subscribe\",\"SNS:SetTopicAttributes\",\"SNS:RemovePermission\",\"SNS:Receive\",\"SNS:Publish\",\"SNS:ListSubscriptionsByTopic\",\"SNS:GetTopicAttributes\",\"SNS:AddPermission\"],\"Condition\":{\"StringEquals\":{\"aws:SourceOwner\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"AWS\":\"*\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAccountToUse\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"StringEquals\":{\"aws:SourceAccount\":\"124044056575\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"cloudwatch.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowCloudWatchToPublish\"},{\"Action\":\"SNS:Publish\",\"Condition\":{\"ArnEquals\":{\"aws:SourceArn\":\"arn:aws:events:ca-central-1:124044056575:rule/internal-sre-alerts-abuse-rule\"}},\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"events.amazonaws.com\"},\"Resource\":\"arn:aws:sns:ca-central-1:124044056575:internal-sre-alert\",\"Sid\":\"AllowAbuseEventsToPublish\"}],\"Version\":\"2012-10-17\"}",
+              "signature_version": 0,
+              "sqs_failure_feedback_role_arn": "",
+              "sqs_success_feedback_role_arn": "",
+              "sqs_success_feedback_sample_rate": 0,
+              "tags": {
+                "CostCentre": "SRE",
+                "Terraform": "true",
+                "managed_by": "AFT"
+              },
+              "tags_all": {
+                "CostCentre": "SRE",
+                "Terraform": "true",
+                "managed_by": "AFT"
+              },
+              "tracing_config": ""
+            },
+            "sensitive_values": {
+              "tags": {},
+              "tags_all": {}
+            }
+          }
+        ]
+      }
+    }
+  },
+  "configuration": {
+    "provider_config": {
+      "aws": {
+        "name": "aws",
+        "full_name": "registry.terraform.io/hashicorp/aws",
+        "version_constraint": "~\u003e 5.0",
+        "expressions": {
+          "region": {
+            "constant_value": "ca-central-1"
+          }
+        }
+      }
+    },
+    "root_module": {
+      "resources": [
+        {
+          "address": "aws_cloudwatch_log_group.controltower-notificationforwarder",
+          "mode": "managed",
+          "type": "aws_cloudwatch_log_group",
+          "name": "controltower-notificationforwarder",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "/aws/lambda/aws-controltower-NotificationForwarder"
+            },
+            "retention_in_days": {
+              "constant_value": 14
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_cloudwatch_log_group.topic",
+          "mode": "managed",
+          "type": "aws_cloudwatch_log_group",
+          "name": "topic",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "topic"
+            },
+            "retention_in_days": {
+              "constant_value": 14
+            }
+          },
+          "schema_version": 0
+        },
+        {
+          "address": "aws_sns_topic.controltower-notificationforwarder",
+          "mode": "managed",
+          "type": "aws_sns_topic",
+          "name": "controltower-notificationforwarder",
+          "provider_config_key": "aws",
+          "expressions": {
+            "name": {
+              "constant_value": "internal-sre-alert"
+            },
+            "tags": {
+              "constant_value": {
+                "CostCentre": "SRE",
+                "Terraform": "true",
+                "managed_by": "AFT"
+              }
+            }
+          },
+          "schema_version": 0
+        }
+      ]
+    }
+  },
+  "timestamp": "2024-01-27T22:29:55Z",
+  "errored": false
+}

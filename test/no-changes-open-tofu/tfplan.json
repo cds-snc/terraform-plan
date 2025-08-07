@@ -1,0 +1,11 @@
+{
+  "format_version": "0.1",
+  "terraform_version": "1.0.0",
+  "planned_values": { "root_module": {} },
+  "configuration": {
+    "provider_config": {
+      "test": { "name": "test", "version_constraint": "~\u003e 3.1.0" }
+    },
+    "root_module": {}
+  }
+}
