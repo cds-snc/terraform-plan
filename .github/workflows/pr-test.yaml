@@ -121,7 +121,7 @@ jobs:
         uses: cds-snc/terraform-tools-setup@v1
 
       - name: Setup open Tofu CLI
-        uses: opentofu/setup-opentofu@9cc1438d52f7a4370743f2b98cd3a803a06232c2
+        uses: opentofu/setup-opentofu@dd259403c5b735c495887213f1d8bec0b5f0a143
         with:
           tofu_version: ${{ env.OPEN_TOFU_VERSION }}
 
@@ -153,7 +153,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Test action comments
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
