@@ -122,7 +122,7 @@ jobs:
         uses: cds-snc/terraform-tools-setup@v1
 
       - name: Setup open Tofu CLI
-        uses: opentofu/setup-opentofu@dd259403c5b735c495887213f1d8bec0b5f0a143
+        uses: opentofu/setup-opentofu@5e2b22fba47cc61e142874742cc1e0afb4a492e0
         with:
           tofu_version: ${{ env.OPEN_TOFU_VERSION }}
 
