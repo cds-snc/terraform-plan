@@ -7,6 +7,7 @@ env:
   TERRAFORM_VERSION: 1.9.8
   TERRAGRUNT_VERSION: 0.68.6
   TF_SUMMARIZE_VERSION: 0.3.5
+  TRUFFLEHOG_VERSION: 3.90.12
 
 
 permissions:
@@ -33,6 +34,8 @@ jobs:
             allow-failure: true
           - test: conftest-deny
             allow-failure: true
+          - test: secret-scan
+            secret-scan: true
           - test: skip-conftest
             allow-failure: false
             skip-conftest: true
@@ -122,9 +125,16 @@ jobs:
         uses: cds-snc/terraform-tools-setup@v1
 
       - name: Setup open Tofu CLI
+        if: matrix.open-tofu == true
         uses: opentofu/setup-opentofu@339b7b2a1b4c7cf0cbedc48aac92aebd5d9110e6
         with:
           tofu_version: ${{ env.OPEN_TOFU_VERSION }}
+
+      - name: Install trufflehog
+        if: matrix.secret-scan == true
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh \
+            | sh -s -- -b /usr/local/bin v${{ env.TRUFFLEHOG_VERSION }}
 
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8 # v5.1.0
@@ -141,6 +151,7 @@ jobs:
           comment-title: Test ${{ matrix.test }}
           comment-delete: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          secret-scan: ${{ matrix.secret-scan || 'false' }}
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}

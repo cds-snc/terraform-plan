@@ -26,10 +26,15 @@ Use the following settings to control the action:
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terraform-plan` | Custom Terraform plan args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
+| `secret-scan`    | Scan Terraform plan with TruffleHog for secrets                    | false        |
 | `skip-conftest`  | Skip the Conftest step                                             | false        |
 | `skip-fmt`       | Skip the Terraform format check                                    | false        |
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
 | `init-run-all`   | Run init across all modules (only applicable for terragrunt).      | false        |
+
+## Secret Scanning with Trufflehog
+
+When `secret-scan` is enabled, the action scans the Terraform plan for secrets before adding it as a comment to the PR.  Scanning is performed by Trufflehog which you will need to install before the action runs.
 
 
 # Examples
@@ -91,6 +96,19 @@ Use the following settings to control the action:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     terraform-plan: |
       -var-file="path/to/terraform.tfvars"
+
+# Example 7
+# Run Terraform plan with secret scanning enabled
+# Requires trufflehog to be available in the runner environment
+- name: Install trufflehog
+  run: |
+    curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+    
+- name: Terraform plan with secret scanning
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    secret-scan: true
 ```
 
 # Contributing

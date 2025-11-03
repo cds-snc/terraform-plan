@@ -7,7 +7,12 @@ const mock_fs = require("mock-fs");
 const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
-const { action, sanitizeInput } = require("../src/action.js");
+const {
+  action,
+  sanitizeInput,
+  scanPlanForSecrets,
+  redactSecretsFromPlan,
+} = require("../src/action.js");
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
@@ -396,6 +401,59 @@ describe("action", () => {
     ]);
   });
 
+  test("add comment with secret scan enabled", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    getPlanChanges.mockReturnValue({ isChanges: true });
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getBooleanInput).calledWith("secret-scan").mockReturnValue(true);
+    when(core.getInput)
+      .calledWith("comment-title")
+      .mockReturnValue("raspberries");
+    when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
+    when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
+    when(core.getBooleanInput)
+      .calledWith("skip-conftest")
+      .mockReturnValue(false);
+    github.getOctokit.mockReturnValue("octokit");
+    github.context = "context";
+
+    // Mock secret scan to return no secrets
+    execCommand.mockImplementation((command) => {
+      if (command.key === "secret-scan") {
+        return { isSuccess: true, output: "" };
+      }
+      return { isSuccess: true, output: "{}" };
+    });
+
+    await action();
+
+    expect(github.getOctokit.mock.calls.length).toBe(1);
+    expect(getPlanChanges.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls[0]).toEqual([
+      "octokit",
+      "context",
+      "raspberries",
+      {
+        fmt: { isSuccess: true, output: "{}" },
+        init: { isSuccess: true, output: "{}" },
+        plan: { isSuccess: true, output: "{}" },
+        show: { isSuccess: true, output: "{}" },
+        summary: { isSuccess: true, output: "{}" },
+        validate: { isSuccess: true, output: "{}" },
+        "show-json-out": { isSuccess: true, output: "{}" },
+        conftest: { isSuccess: true, output: "{}" },
+      },
+      { isChanges: true },
+      30000,
+      2000,
+      false,
+      false,
+      false,
+    ]);
+  });
+
   test("add comment", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     getPlanChanges.mockReturnValue({ isChanges: true });
@@ -406,6 +464,9 @@ describe("action", () => {
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
     when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
+    when(core.getBooleanInput)
+      .calledWith("skip-conftest")
+      .mockReturnValue(false);
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
 
@@ -431,6 +492,7 @@ describe("action", () => {
       { isChanges: true },
       30000,
       2000,
+      false,
       false,
       false,
     ]);
@@ -526,6 +588,9 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
     when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(true);
+    when(core.getBooleanInput)
+      .calledWith("skip-conftest")
+      .mockReturnValue(false);
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
 
@@ -552,6 +617,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       2000,
       false,
       true,
+      false,
     ]);
   });
 });
@@ -598,5 +664,113 @@ describe("sanitizeInput", () => {
     expect(sanitizeInput("version-1.2.3", { allowedChars: /[^0-9.]/g })).toBe(
       "1.2.3",
     );
+  });
+});
+
+describe("scanPlanForSecrets", () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+
+  test("returns empty array when no secrets detected", () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "" });
+
+    const secrets = scanPlanForSecrets("terraform plan output", "/tmp");
+
+    expect(secrets).toEqual([]);
+    expect(execCommand).toHaveBeenCalledWith(
+      {
+        key: "secret-scan",
+        exec: "trufflehog filesystem /tmp/temp_plan.tf --no-verification --config=secrets.yml --json --no-update",
+        output: false,
+      },
+      "/tmp",
+    );
+  });
+
+  test("returns secrets when detected", () => {
+    const mockOutput =
+      '{"Raw":"gcntfy-1234567890123456789012345678901234567890","ExtraData":{"name":"generic-api-key"}}\n{"Raw":"secret-key-abc123","ExtraData":{"name":"another-secret"}}';
+    execCommand.mockReturnValue({ isSuccess: true, output: mockOutput });
+
+    const secrets = scanPlanForSecrets("terraform plan with secrets", "/tmp");
+
+    expect(secrets).toEqual([
+      "gcntfy-1234567890123456789012345678901234567890",
+      "secret-key-abc123",
+    ]);
+  });
+
+  test("handles trufflehog scan failure gracefully", () => {
+    execCommand.mockReturnValue({ isSuccess: false, output: "scan failed" });
+
+    const secrets = scanPlanForSecrets("terraform plan output", "/tmp");
+
+    expect(secrets).toEqual([]);
+  });
+});
+
+describe("redactSecretsFromPlan", () => {
+  test("returns original plan when no secrets provided", () => {
+    const plan = "terraform plan output with sensitive data";
+
+    expect(redactSecretsFromPlan(plan, [])).toBe(plan);
+    expect(redactSecretsFromPlan(plan, null)).toBe(plan);
+    expect(redactSecretsFromPlan(plan, undefined)).toBe(plan);
+  });
+
+  test("redacts single secret from plan", () => {
+    const plan =
+      "aws_access_key_id = gcntfy-1234567890123456789012345678901234567890";
+    const secrets = ["gcntfy-1234567890123456789012345678901234567890"];
+
+    const result = redactSecretsFromPlan(plan, secrets);
+
+    expect(result).toBe("aws_access_key_id = ***");
+  });
+
+  test("redacts multiple secrets from plan", () => {
+    const plan = `
+      aws_access_key_id = gcntfy-1234567890123456789012345678901234567890
+      secret_key = secret-abc123
+      another_key = gcntfy-1234567890123456789012345678901234567890
+    `;
+    const secrets = [
+      "gcntfy-1234567890123456789012345678901234567890",
+      "secret-abc123",
+    ];
+
+    const result = redactSecretsFromPlan(plan, secrets);
+
+    expect(result).toContain("aws_access_key_id = ***");
+    expect(result).toContain("secret_key = ***");
+    expect(result).toContain("another_key = ***");
+    expect(result).not.toContain(
+      "gcntfy-1234567890123456789012345678901234567890",
+    );
+    expect(result).not.toContain("secret-abc123");
+  });
+
+  test("handles secrets with special regex characters", () => {
+    const plan = "password = my.secret+key$with[special]chars";
+    const secrets = ["my.secret+key$with[special]chars"];
+
+    const result = redactSecretsFromPlan(plan, secrets);
+
+    expect(result).toBe("password = ***");
+  });
+
+  test("redacts all occurrences of same secret", () => {
+    const plan = `
+      first_occurrence = secret123
+      second_occurrence = secret123
+    `;
+    const secrets = ["secret123"];
+
+    const result = redactSecretsFromPlan(plan, secrets);
+
+    expect(result).toContain("first_occurrence = ***");
+    expect(result).toContain("second_occurrence = ***");
+    expect(result).not.toContain("secret123");
   });
 });

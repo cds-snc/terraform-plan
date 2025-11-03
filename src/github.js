@@ -125,6 +125,7 @@ const generateChangesLine = (changes) => {
  * @param {number} conftestPlanLimit the nubmer of characters to render
  * @param {boolean} skipFormat Skip runnting terraform fmt check
  * @param {boolean} skipPlan Skip the rendering of the plan output
+ * @param {boolean} skipConftest Skip the conftest step
  */
 const addComment = async (
   octokit,
