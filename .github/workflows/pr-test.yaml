@@ -35,6 +35,7 @@ jobs:
           - test: conftest-deny
             allow-failure: true
           - test: secret-scan
+            allow-failure: false
             secret-scan: true
           - test: skip-conftest
             allow-failure: false
@@ -121,16 +122,16 @@ jobs:
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
-      - name: Setup terraform tools
+      - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@v1
 
-      - name: Setup open Tofu CLI
+      - name: Setup OpenTofu
         if: matrix.open-tofu == true
         uses: opentofu/setup-opentofu@339b7b2a1b4c7cf0cbedc48aac92aebd5d9110e6
         with:
           tofu_version: ${{ env.OPEN_TOFU_VERSION }}
 
-      - name: Install trufflehog
+      - name: Install TruffleHog
         if: matrix.secret-scan == true
         run: |
           curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh \
