@@ -91,7 +91,7 @@ function redactSecretsFromPlan(planOutput, secrets) {
 
   let redactedPlan = planOutput;
   for (const secret of secrets) {
-    redactedPlan = redactedPlan.replaceAll(secret, "***");
+    redactedPlan = redactedPlan.split(secret).join("***");
   }
   return redactedPlan;
 }

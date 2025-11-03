@@ -186,6 +186,7 @@ jobs:
               { exist: true, title: /Test validate-fail/g, state: /Terraform Validate:\*\* `failed`\n/gm },
               { exist: true, title: /Test import/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test plan-options/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test secret-scan/g, state: /id = "\*\*\*"/g },
               // Terragrunt
               { exist: true, title: /Test terragrunt/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test init-run-all/g, state: /`success`[^`]+`success`/g },
