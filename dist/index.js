@@ -36294,6 +36294,7 @@ function wrappy (fn, cb) {
 
 
 const fs = __nccwpck_require__(9896);
+const path = __nccwpck_require__(6928);
 const core = __nccwpck_require__(7484);
 const github = __nccwpck_require__(3228);
 const { execCommand } = __nccwpck_require__(792);
@@ -36322,6 +36323,73 @@ function parseInputInt(str, def) {
 }
 
 /**
+ * Scans a Terraform plan with trufflehog for secrets
+ * @param {string} planOutput The Terraform plan output to scan
+ * @returns {Array} Array of detected secrets
+ */
+function scanPlanForSecrets(planOutput) {
+  try {
+    const tempPlanFile = path.join(__dirname, "plan.tf");
+    fs.writeFileSync(tempPlanFile, planOutput);
+    const scanCommand = {
+      key: "secret-scan",
+      exec: `trufflehog filesystem plan.tf --no-verification --config=secrets.yml --json --no-update`,
+      output: false,
+    };
+    const result = execCommand(scanCommand, __dirname);
+    fs.unlinkSync(tempPlanFile);
+
+    if (!result.isSuccess) {
+      core.warning(
+        "Trufflehog scan failed, continuing without secret redaction",
+      );
+      return [];
+    }
+
+    // Parse JSON output - each line is a separate JSON object
+    const secrets = [];
+    const lines = result.output
+      .trim()
+      .split("\n")
+      .filter((line) => line.trim());
+
+    for (const line of lines) {
+      try {
+        const secretData = JSON.parse(line);
+        if (secretData.Raw) {
+          secrets.push(secretData.Raw);
+        }
+      } catch (parseError) {
+        core.warning(`Failed to parse trufflehog output line: ${line}`);
+      }
+    }
+
+    return secrets;
+  } catch (error) {
+    core.warning(`Error during trufflehog scan: ${error.message}`);
+    return [];
+  }
+}
+
+/**
+ * Redacts detected secrets from plan output by replacing them with ***
+ * @param {string} planOutput The original plan output
+ * @param {Array} secrets Array of secret values to redact
+ * @returns {string} Plan output with secrets redacted
+ */
+function redactSecretsFromPlan(planOutput, secrets) {
+  if (!secrets || secrets.length === 0) {
+    return planOutput;
+  }
+
+  let redactedPlan = planOutput;
+  for (const secret of secrets) {
+    redactedPlan = redactedPlan.split(secret).join("***");
+  }
+  return redactedPlan;
+}
+
+/**
  * Runs the action
  */
 const action = async () => {
@@ -36334,6 +36402,7 @@ const action = async () => {
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
+  const isSecretScan = core.getBooleanInput("secret-scan");
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
@@ -36485,6 +36554,17 @@ const action = async () => {
     const planLimit = parseInputInt(planCharLimit, 30000);
     const conftestLimit = parseInputInt(conftestCharLimit, 2000);
 
+    // Scan for secrets and redact if secret scanning is enabled
+    if (isSecretScan && !skipPlan && results.plan.output) {
+      const detectedSecrets = scanPlanForSecrets(results.plan.output);
+      if (detectedSecrets.length > 0) {
+        results.plan.output = redactSecretsFromPlan(
+          results.plan.output,
+          detectedSecrets,
+        );
+      }
+    }
+
     await addComment(
       octokit,
       github.context,
@@ -36512,6 +36592,8 @@ const action = async () => {
 module.exports = {
   action: action,
   sanitizeInput: sanitizeInput,
+  scanPlanForSecrets: scanPlanForSecrets,
+  redactSecretsFromPlan: redactSecretsFromPlan,
 };
 
 
@@ -36700,6 +36782,7 @@ const generateChangesLine = (changes) => {
  * @param {number} conftestPlanLimit the nubmer of characters to render
  * @param {boolean} skipFormat Skip runnting terraform fmt check
  * @param {boolean} skipPlan Skip the rendering of the plan output
+ * @param {boolean} skipConftest Skip the conftest step
  */
 const addComment = async (
   octokit,

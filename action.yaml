@@ -55,6 +55,10 @@ inputs:
     description: 'Use Terragrunt instead of Terraform'
     required: false
     default: 'false'
+  secret-scan:
+    description: 'Scan Terraform plan with trufflehog for secrets before adding comment to PR'
+    required: false
+    default: 'false'
   skip-conftest:
     description: 'Skip the conftest step'
     required: false
