@@ -36335,9 +36335,10 @@ function scanPlanForSecrets(planOutput, directory) {
     fs.writeFileSync(tempPlanFile, planOutput);
 
     // Execute trufflehog scan
+    const secretsConfigPath = __nccwpck_require__.ab + "secrets.yml";
     const scanCommand = {
       key: "secret-scan",
-      exec: `trufflehog filesystem ${tempPlanFile} --no-verification --config=secrets.yml --json --no-update`,
+      exec: `trufflehog filesystem ${tempPlanFile} --no-verification --config=${secretsConfigPath} --json --no-update`,
       output: false,
     };
     const result = execCommand(scanCommand, directory);

@@ -681,7 +681,9 @@ describe("scanPlanForSecrets", () => {
     expect(execCommand).toHaveBeenCalledWith(
       {
         key: "secret-scan",
-        exec: "trufflehog filesystem /tmp/temp_plan.tf --no-verification --config=secrets.yml --json --no-update",
+        exec: expect.stringMatching(
+          /trufflehog filesystem \/tmp\/temp_plan\.tf --no-verification --config=.*secrets\.yml --json --no-update/,
+        ),
         output: false,
       },
       "/tmp",
