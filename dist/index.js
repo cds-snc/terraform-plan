@@ -36325,25 +36325,18 @@ function parseInputInt(str, def) {
 /**
  * Scans a Terraform plan with trufflehog for secrets
  * @param {string} planOutput The Terraform plan output to scan
- * @param {string} directory The directory to write temporary files in
  * @returns {Array} Array of detected secrets
  */
-function scanPlanForSecrets(planOutput, directory) {
+function scanPlanForSecrets(planOutput) {
   try {
-    // Write plan to temporary file
-    const tempPlanFile = path.join(directory, "temp_plan.tf");
+    const tempPlanFile = path.join(__dirname, "plan.tf");
     fs.writeFileSync(tempPlanFile, planOutput);
-
-    // Execute trufflehog scan
-    const secretsConfigPath = __nccwpck_require__.ab + "secrets.yml";
     const scanCommand = {
       key: "secret-scan",
-      exec: `trufflehog filesystem ${tempPlanFile} --no-verification --config=${secretsConfigPath} --json --no-update`,
+      exec: `trufflehog filesystem plan.tf --no-verification --config=secrets.yml --json --no-update`,
       output: false,
     };
-    const result = execCommand(scanCommand, directory);
-
-    // Clean up temporary file
+    const result = execCommand(scanCommand, __dirname);
     fs.unlinkSync(tempPlanFile);
 
     if (!result.isSuccess) {
@@ -36563,10 +36556,7 @@ const action = async () => {
 
     // Scan for secrets and redact if secret scanning is enabled
     if (isSecretScan && !skipPlan && results.plan.output) {
-      const detectedSecrets = scanPlanForSecrets(
-        results.plan.output,
-        directory,
-      );
+      const detectedSecrets = scanPlanForSecrets(results.plan.output);
       if (detectedSecrets.length > 0) {
         results.plan.output = redactSecretsFromPlan(
           results.plan.output,

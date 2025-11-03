@@ -675,18 +675,18 @@ describe("scanPlanForSecrets", () => {
   test("returns empty array when no secrets detected", () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "" });
 
-    const secrets = scanPlanForSecrets("terraform plan output", "/tmp");
+    const secrets = scanPlanForSecrets("terraform plan output");
 
     expect(secrets).toEqual([]);
     expect(execCommand).toHaveBeenCalledWith(
       {
         key: "secret-scan",
         exec: expect.stringMatching(
-          /trufflehog filesystem \/tmp\/temp_plan\.tf --no-verification --config=.*secrets\.yml --json --no-update/,
+          /trufflehog filesystem plan\.tf --no-verification --config=secrets\.yml --json --no-update/,
         ),
         output: false,
       },
-      "/tmp",
+      expect.any(String), // __dirname from the action
     );
   });
 
@@ -695,7 +695,7 @@ describe("scanPlanForSecrets", () => {
       '{"Raw":"gcntfy-1234567890123456789012345678901234567890","ExtraData":{"name":"generic-api-key"}}\n{"Raw":"secret-key-abc123","ExtraData":{"name":"another-secret"}}';
     execCommand.mockReturnValue({ isSuccess: true, output: mockOutput });
 
-    const secrets = scanPlanForSecrets("terraform plan with secrets", "/tmp");
+    const secrets = scanPlanForSecrets("terraform plan with secrets");
 
     expect(secrets).toEqual([
       "gcntfy-1234567890123456789012345678901234567890",
@@ -706,7 +706,7 @@ describe("scanPlanForSecrets", () => {
   test("handles trufflehog scan failure gracefully", () => {
     execCommand.mockReturnValue({ isSuccess: false, output: "scan failed" });
 
-    const secrets = scanPlanForSecrets("terraform plan output", "/tmp");
+    const secrets = scanPlanForSecrets("terraform plan output");
 
     expect(secrets).toEqual([]);
   });
