@@ -62,7 +62,7 @@ inputs:
   secret-config:
     description: 'Path to TruffleHog config file for secret scanning'
     required: false
-    default: 'secrets.yml'
+    default: ''
   skip-conftest:
     description: 'Skip the conftest step'
     required: false

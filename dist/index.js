@@ -36409,7 +36409,7 @@ const action = async () => {
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
   const isSecretScan = core.getBooleanInput("secret-scan");
-  const secretConfig = core.getInput("secret-config") || undefined;
+  const secretConfig = core.getInput("secret-config");
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
