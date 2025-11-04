@@ -32,16 +32,21 @@ function parseInputInt(str, def) {
 /**
  * Scans a Terraform plan with trufflehog for secrets
  * @param {string} planOutput The Terraform plan output to scan
- * @param {string} configPath Path to the TruffleHog config file
+ * @param {string} configPath Path to the TruffleHog config file (relative to workspace root)
  * @returns {Array} Array of detected secrets
  */
 function scanPlanForSecrets(planOutput, configPath) {
   try {
+    // Resolve config path: default to dist/secrets.yml if not provided,
+    // otherwise resolve relative to GitHub workspace root
+    const resolvedConfigPath = configPath
+      ? path.join(process.env.GITHUB_WORKSPACE, configPath)
+      : path.join(__dirname, "secrets.yml");
     const tempPlanFile = path.join(__dirname, "plan.tf");
     fs.writeFileSync(tempPlanFile, planOutput);
     const scanCommand = {
       key: "secret-scan",
-      exec: `trufflehog filesystem plan.tf --no-verification --config=${configPath} --json --no-update`,
+      exec: `trufflehog filesystem plan.tf --no-verification --config=${resolvedConfigPath} --json --no-update`,
       output: false,
     };
     const result = execCommand(scanCommand, __dirname);
@@ -111,7 +116,7 @@ const action = async () => {
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
   const isSecretScan = core.getBooleanInput("secret-scan");
-  const secretConfig = core.getInput("secret-config") || "secrets.yml";
+  const secretConfig = core.getInput("secret-config") || undefined;
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");

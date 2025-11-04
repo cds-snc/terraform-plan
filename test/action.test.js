@@ -23,10 +23,12 @@ jest.mock("../src/opa.js");
 describe("action", () => {
   afterEach(() => {
     mock_fs.restore();
+    delete process.env.GITHUB_WORKSPACE;
   });
 
   beforeEach(() => {
     jest.resetAllMocks();
+    process.env.GITHUB_WORKSPACE = "/mock/workspace";
     mock_fs({
       foo: {
         "prod.tfvars": 'env = "prod"',
@@ -670,19 +672,24 @@ describe("sanitizeInput", () => {
 describe("scanPlanForSecrets", () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    process.env.GITHUB_WORKSPACE = "/mock/workspace";
+  });
+
+  afterEach(() => {
+    delete process.env.GITHUB_WORKSPACE;
   });
 
   test("returns empty array when no secrets detected", () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "" });
 
-    const secrets = scanPlanForSecrets("terraform plan output", "secrets.yml");
+    const secrets = scanPlanForSecrets("terraform plan output", undefined);
 
     expect(secrets).toEqual([]);
     expect(execCommand).toHaveBeenCalledWith(
       {
         key: "secret-scan",
         exec: expect.stringMatching(
-          /trufflehog filesystem plan\.tf --no-verification --config=secrets\.yml --json --no-update/,
+          /trufflehog filesystem plan\.tf --no-verification --config=.*\/secrets\.yml --json --no-update/,
         ),
         output: false,
       },
@@ -697,7 +704,7 @@ describe("scanPlanForSecrets", () => {
 
     const secrets = scanPlanForSecrets(
       "terraform plan with secrets",
-      "secrets.yml",
+      "config/secrets.yml",
     );
 
     expect(secrets).toEqual([
@@ -709,7 +716,7 @@ describe("scanPlanForSecrets", () => {
   test("handles trufflehog scan failure gracefully", () => {
     execCommand.mockReturnValue({ isSuccess: false, output: "scan failed" });
 
-    const secrets = scanPlanForSecrets("terraform plan output", "secrets.yml");
+    const secrets = scanPlanForSecrets("terraform plan output", undefined);
 
     expect(secrets).toEqual([]);
   });
@@ -727,7 +734,7 @@ describe("scanPlanForSecrets", () => {
       {
         key: "secret-scan",
         exec: expect.stringMatching(
-          /trufflehog filesystem plan\.tf --no-verification --config=custom-config\.yml --json --no-update/,
+          /trufflehog filesystem plan\.tf --no-verification --config=.*\/custom-config\.yml --json --no-update/,
         ),
         output: false,
       },

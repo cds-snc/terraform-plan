@@ -157,6 +157,7 @@ jobs:
           comment-delete: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
           secret-scan: ${{ matrix.secret-scan || 'false' }}
+          secret-config: ${{ matrix.secret-config || '' }}
           skip-conftest: ${{ matrix.skip-conftest || 'false' }}
           skip-fmt: ${{ matrix.skip-fmt || 'false' }}
           skip-plan: ${{ matrix.skip-plan || 'false' }}
