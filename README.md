@@ -27,6 +27,7 @@ Use the following settings to control the action:
 | `terraform-plan` | Custom Terraform plan args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 | `secret-scan`    | Scan Terraform plan with TruffleHog for secrets                    | false        |
+| `secret-config`  | Path to TruffleHog config file for secret scanning                 |              |
 | `skip-conftest`  | Skip the Conftest step                                             | false        |
 | `skip-fmt`       | Skip the Terraform format check                                    | false        |
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
@@ -35,6 +36,8 @@ Use the following settings to control the action:
 ## Secret Scanning with Trufflehog
 
 When `secret-scan` is enabled, the action scans the Terraform plan for secrets before adding it as a comment to the PR.  Scanning is performed by Trufflehog which you will need to install before the action runs.
+
+By default, the action uses the `secrets.yml` config file located in the action's `dist/` directory. You can provide a custom [TruffleHog config](https://docs.trufflesecurity.com/configuration-file-reference) file by setting the `secret-config` parameter to the path of your config file.
 
 
 # Examples
@@ -109,6 +112,19 @@ When `secret-scan` is enabled, the action scans the Terraform plan for secrets b
   with:
     github-token: ${{ secrets.GITHUB_TOKEN }}
     secret-scan: true
+
+# Example 8
+# Run Terraform plan with secret scanning using a custom config file
+- name: Install trufflehog
+  run: |
+    curl -sSfL https://raw.githubusercontent.com/trufflesecurity/trufflehog/main/scripts/install.sh | sh -s -- -b /usr/local/bin
+    
+- name: Terraform plan with custom secret scanning config
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    secret-scan: true
+    secret-config: path/to/custom-trufflehog-config.yml
 ```
 
 # Contributing

@@ -59,6 +59,10 @@ inputs:
     description: 'Scan Terraform plan with trufflehog for secrets before adding comment to PR'
     required: false
     default: 'false'
+  secret-config:
+    description: 'Path to TruffleHog config file for secret scanning'
+    required: false
+    default: ''
   skip-conftest:
     description: 'Skip the conftest step'
     required: false

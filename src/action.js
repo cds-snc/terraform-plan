@@ -32,15 +32,21 @@ function parseInputInt(str, def) {
 /**
  * Scans a Terraform plan with trufflehog for secrets
  * @param {string} planOutput The Terraform plan output to scan
+ * @param {string} configPath Path to the TruffleHog config file (relative to workspace root)
  * @returns {Array} Array of detected secrets
  */
-function scanPlanForSecrets(planOutput) {
+function scanPlanForSecrets(planOutput, configPath) {
   try {
+    // Resolve config path: default to dist/secrets.yml if not provided,
+    // otherwise resolve relative to GitHub workspace root
+    const resolvedConfigPath = configPath
+      ? path.join(process.env.GITHUB_WORKSPACE, configPath)
+      : path.join(__dirname, "secrets.yml");
     const tempPlanFile = path.join(__dirname, "plan.tf");
     fs.writeFileSync(tempPlanFile, planOutput);
     const scanCommand = {
       key: "secret-scan",
-      exec: `trufflehog filesystem plan.tf --no-verification --config=secrets.yml --json --no-update`,
+      exec: `trufflehog filesystem plan.tf --no-verification --config=${resolvedConfigPath} --json --no-update`,
       output: false,
     };
     const result = execCommand(scanCommand, __dirname);
@@ -110,6 +116,7 @@ const action = async () => {
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
   const isSecretScan = core.getBooleanInput("secret-scan");
+  const secretConfig = core.getInput("secret-config");
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
@@ -263,7 +270,10 @@ const action = async () => {
 
     // Scan for secrets and redact if secret scanning is enabled
     if (isSecretScan && !skipPlan && results.plan.output) {
-      const detectedSecrets = scanPlanForSecrets(results.plan.output);
+      const detectedSecrets = scanPlanForSecrets(
+        results.plan.output,
+        secretConfig,
+      );
       if (detectedSecrets.length > 0) {
         results.plan.output = redactSecretsFromPlan(
           results.plan.output,

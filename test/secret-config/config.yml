@@ -1,0 +1,6 @@
+detectors:
+  - name: custom
+    keywords:
+      - custom
+    regex:
+      custom-api-key: 'custom-[a-zA-Z0-9_\-]{10,}'
