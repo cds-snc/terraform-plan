@@ -3,9 +3,9 @@ terraform {
 }
 
 locals {
-  secret_value = "gcntfy-1234567890123456789012345678901234567890"
+  secret_value = "custom-definitely-secret-value"
 }
 
-output "api_key" {
+output "custom" {
   value = local.secret_value
 }

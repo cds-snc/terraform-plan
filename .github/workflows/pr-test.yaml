@@ -37,6 +37,10 @@ jobs:
           - test: secret-scan
             allow-failure: false
             secret-scan: true
+          - test: secret-config
+            allow-failure: false
+            secret-scan: true
+            secret-config: test/secret-config/config.yml
           - test: skip-conftest
             allow-failure: false
             skip-conftest: true
@@ -186,7 +190,8 @@ jobs:
               { exist: true, title: /Test validate-fail/g, state: /Terraform Validate:\*\* `failed`\n/gm },
               { exist: true, title: /Test import/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test plan-options/g, state: /`success`[^`]+`success`/g },
-              { exist: true, title: /Test secret-scan/g, state: /id = "\*\*\*"/g },
+              { exist: true, title: /Test secret-scan/g, state: /api_key = "\*\*\*"/g },
+              { exist: true, title: /Test secret-config/g, state: /custom = "\*\*\*"/g },
               // Terragrunt
               { exist: true, title: /Test terragrunt/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test init-run-all/g, state: /`success`[^`]+`success`/g },
