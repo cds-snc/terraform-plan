@@ -6,6 +6,7 @@ const github = require("@actions/github");
 const { execCommand } = require("./command.js");
 const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
+const { buildSlackPayload } = require("./slack.js");
 
 // Sanitize input to prevent command injection
 function sanitizeInput(input, options = {}) {
@@ -41,6 +42,7 @@ const action = async () => {
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
+  const enableSlackPayload = core.getBooleanInput("enable-slack-payload");
 
   // Determine binary: support all combinations
   let binary = "terraform";
@@ -205,6 +207,21 @@ const action = async () => {
       skipPlan,
       skipConftest,
     );
+  }
+
+  if (enableSlackPayload) {
+    try {
+      const payload = buildSlackPayload(results, changes, {
+        directory,
+        skipFormat,
+        skipPlan,
+        skipConftest,
+        isError,
+      });
+      core.setOutput("slack-payload", JSON.stringify(payload));
+    } catch (e) {
+      core.warning(`Failed to build slack-payload output: ${e}`);
+    }
   }
 
   if (isError && !isAllowFailure) {
