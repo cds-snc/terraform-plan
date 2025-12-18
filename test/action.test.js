@@ -40,6 +40,9 @@ describe("action", () => {
 
   test("default flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getBooleanInput)
+      .calledWith("enable-slack-payload")
+      .mockReturnValue(true);
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput)
       .calledWith("conftest-checks")
@@ -124,8 +127,46 @@ describe("action", () => {
         "foo",
       ],
     ]);
+    expect(core.setOutput).toHaveBeenCalledWith(
+      "slack-payload",
+      expect.any(String),
+    );
+    const payloadArg = core.setOutput.mock.calls[0][1];
+    const payload = JSON.parse(payloadArg);
+    expect(payload).toHaveProperty("text");
+    expect(typeof payload.text).toBe("string");
+    expect(Array.isArray(payload.blocks)).toBe(true);
     expect(addComment.mock.calls.length).toBe(0);
     expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
+  test("does not write slack output when disabled", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      );
+    when(core.getMultilineInput)
+      .calledWith("terraform-init")
+      .mockReturnValue([
+        "-backend-config='bucket=some-bucket'",
+        "-backend-config='region=ca-central-1'",
+      ]);
+    when(core.getMultilineInput)
+      .calledWith("terraform-plan")
+      .mockReturnValue(["-refresh=true", "-var-file='prod.tfvars'"]);
+    when(core.getBooleanInput)
+      .calledWith("enable-slack-payload")
+      .mockReturnValue(false);
+
+    await action();
+
+    expect(core.setOutput).not.toHaveBeenCalledWith(
+      "slack-payload",
+      expect.anything(),
+    );
   });
 
   test("terragrunt flow", async () => {

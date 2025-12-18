@@ -79,10 +79,18 @@ inputs:
     description: 'Initialize all terragrunt modules by passing the run-all command to init. Only applicable when using terragrunt'
     required: false
     default: 'false'
+  enable-slack-payload:
+    description: 'Enable generation of the slack-payload output used for Slack integrations'
+    required: false
+    default: 'true'
 
 runs:
   using: 'node20'
   main: 'dist/index.js'
+
+outputs:
+  slack-payload:
+    description: 'JSON string payload suitable for use with slackapi/slack-github-action (e.g. as the `payload` input)'
 
 branding:
   icon: 'layers'
