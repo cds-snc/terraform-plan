@@ -11,16 +11,6 @@ env:
 jobs:
   drift-detector-empty-resource:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: terraform
-            directory: test/no-changes
-            open-tofu: false
-          - name: open-tofu
-            directory: test/no-changes-open-tofu
-            open-tofu: true
 
     steps:
       - name: Checkout
@@ -29,24 +19,16 @@ jobs:
       - name: Setup Terraform tools
         uses: cds-snc/terraform-tools-setup@5f76a50c0b5f0e133634fecc8dd42f67db57bc05 # v1.1.0
 
-      - name: Setup OpenTofu
-        if: matrix.open-tofu == true
-        uses: opentofu/setup-opentofu@dc6f44001438d84e2e21f35cb360929165c6ecf7
-        with:
-          tofu_version: ${{ env.OPEN_TOFU_VERSION }}
-
       - name: Run drift detection on empty resource
         id: drift-detect
         uses: ./
         with:
-          directory: ${{ matrix.directory }}
+          directory: test/drift-detect
           allow-failure: false
           comment: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          open-tofu: ${{ matrix.open-tofu || 'false' }}
 
       - name: Post drift data to Slack
-        if: ${{ steps.drift-detect.outputs.drift-output }}
         uses: slackapi/slack-github-action@v2
         with:
           webhook: ${{ secrets.slack_webhook_url }}
