@@ -36595,9 +36595,6 @@ const action = async () => {
     try {
       const payload = buildDriftData(results, changes, {
         directory,
-        skipFormat,
-        skipPlan,
-        skipConftest,
         isError,
       });
       core.setOutput("drift-output", JSON.stringify(payload));
