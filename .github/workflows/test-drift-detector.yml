@@ -53,27 +53,34 @@ jobs:
                   }
                 },
                 {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "This message shows where reality has drifted from Terraform.\n• *Created* = resources that exist in Terraform but not in the cloud (likely deleted or never created).\n• *Updated* = resources changed outside Terraform.\n• *Deleted* = resources removed from Terraform config but still in the cloud (likely config committed without apply)."
+                  }
+                },
+                {
                   "type": "divider"
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Created resources:*\n${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, '\n') || 'None' }}"
+                    "text": "*:large_blue_circle: Created resources*\n    • ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, '\n    • ') || 'None' }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Updated resources:*\n${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, '\n') || 'None' }}"
+                    "text": "*:large_orange_circle: Updated resources*\n    • ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, '\n    • ') || 'None' }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Deleted resources:*\n${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, '\n') || 'None' }}"
+                    "text": "*:red_circle: Deleted resources*\n    • ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, '\n    • ') || 'None' }}"
                   }
                 }
               ]
