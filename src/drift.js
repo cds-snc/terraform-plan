@@ -3,8 +3,6 @@
 /**
  * Builds a normalized drift summary object from raw drift detection output.
  *
- * @param {*} results - Full drift detection results. Accepted for API compatibility,
- *   but not used by this helper in the current implementation.
  * @param {{resourceNames?: {created?: string[], updated?: string[], deleted?: string[]}}} changes
  *   An object describing resource-level changes. The optional {@code resourceNames}
  *   property groups resource identifiers by change type.
@@ -22,7 +20,7 @@
  *   }
  * }} A drift data object summarizing the detected changes for the given directory.
  */
-function buildDriftData(results, changes, options = {}) {
+function buildDriftData(changes, options = {}) {
   const { directory = ".", isError = false } = options;
 
   const created =

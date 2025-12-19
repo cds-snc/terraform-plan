@@ -300,7 +300,7 @@ const action = async () => {
 
   if (enableDriftOutput) {
     try {
-      const payload = buildDriftData(results, changes, {
+      const payload = buildDriftData(changes, {
         directory,
         isError,
       });
