@@ -145,7 +145,7 @@ describe("action", () => {
     expect(deleteComment.mock.calls.length).toBe(0);
   });
 
-  test("does not write slack output when disabled", async () => {
+  test("does not write drift output when disabled", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput)
