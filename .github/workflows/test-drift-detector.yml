@@ -33,6 +33,49 @@ jobs:
         with:
           webhook: ${{ secrets.slack_webhook_url }}
           webhook-type: incoming-webhook
-          payload: >
-            {"text":"*Terraform drift for ${{ github.event.repository.name }} (${{ matrix.name }})*\n• *Status*: ${{ fromJson(steps.drift-detect.outputs.drift-output).status }}\n• *Created*: ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, ', ') || 'none' }}\n• *Updated*: ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, ', ') || 'none' }}\n• *Deleted*: ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, ', ') || 'none' }}"}
+          payload: |
+            {
+              "text": "Terraform drift for ${{ github.event.repository.name }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Terraform drift detected",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Repository:* ${{ github.event.repository.name }}\n*Status:* ${{ fromJson(steps.drift-detect.outputs.drift-output).status }}"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Created resources:*\n${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, '\n') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Updated resources:*\n${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, '\n') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deleted resources:*\n${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, '\n') || 'None' }}"
+                  }
+                }
+              ]
+            }
 
