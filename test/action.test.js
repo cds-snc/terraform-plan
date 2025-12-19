@@ -41,7 +41,7 @@ describe("action", () => {
   test("default flow", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     when(core.getBooleanInput)
-      .calledWith("enable-slack-payload")
+      .calledWith("enable-drift-output")
       .mockReturnValue(true);
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput)
@@ -128,14 +128,19 @@ describe("action", () => {
       ],
     ]);
     expect(core.setOutput).toHaveBeenCalledWith(
-      "slack-payload",
+      "drift-output",
       expect.any(String),
     );
     const payloadArg = core.setOutput.mock.calls[0][1];
     const payload = JSON.parse(payloadArg);
-    expect(payload).toHaveProperty("text");
-    expect(typeof payload.text).toBe("string");
-    expect(Array.isArray(payload.blocks)).toBe(true);
+
+    expect(payload).toHaveProperty("directory", "foo");
+    expect(payload).toHaveProperty("status");
+    expect(["failed", "has_changes", "no_changes"]).toContain(payload.status);
+    expect(payload).toHaveProperty("resources");
+    expect(payload.resources).toHaveProperty("created");
+    expect(payload.resources).toHaveProperty("updated");
+    expect(payload.resources).toHaveProperty("deleted");
     expect(addComment.mock.calls.length).toBe(0);
     expect(deleteComment.mock.calls.length).toBe(0);
   });
@@ -158,13 +163,13 @@ describe("action", () => {
       .calledWith("terraform-plan")
       .mockReturnValue(["-refresh=true", "-var-file='prod.tfvars'"]);
     when(core.getBooleanInput)
-      .calledWith("enable-slack-payload")
+      .calledWith("enable-drift-output")
       .mockReturnValue(false);
 
     await action();
 
     expect(core.setOutput).not.toHaveBeenCalledWith(
-      "slack-payload",
+      "drift-output",
       expect.anything(),
     );
   });

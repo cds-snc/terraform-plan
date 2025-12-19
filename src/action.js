@@ -7,7 +7,7 @@ const github = require("@actions/github");
 const { execCommand } = require("./command.js");
 const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
-const { buildSlackPayload } = require("./slack.js");
+const { buildDriftData } = require("./drift.js");
 
 // Sanitize input to prevent command injection
 function sanitizeInput(input, options = {}) {
@@ -118,7 +118,7 @@ const action = async () => {
   const initRunAll = core.getBooleanInput("init-run-all");
   const isSecretScan = core.getBooleanInput("secret-scan");
   const secretConfig = core.getInput("secret-config");
-  const enableSlackPayload = core.getBooleanInput("enable-slack-payload");
+  const enableDriftOutput = core.getBooleanInput("enable-drift-output");
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
@@ -298,18 +298,18 @@ const action = async () => {
     );
   }
 
-  if (enableSlackPayload) {
+  if (enableDriftOutput) {
     try {
-      const payload = buildSlackPayload(results, changes, {
+      const payload = buildDriftData(results, changes, {
         directory,
         skipFormat,
         skipPlan,
         skipConftest,
         isError,
       });
-      core.setOutput("slack-payload", JSON.stringify(payload));
+      core.setOutput("drift-output", JSON.stringify(payload));
     } catch (e) {
-      core.warning(`Failed to build slack-payload output: ${e}`);
+      core.warning(`Failed to build drift-output output: ${e}`);
     }
   }
 

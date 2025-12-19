@@ -79,8 +79,8 @@ inputs:
     description: 'Initialize all terragrunt modules by passing the run-all command to init. Only applicable when using terragrunt'
     required: false
     default: 'false'
-  enable-slack-payload:
-    description: 'Enable generation of the slack-payload output used for Slack integrations'
+  enable-drift-output:
+    description: 'Enable generation of the drift-output structured data object'
     required: false
     default: 'true'
 
@@ -89,8 +89,8 @@ runs:
   main: 'dist/index.js'
 
 outputs:
-  slack-payload:
-    description: 'JSON string payload suitable for use with slackapi/slack-github-action (e.g. as the `payload` input)'
+  drift-output:
+    description: 'JSON string containing structured summary data about the Terraform run and detected changes'
 
 branding:
   icon: 'layers'
