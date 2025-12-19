@@ -50,6 +50,7 @@ jobs:
         uses: slackapi/slack-github-action@v2
         with:
           webhook: ${{ secrets.slack_webhook_url }}
+          webhook-type: incoming-webhook
           payload: >
             {"text":"Terraform drift for ${{ github.event.repository.name }} (${{ matrix.name }}): status=${{ fromJson(steps.drift-detect.outputs.drift-output).status }}, created=${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, ', ') || 'none' }}, updated=${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, ', ') || 'none' }}, deleted=${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, ', ') || 'none' }}"}
 
