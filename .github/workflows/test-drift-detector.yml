@@ -34,5 +34,5 @@ jobs:
           webhook: ${{ secrets.slack_webhook_url }}
           webhook-type: incoming-webhook
           payload: >
-            {"text":"Terraform drift for ${{ github.event.repository.name }} (${{ matrix.name }}): status=${{ fromJson(steps.drift-detect.outputs.drift-output).status }}, created=${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, ', ') || 'none' }}, updated=${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, ', ') || 'none' }}, deleted=${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, ', ') || 'none' }}"}
+            {"text":"*Terraform drift for ${{ github.event.repository.name }} (${{ matrix.name }})*\n• *Status*: ${{ fromJson(steps.drift-detect.outputs.drift-output).status }}\n• *Created*: ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, ', ') || 'none' }}\n• *Updated*: ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, ', ') || 'none' }}\n• *Deleted*: ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, ', ') || 'none' }}"}
 
