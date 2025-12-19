@@ -23,7 +23,7 @@ jobs:
         id: drift-detect
         uses: ./
         with:
-          directory: test/drift-detect
+          directory: test/drift-detection
           allow-failure: false
           comment: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
