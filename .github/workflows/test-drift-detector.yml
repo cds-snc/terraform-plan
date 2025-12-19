@@ -1,0 +1,81 @@
+name: Test drift detector on empty resource
+on:
+  pull_request:
+
+env:
+  OPEN_TOFU_VERSION: 1.10.5
+  TERRAFORM_VERSION: 1.9.8
+  TERRAGRUNT_VERSION: 0.68.6
+  TF_SUMMARIZE_VERSION: 0.3.5
+
+jobs:
+  drift-detector-empty-resource:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@5f76a50c0b5f0e133634fecc8dd42f67db57bc05 # v1.1.0
+
+      - name: Run drift detection on empty resource
+        id: drift-detect
+        uses: ./
+        with:
+          directory: test/drift-detection
+          allow-failure: false
+          comment: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Post drift data to Slack
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a
+        with:
+          webhook: ${{ secrets.slack_webhook_url }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Terraform drift for ${{ github.event.repository.name }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Terraform drift detected",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Repository:* ${{ github.event.repository.name }}\n*Status:* ${{ fromJson(steps.drift-detect.outputs.drift-output).status }}"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*:large_blue_circle: Created (resource in TF, not in cloud)*\n    • ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.created, '\n    • ') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*:large_orange_circle: Updated (TF out of sync with cloud)*\n    • ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.updated, '\n    • ') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*:red_circle: Deleted (state has resources missing in TF)*\n    • ${{ join(fromJson(steps.drift-detect.outputs.drift-output).resources.deleted, '\n    • ') || 'None' }}"
+                  }
+                }
+              ]
+            }
+

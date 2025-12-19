@@ -26,6 +26,12 @@ const countResourceChanges = (tfPlan, action) => {
   return actions.length;
 };
 
+const listResourceAddresses = (tfPlan, action) => {
+  return tfPlan.resource_changes
+    .filter((res) => res.change.actions.includes(action))
+    .map((res) => res.address);
+};
+
 const countMoves = (tfPlan) => {
   const moves = tfPlan.resource_changes.filter(
     (res) => res.previous_address !== undefined,
@@ -60,6 +66,12 @@ const getPlanChanges = async (planJson) => {
     move: 0,
   };
 
+  let resourceNames = {
+    created: [],
+    updated: [],
+    deleted: [],
+  };
+
   let outputs = {
     create: 0,
     update: 0,
@@ -72,6 +84,12 @@ const getPlanChanges = async (planJson) => {
       delete: countResourceChanges(planJson, "delete"),
       import: countImports(planJson),
       move: countMoves(planJson),
+    };
+
+    resourceNames = {
+      created: listResourceAddresses(planJson, "create"),
+      updated: listResourceAddresses(planJson, "update"),
+      deleted: listResourceAddresses(planJson, "delete"),
     };
   }
 
@@ -89,6 +107,7 @@ const getPlanChanges = async (planJson) => {
     isChanges: !noChanges,
     isDeletes: resources.delete > 0,
     resources: resources,
+    resourceNames: resourceNames,
     outputs: outputs,
   };
 
