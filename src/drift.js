@@ -1,5 +1,27 @@
 "use strict";
 
+/**
+ * Builds a normalized drift summary object from raw drift detection output.
+ *
+ * @param {*} results - Full drift detection results. Accepted for API compatibility,
+ *   but not used by this helper in the current implementation.
+ * @param {{resourceNames?: {created?: string[], updated?: string[], deleted?: string[]}}} changes
+ *   An object describing resource-level changes. The optional {@code resourceNames}
+ *   property groups resource identifiers by change type.
+ * @param {{directory?: string, isError?: boolean}} [options] - Optional settings.
+ * @param {string} [options.directory="."] - Directory for which drift was computed.
+ * @param {boolean} [options.isError=false] - Whether the overall drift operation failed.
+ * @returns {{
+ *   directory: string,
+ *   status: "failed" | "has_changes" | "no_changes",
+ *   hasChanges: boolean,
+ *   resources: {
+ *     created: string[],
+ *     updated: string[],
+ *     deleted: string[]
+ *   }
+ * }} A drift data object summarizing the detected changes for the given directory.
+ */
 function buildDriftData(results, changes, options = {}) {
   const { directory = ".", isError = false } = options;
 
