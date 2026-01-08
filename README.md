@@ -26,12 +26,14 @@ Use the following settings to control the action:
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terraform-plan` | Custom Terraform plan args                                         |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
+| `open-tofu`      | Use OpenTofu instead of Terraform                                  | false        |
 | `secret-scan`    | Scan Terraform plan with TruffleHog for secrets                    | false        |
 | `secret-config`  | Path to TruffleHog config file for secret scanning                 |              |
 | `skip-conftest`  | Skip the Conftest step                                             | false        |
 | `skip-fmt`       | Skip the Terraform format check                                    | false        |
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
 | `init-run-all`   | Run init across all modules (only applicable for terragrunt).      | false        |
+| `enable-drift-output` | Emit `drift-output` as action output (JSON)                  | true         |
 
 ## Secret Scanning with Trufflehog
 
@@ -137,3 +139,42 @@ Husky provides a pre-commit hook that builds the `dist/index.js` used by the act
 
 # Policy
 [Open Policy Agent](https://www.openpolicyagent.org/) is used to check the `terraform plan` for changes.  [Policies](./policy) are written in Rego and then compiled into a WebAssembly module using `npm run policy`.
+
+# Drift detection
+
+This action can be used for drift detection by running it on a schedule (or other non-PR workflows) and checking whether the Terraform/OpenTofu plan includes changes.
+
+Example workflow: [examples/drift-detection.yml](examples/drift-detection.yml)
+
+When `enable-drift-output` is enabled (default), the action emits a `drift-output` output containing a JSON summary with:
+
+- `status`: `no_changes`, `has_changes`, or `failed`
+- `hasChanges`: boolean
+- `resources.created|updated|deleted`: arrays of resource identifiers
+
+This is intended to make it easier to:
+
+- Alert when drift is detected
+- Create evidence showing when drift checks ran and what changed
+
+## ITSG-33 control mapping (supports)
+
+Drift detection is not, by itself, sufficient to fully implement configuration management controls; it can support control satisfaction by providing automated monitoring and evidence.
+
+| ITSG-33 control | How drift detection helps support it |
+|---|---|
+| **CM-2** (Baseline Configuration) | Helps detect deviations between the declared baseline (IaC) and the current environment by highlighting unexpected plan changes. |
+| **CM-3** (Configuration Change Control) | Supports change control by surfacing changes that appear outside of the normal PR-based workflow (e.g., manual console edits), enabling investigation and remediation. |
+| **CM-6** (Configuration Settings) | Helps identify changes to configuration settings captured in Terraform/OpenTofu (variables, resource arguments, policies) by reporting planned updates/deletes/creates. |
+
+## NIST SP 800-53 control mapping (supports)
+
+NIST SP 800-53 includes a **Configuration Management (CM)** control family. See: https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final (PDF: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-53r5.pdf).
+
+The control identifiers below align with the same CM control names used in NIST SP 800-53 Rev. 5:
+
+| NIST SP 800-53 (Rev. 5) control | How drift detection helps support it |
+|---|---|
+| **CM-2** (Baseline Configuration) | Supports detection of deviations from an approved baseline by flagging planned changes relative to the baseline defined in Terraform/OpenTofu code. |
+| **CM-3** (Configuration Change Control) | Supports identification of changes that bypass normal change control (e.g., manual changes), enabling response, rollback, or bringing the environment back into compliance via code. |
+| **CM-6** (Configuration Settings) | Supports ongoing monitoring of configuration settings managed as code by surfacing planned changes to resource arguments/settings as creates/updates/deletes. |

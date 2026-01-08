@@ -1,0 +1,45 @@
+name: Drift detection
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Adjust as needed (this runs daily at 03:15 UTC)
+    - cron: "15 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Install Terraform/OpenTofu and other tooling required by the action.
+      - name: Setup terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+
+      - name: Terraform plan (drift check)
+        id: plan
+        uses: cds-snc/terraform-plan@v1
+        with:
+          # Avoid PR comments in scheduled runs.
+          comment: false
+          comment-delete: false
+
+          # Optionally set this if your Terraform lives in a subfolder.
+          # directory: ./infra
+
+      - name: Fail if drift detected
+        if: ${{ fromJson(steps.plan.outputs.drift-output).hasChanges }}
+        run: |
+          echo "Drift detected (Terraform/OpenTofu plan contains changes)."
+          exit 1
+
+      - name: Fail if plan failed
+        if: ${{ fromJson(steps.plan.outputs.drift-output).status == 'failed' }}
+        run: |
+          echo "Drift check failed (action status=failed)."
+          exit 1
