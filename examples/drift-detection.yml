@@ -32,6 +32,65 @@ jobs:
           # Optionally set this if your Terraform lives in a subfolder.
           # directory: ./infra
 
+      - name: Post drift data to Slack
+        if: >-
+          ${{
+            always() &&
+            (
+              fromJson(steps.plan.outputs.drift-output || '{"status":"failed","hasChanges":false,"resources":{"created":[],"updated":[],"deleted":[]}}').hasChanges ||
+              fromJson(steps.plan.outputs.drift-output || '{"status":"failed","hasChanges":false,"resources":{"created":[],"updated":[],"deleted":[]}}').status == 'failed'
+            )
+          }}
+        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a2 # v2.1.1
+        with:
+          webhook: ${{ secrets.slack_webhook_url }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Terraform drift for ${{ github.event.repository.name }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Terraform drift detected",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Repository:* ${{ github.event.repository.name }}\n*Status:* ${{ fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').status }}\n*Run:* <https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}|View workflow run>"
+                  }
+                },
+                {
+                  "type": "divider"
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*:large_blue_circle: Created (resource in TF, not in cloud)*\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.created, '\\n    • ') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*:large_orange_circle: Updated (TF out of sync with cloud)*\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.updated, '\\n    • ') || 'None' }}"
+                  }
+                },
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*:red_circle: Deleted (state has resources missing in TF)*\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.deleted, '\\n    • ') || 'None' }}"
+                  }
+                }
+              ]
+            }
+
       - name: Fail if drift detected
         if: ${{ fromJson(steps.plan.outputs.drift-output).hasChanges }}
         run: |
