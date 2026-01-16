@@ -71,21 +71,21 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*:large_blue_circle: Created (resource in TF, not in cloud)*\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.created, '\\n    • ') || 'None' }}"
+                    "text": "*:large_blue_circle: Resources that will be created*\n_These are in your Terraform code but not in the state (potentially deleted out-of-band)_\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.created, '\\n    • ') || 'None' }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*:large_orange_circle: Updated (TF out of sync with cloud)*\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.updated, '\\n    • ') || 'None' }}"
+                    "text": "*:large_orange_circle: Resources that will be updated*\n_These exist but have configuration drift between Terraform and state_\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.updated, '\\n    • ') || 'None' }}"
                   }
                 },
                 {
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*:red_circle: Deleted (state has resources missing in TF)*\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.deleted, '\\n    • ') || 'None' }}"
+                    "text": "*:red_circle: Resources that will be deleted*\n_These are in the state but removed from your Terraform code_\n    • ${{ join(fromJson(steps.plan.outputs.drift-output || '{\"status\":\"failed\",\"hasChanges\":false,\"resources\":{\"created\":[],\"updated\":[],\"deleted\":[]}}').resources.deleted, '\\n    • ') || 'None' }}"
                   }
                 }
               ]
