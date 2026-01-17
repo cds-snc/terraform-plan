@@ -131,7 +131,7 @@ jobs:
 
       - name: Setup OpenTofu
         if: matrix.open-tofu == true
-        uses: opentofu/setup-opentofu@e95ccdd20623115bfd7d47df14a3250d6066a9d0
+        uses: opentofu/setup-opentofu@9d84900f3238fab8cd84ce47d658d25dd008be2f
         with:
           tofu_version: ${{ env.OPEN_TOFU_VERSION }}
 
