@@ -36444,7 +36444,7 @@ const action = async () => {
     {
       key: "init",
       exec: `${binary}${
-        isTerragrunt && initRunAll ? " run-all" : ""
+        isTerragrunt && initRunAll ? " run --all" : ""
       } init -no-color ${terraformInitOption}`.trim(),
     },
     {

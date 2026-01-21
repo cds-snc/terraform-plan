@@ -275,7 +275,7 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terragrunt run-all init -no-color", // Modified to include `run-all`
+          exec: "terragrunt run --all init -no-color", // Modified to include `run --all`
         },
         "bar",
       ],
