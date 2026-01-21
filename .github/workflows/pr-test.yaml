@@ -62,6 +62,9 @@ jobs:
           - test: terragrunt
             allow-failure: false
             terragrunt: true
+          - test: format-error-terragrunt
+            allow-failure: true 
+            terragrunt: true
           - test: init-run-all
             allow-failure: false
             terragrunt: true
