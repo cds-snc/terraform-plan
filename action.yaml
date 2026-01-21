@@ -76,7 +76,7 @@ inputs:
     required: false
     default: 'false'
   init-run-all:
-    description: 'Initialize all terragrunt modules by passing the run-all command to init. Only applicable when using terragrunt'
+    description: 'Initialize all terragrunt modules by passing the run --all command to init. Only applicable when using terragrunt'
     required: false
     default: 'false'
   enable-drift-output:

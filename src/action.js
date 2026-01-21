@@ -151,7 +151,7 @@ const action = async () => {
     {
       key: "init",
       exec: `${binary}${
-        isTerragrunt && initRunAll ? " run-all" : ""
+        isTerragrunt && initRunAll ? " run --all" : ""
       } init -no-color ${terraformInitOption}`.trim(),
     },
     {
@@ -160,7 +160,7 @@ const action = async () => {
     },
     {
       key: "fmt",
-      exec: `${binary} fmt --check`,
+      exec: `${binary}${isTerragrunt ? " run --" : ""} fmt -check`,
     },
     {
       key: "plan",

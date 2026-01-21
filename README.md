@@ -3,7 +3,7 @@ Runs `terraform plan` on your project and posts a comment with the changes on a 
 ```sh
 terraform init
 terraform validate
-terraform fmt --check
+terraform fmt -check
 terraform plan -out=plan.tfplan
 terraform show -json plan.tfplan 
 ```
