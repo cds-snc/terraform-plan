@@ -36453,7 +36453,7 @@ const action = async () => {
     },
     {
       key: "fmt",
-      exec: `${binary} fmt -check`,
+      exec: `${binary}${isTerragrunt ? " run --" : ""} fmt -check`,
     },
     {
       key: "plan",

@@ -205,7 +205,7 @@ describe("action", () => {
       [
         {
           key: "fmt",
-          exec: "terragrunt fmt -check",
+          exec: "terragrunt run -- fmt -check",
         },
         "bar",
       ],
@@ -289,7 +289,7 @@ describe("action", () => {
       [
         {
           key: "fmt",
-          exec: "terragrunt fmt -check",
+          exec: "terragrunt run -- fmt -check",
         },
         "bar",
       ],
