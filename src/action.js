@@ -74,7 +74,9 @@ function scanPlanForSecrets(planOutput, configPath) {
           secrets.push(secretData.Raw);
         }
       } catch (parseError) {
-        core.warning(`Failed to parse trufflehog output line: ${line}`);
+        core.warning(
+          `Failed to parse trufflehog output line: ${line} - ${parseError.message}`,
+        );
       }
     }
 
