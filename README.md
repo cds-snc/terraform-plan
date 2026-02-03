@@ -25,6 +25,7 @@ Use the following settings to control the action:
 | `plan-character-limit` | Character limit for Terraform plan output                    | 30000        |
 | `terraform-init` | Custom Terraform init args                                         |              |
 | `terraform-plan` | Custom Terraform plan args                                         |              |
+| `terragrunt-plan`| Custom Terragrunt plan args                                        |              |
 | `terragrunt`     | Use Terragrunt instead of Terraform                                | false        |
 | `open-tofu`      | Use OpenTofu instead of Terraform                                  | false        |
 | `secret-scan`    | Scan Terraform plan with TruffleHog for secrets                    | false        |
@@ -103,6 +104,16 @@ By default, the action uses the `secrets.yml` config file located in the action'
       -var-file="path/to/terraform.tfvars"
 
 # Example 7
+# Run Terragrunt plan with custom Terragrunt plan args
+- name: Terragrunt plan with variable file
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    terragrunt: true
+    terragrunt-plan: |
+      --provider-cache
+
+# Example 8
 # Run Terraform plan with secret scanning enabled
 # Requires trufflehog to be available in the runner environment
 - name: Install trufflehog
@@ -115,7 +126,7 @@ By default, the action uses the `secrets.yml` config file located in the action'
     github-token: ${{ secrets.GITHUB_TOKEN }}
     secret-scan: true
 
-# Example 8
+# Example 9
 # Run Terraform plan with secret scanning using a custom config file
 - name: Install trufflehog
   run: |
