@@ -142,6 +142,11 @@ const action = async () => {
   }
   const summarizeBinary = "tf-summarize";
 
+  // Terragrunt: terragrunt run [options] -- <terraform-command> [optios]
+  // Non-Terragrunt: terraform <terraform-command> [options]
+  const terragruntRun = isTerragrunt ? " run" : "";
+  const terragruntSep = isTerragrunt ? " --" : "";
+  const terragruntInitOption = isTerragrunt && initRunAll ? " --all" : "";
   const terraformInitOption = terraformInit
     ? terraformInit.map((item) => sanitizeInput(item)).join(" ")
     : "";
@@ -152,31 +157,29 @@ const action = async () => {
   const commands = [
     {
       key: "init",
-      exec: `${binary}${
-        isTerragrunt && initRunAll ? " run --all" : ""
-      } init -no-color ${terraformInitOption}`.trim(),
+      exec: `${binary}${terragruntRun}${terragruntInitOption}${terragruntSep} init -no-color ${terraformInitOption}`.trim(),
     },
     {
       key: "validate",
-      exec: `${binary} validate -no-color`,
+      exec: `${binary}${terragruntRun}${terragruntSep} validate -no-color`,
     },
     {
       key: "fmt",
-      exec: `${binary}${isTerragrunt ? " run --" : ""} fmt -check`,
+      exec: `${binary}${terragruntRun}${terragruntSep} fmt -check`,
     },
     {
       key: "plan",
-      exec: `${binary} plan -no-color -input=false -out=plan.tfplan ${terraformPlanOption}`.trim(),
+      exec: `${binary}${terragruntRun}${terragruntSep} plan -no-color -input=false -out=plan.tfplan ${terraformPlanOption}`.trim(),
     },
     {
       key: "show",
-      exec: `${binary} show -no-color -json plan.tfplan`,
+      exec: `${binary}${terragruntRun}${terragruntSep} show -no-color -json plan.tfplan`,
       depends: "plan",
       output: false,
     },
     {
       key: "show-json-out",
-      exec: `${binary} show -no-color -json plan.tfplan > plan.json`,
+      exec: `${binary}${terragruntRun}${terragruntSep} show -no-color -json plan.tfplan > plan.json`,
       depends: "plan",
       output: false,
     },
