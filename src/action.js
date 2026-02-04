@@ -126,6 +126,7 @@ const action = async () => {
   const directory = core.getInput("directory");
   const terraformInit = core.getMultilineInput("terraform-init");
   const terraformPlan = core.getMultilineInput("terraform-plan");
+  const terragruntPlan = core.getMultilineInput("terragrunt-plan");
   const conftestChecks = sanitizeInput(core.getInput("conftest-checks"));
   const token = core.getInput("github-token");
   const octokit = token !== "false" ? github.getOctokit(token) : undefined;
@@ -142,8 +143,8 @@ const action = async () => {
   }
   const summarizeBinary = "tf-summarize";
 
-  // Terragrunt: terragrunt run [options] -- <terraform-command> [optios]
-  // Non-Terragrunt: terraform <terraform-command> [options]
+  // Terragrunt: terragrunt run [terragrunt-options] -- <terraform-command> [terraform-options]
+  // Non-Terragrunt: terraform <terraform-command> [terraform-options]
   const terragruntRun = isTerragrunt ? " run" : "";
   const terragruntSep = isTerragrunt ? " --" : "";
   const terragruntInitOption = isTerragrunt && initRunAll ? " --all" : "";
@@ -152,6 +153,9 @@ const action = async () => {
     : "";
   const terraformPlanOption = terraformPlan
     ? terraformPlan.map((item) => sanitizeInput(item)).join(" ")
+    : "";
+  const terragruntPlanOption = terragruntPlan
+    ? " " + terragruntPlan.map((item) => sanitizeInput(item)).join(" ")
     : "";
 
   const commands = [
@@ -169,7 +173,7 @@ const action = async () => {
     },
     {
       key: "plan",
-      exec: `${binary}${terragruntRun}${terragruntSep} plan -no-color -input=false -out=plan.tfplan ${terraformPlanOption}`.trim(),
+      exec: `${binary}${terragruntRun}${terragruntPlanOption}${terragruntSep} plan -no-color -input=false -out=plan.tfplan ${terraformPlanOption}`.trim(),
     },
     {
       key: "show",
