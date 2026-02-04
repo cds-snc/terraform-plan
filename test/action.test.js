@@ -191,14 +191,14 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terragrunt init -no-color",
+          exec: "terragrunt run -- init -no-color",
         },
         "bar",
       ],
       [
         {
           key: "validate",
-          exec: "terragrunt validate -no-color",
+          exec: "terragrunt run -- validate -no-color",
         },
         "bar",
       ],
@@ -212,14 +212,14 @@ describe("action", () => {
       [
         {
           key: "plan",
-          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan",
+          exec: "terragrunt run -- plan -no-color -input=false -out=plan.tfplan",
         },
         "bar",
       ],
       [
         {
           key: "show",
-          exec: "terragrunt show -no-color -json plan.tfplan",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
         },
@@ -228,7 +228,7 @@ describe("action", () => {
       [
         {
           key: "show-json-out",
-          exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan > plan.json",
           depends: "plan",
           output: false,
         },
@@ -275,14 +275,14 @@ describe("action", () => {
       [
         {
           key: "init",
-          exec: "terragrunt run --all init -no-color", // Modified to include `run --all`
+          exec: "terragrunt run --all -- init -no-color",
         },
         "bar",
       ],
       [
         {
           key: "validate",
-          exec: "terragrunt validate -no-color",
+          exec: "terragrunt run -- validate -no-color",
         },
         "bar",
       ],
@@ -296,14 +296,14 @@ describe("action", () => {
       [
         {
           key: "plan",
-          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan",
+          exec: "terragrunt run -- plan -no-color -input=false -out=plan.tfplan",
         },
         "bar",
       ],
       [
         {
           key: "show",
-          exec: "terragrunt show -no-color -json plan.tfplan",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan",
           depends: "plan",
           output: false,
         },
@@ -312,7 +312,7 @@ describe("action", () => {
       [
         {
           key: "show-json-out",
-          exec: "terragrunt show -no-color -json plan.tfplan > plan.json",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan > plan.json",
           depends: "plan",
           output: false,
         },
