@@ -58,6 +58,9 @@ jobs:
             allow-failure: true
           - test: import
             allow-failure: true
+          - test: plan-options
+            allow-failure: false
+            terraform-plan: -var-file='plan_options.tfvars'
           # Terragrunt tests
           - test: terragrunt
             allow-failure: false
@@ -69,9 +72,9 @@ jobs:
             allow-failure: false
             terragrunt: true
             init-run-all: true
-          - test: plan-options
+          - test: plan-options-terragrunt
             allow-failure: false
-            terraform-plan: -var-file='plan_options.tfvars'
+            terragrunt-plan: --provider-cache
           # OpenTofu tests
           - test: changes-open-tofu
             allow-failure: false
@@ -168,6 +171,7 @@ jobs:
           open-tofu: ${{ matrix.open-tofu || 'false' }}
           init-run-all: ${{ matrix.init-run-all || 'false'}}
           terraform-plan: ${{ matrix.terraform-plan || '' }}
+          terragrunt-plan: ${{ matrix.terragrunt-plan || '' }}
 
   test-action-comments:
     needs: terraform-plan
@@ -199,6 +203,7 @@ jobs:
               // Terragrunt
               { exist: true, title: /Test terragrunt/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test init-run-all/g, state: /`success`[^`]+`success`/g },
+               { exist: true, title: /Test plan-options-terragrunt/g, state: /`success`[^`]+`success`/g },
               // OpenTofu
               { exist: true, title: /Test changes-open-tofu/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test format-error-open-tofu/g, state: /`failed`[^`]+`success`/g },
