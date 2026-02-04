@@ -74,6 +74,7 @@ jobs:
             init-run-all: true
           - test: plan-options-terragrunt
             allow-failure: false
+            terragrunt: true
             terragrunt-plan: --provider-cache
           # OpenTofu tests
           - test: changes-open-tofu
