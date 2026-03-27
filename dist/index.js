@@ -64329,7 +64329,7 @@ const action = async () => {
 
   // Delete previous PR comments
   if (isCommentDelete) {
-    await deleteComment(octokit, github.context, commentTitle);
+    await deleteComment(octokit, github.context, commentTitle, directory);
   }
 
   // Check for changes
@@ -64362,6 +64362,7 @@ const action = async () => {
       octokit,
       github.context,
       commentTitle,
+      directory,
       results,
       changes,
       planLimit,
@@ -64521,7 +64522,8 @@ module.exports = {
 
 
 const nunjucks = __nccwpck_require__(8115);
-const commentTemplate = `## {{ title }}
+const commentTemplate = `<!-- terraform-plan: {{ title }}::{{ directory }} -->
+## {{ title }}
 **{{ "✅" if results.init.isSuccess else "❌" }} &nbsp; Terraform Init:** \`{{ "success" if results.init.isSuccess else "failed" }}\`
 **{{ "✅" if results.validate.isSuccess else "❌" }} &nbsp; Terraform Validate:** \`{{ "success" if results.validate.isSuccess else "failed" }}\`
 {% if not skipFormat -%}
@@ -64651,6 +64653,7 @@ const addComment = async (
   octokit,
   context,
   title,
+  directory,
   results,
   changes,
   planLimit,
@@ -64668,6 +64671,7 @@ const addComment = async (
     format: format,
     results: results,
     title: title,
+    directory: directory,
     planLimit: planLimit,
     conftestLimit: conftestLimit,
     skipFormat: skipFormat,
@@ -64688,7 +64692,7 @@ const addComment = async (
  * @param {Object} context GitHub context for the workflow run
  * @param {String} title Heading of the comment to delete
  */
-const deleteComment = async (octokit, context, title) => {
+const deleteComment = async (octokit, context, title, directory) => {
   // Get existing comments.
   const { data: comments } = await octokit.rest.issues.listComments({
     ...context.repo,
@@ -64696,9 +64700,10 @@ const deleteComment = async (octokit, context, title) => {
   });
 
   // Find the bot's comment
+  const marker = `<!-- terraform-plan: ${title}::${directory} -->`;
   const comment = comments.find(
     (comment) =>
-      comment.user.type === "Bot" && comment.body.indexOf(title) > -1,
+      comment.user.type === "Bot" && comment.body.indexOf(marker) > -1,
   );
   if (comment) {
     console.log(`Deleting comment '${title}: ${comment.id}'`);

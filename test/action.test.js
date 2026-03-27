@@ -623,6 +623,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("comment-title")
       .mockReturnValue("blueberries");
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
     github.getOctokit.mockReturnValue("octokit");
     github.context = "context";
@@ -636,6 +637,7 @@ describe("action", () => {
       "octokit",
       "context",
       "blueberries",
+      "foo",
     ]);
   });
 
@@ -647,6 +649,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
     when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
@@ -673,6 +676,7 @@ describe("action", () => {
       "octokit",
       "context",
       "raspberries",
+      "foo",
       {
         fmt: { isSuccess: true, output: "{}" },
         init: { isSuccess: true, output: "{}" },
@@ -699,6 +703,7 @@ describe("action", () => {
     when(core.getInput)
       .calledWith("comment-title")
       .mockReturnValue("raspberries");
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
     when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
     when(core.getBooleanInput).calledWith("skip-fmt").mockReturnValue(false);
     when(core.getBooleanInput).calledWith("skip-plan").mockReturnValue(false);
@@ -717,6 +722,7 @@ describe("action", () => {
       "octokit",
       "context",
       "raspberries",
+      "foo",
       {
         fmt: { isSuccess: true, output: "{}" },
         init: { isSuccess: true, output: "{}" },
@@ -840,6 +846,7 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       "octokit",
       "context",
       "raspberries",
+      "foo",
       {
         fmt: { isSuccess: true, output: "{}" },
         init: { isSuccess: true, output: "{}" },

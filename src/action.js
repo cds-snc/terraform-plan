@@ -264,7 +264,7 @@ const action = async () => {
 
   // Delete previous PR comments
   if (isCommentDelete) {
-    await deleteComment(octokit, github.context, commentTitle);
+    await deleteComment(octokit, github.context, commentTitle, directory);
   }
 
   // Check for changes
@@ -297,6 +297,7 @@ const action = async () => {
       octokit,
       github.context,
       commentTitle,
+      directory,
       results,
       changes,
       planLimit,
