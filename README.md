@@ -16,7 +16,7 @@ Use the following settings to control the action:
 |------------------|--------------------------------------------------------------------|--------------|
 | `allow-failure`  | Allow the action to fail                                           | false        |
 | `comment`        | Add comment with changes to the PR                                 | true         |
-| `comment-delete` | Delete previous comments made by the bot on the PR                 | false        |
+| `comment-delete` | Delete previous comments made by the bot on the PR. Comments are deleted based on `comment-title` and `directory`. | false        |
 | `comment-title`  | The title to give the PR comment                                   | Plan changes |
 | `conftest-character-limit` | Character limit for Conftest output                      | 2000         |
 | `conftest-checks`| Location of custom conftest check definitions                      | git::https://github.com/cds-snc/opa_checks.git//aws_terraform |
@@ -69,6 +69,7 @@ By default, the action uses the `secrets.yml` config file located in the action'
 
 # Example 3
 # Run on a sub project folder, deleting previous PR comments made by the action
+# Previous PR comments are identified based on comment-title + directory
 - name: Terraform plan
   uses: cds-snc/terraform-plan
   with:
