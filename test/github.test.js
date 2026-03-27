@@ -27,14 +27,14 @@ octomock.rest.issues.listComments.mockReturnValue({
   data: [
     {
       id: 1,
-      body: "Foobar",
+      body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
       user: {
         type: "Bot",
       },
     },
     {
       id: 2,
-      body: "Bort",
+      body: "<!-- terraform-plan: Bort::. -->\n## Bort",
       user: {
         type: "User",
       },
@@ -105,7 +105,8 @@ describe("addComment", () => {
         import: 0,
       },
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
@@ -148,6 +149,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       changes,
       10000,
@@ -184,7 +186,8 @@ Plan: 1 to add, 0 to change, 0 to destroy
         import: 1,
       },
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
@@ -227,6 +230,7 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       changes,
       10000,
@@ -264,7 +268,8 @@ Plan: 1 to import, 0 to add, 0 to change, 0 to destroy
         move: 1,
       },
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
@@ -306,6 +311,7 @@ Plan: 1 to move, 0 to add, 0 to change, 0 to destroy
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       changes,
       10000,
@@ -346,7 +352,8 @@ Plan: 1 to move, 0 to add, 0 to change, 0 to destroy
         move: 2,
       },
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
@@ -381,6 +388,7 @@ Plan: 2 to import, 2 to move, 2 to add, 1 to change, 1 to destroy
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       changes,
       10000,
@@ -411,7 +419,8 @@ Plan: 2 to import, 2 to move, 2 to add, 1 to change, 1 to destroy
       conftest: { isSuccess: false, output: "General Kenobi" },
     };
     const changes = {};
-    const comment = `## Bambaz
+    const comment = `<!-- terraform-plan: Bambaz::. -->
+## Bambaz
 **❌ &nbsp; Terraform Init:** \`failed\`
 **❌ &nbsp; Terraform Validate:** \`failed\`
 **❌ &nbsp; Terraform Format:** \`failed\`
@@ -460,7 +469,7 @@ General Kenobi
 </details>
 `;
 
-    await addComment(octomock, context, "Bambaz", results, changes);
+    await addComment(octomock, context, "Bambaz", ".", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
       owner: "foo",
@@ -482,7 +491,8 @@ General Kenobi
       conftest: { isSuccess: false, output: "" },
     };
     const changes = {};
-    const comment = `## Bambaz
+    const comment = `<!-- terraform-plan: Bambaz::. -->
+## Bambaz
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **❌ &nbsp; Terraform Format:** \`failed\`
@@ -505,7 +515,7 @@ Hello there
 
 `;
 
-    await addComment(octomock, context, "Bambaz", results, changes);
+    await addComment(octomock, context, "Bambaz", ".", results, changes);
     expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.createComment.mock.calls[0][0]).toEqual({
       owner: "foo",
@@ -525,7 +535,8 @@ Hello there
       },
       plan: {},
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
@@ -535,6 +546,7 @@ Hello there
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       {},
       1000,
@@ -570,7 +582,8 @@ Hello there
         import: 0,
       },
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Plan:** \`success\`
@@ -612,6 +625,7 @@ Plan: 1 to add, 0 to change, 0 to destroy
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       changes,
       10000,
@@ -649,7 +663,8 @@ Plan: 1 to add, 0 to change, 0 to destroy
         import: 0,
       },
     };
-    const comment = `## Foobar
+    const comment = `<!-- terraform-plan: Foobar::. -->
+## Foobar
 **✅ &nbsp; Terraform Init:** \`success\`
 **✅ &nbsp; Terraform Validate:** \`success\`
 **✅ &nbsp; Terraform Format:** \`success\`
@@ -693,9 +708,54 @@ Plan: 1 to add, 0 to change, 0 to destroy
       octomock,
       context,
       "Foobar",
+      ".",
       results,
       changes,
       10,
+      10000,
+      false,
+      false,
+    );
+    expect(octomock.rest.issues.createComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.createComment.mock.calls[0]).toEqual([
+      {
+        owner: "foo",
+        repo: "bar",
+        issue_number: 42,
+        body: comment,
+      },
+    ]);
+  });
+
+  test("add a comment with a non-root directory in the marker", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "< Hello there >" },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "" },
+    };
+    const changes = {
+      isChanges: true,
+      isDeletes: false,
+      resources: {
+        update: 0,
+        delete: 0,
+        create: 1,
+        import: 0,
+      },
+    };
+    const comment = `<!-- terraform-plan: Foobar::environments/prod -->\n## Foobar\n**✅ &nbsp; Terraform Init:** \`success\`\n**✅ &nbsp; Terraform Validate:** \`success\`\n**✅ &nbsp; Terraform Format:** \`success\`\n**✅ &nbsp; Terraform Plan:** \`success\`\n**✅ &nbsp; Conftest:** \`success\` \n\n\`\`\`terraform\nPlan: 1 to add, 0 to change, 0 to destroy\n\`\`\`\n\n<details>\n<summary>Show summary</summary>\n\n\n\n</details>\n\n\n<details>\n<summary>Show plan</summary>\n\n\`\`\`terraform\n< Hello there >\n\`\`\`\n\n</details>\n\n`;
+
+    await addComment(
+      octomock,
+      context,
+      "Foobar",
+      "environments/prod",
+      results,
+      changes,
+      10000,
       10000,
       false,
       false,
@@ -732,7 +792,7 @@ describe("cleanFormatOutput", () => {
 
 describe("deleteComment", () => {
   test("delete an existing bot comment", async () => {
-    await deleteComment(octomock, context, "Foobar");
+    await deleteComment(octomock, context, "Foobar", ".");
     expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.listComments.mock.calls[0][0]).toEqual({
       issue_number: 42,
@@ -747,7 +807,44 @@ describe("deleteComment", () => {
     });
   });
   test("do nothing for non-bot comments", async () => {
-    await deleteComment(octomock, context, "Bort");
+    await deleteComment(octomock, context, "Bort", ".");
+    expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(0);
+  });
+  test("delete a bot comment matching a non-root directory", async () => {
+    octomock.rest.issues.listComments.mockReturnValueOnce({
+      data: [
+        {
+          id: 10,
+          body: "<!-- terraform-plan: Foobar::environments/prod -->\n## Foobar",
+          user: { type: "Bot" },
+        },
+        {
+          id: 11,
+          body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+          user: { type: "Bot" },
+        },
+      ],
+    });
+    await deleteComment(octomock, context, "Foobar", "environments/prod");
+    expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(1);
+    expect(octomock.rest.issues.deleteComment.mock.calls[0][0]).toEqual({
+      comment_id: 10,
+      owner: "foo",
+      repo: "bar",
+    });
+  });
+  test("do not delete a bot comment with same title but different directory", async () => {
+    octomock.rest.issues.listComments.mockReturnValueOnce({
+      data: [
+        {
+          id: 11,
+          body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+          user: { type: "Bot" },
+        },
+      ],
+    });
+    await deleteComment(octomock, context, "Foobar", "environments/prod");
     expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(0);
   });
