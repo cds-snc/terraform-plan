@@ -10,12 +10,13 @@
     "format:check": "prettier --check src test",
     "format:write": "prettier --write src test",
     "lint": "eslint src test",
-    "prepare": "husky install",
-    "pre-commit": "npm run format:write && npm run build",
+    "prepare": "husky",
+    "pre-commit": "pnpm format:write && pnpm build",
     "test": "jest"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24",
+    "pnpm": ">=10"
   },
   "dependencies": {
     "@actions/core": "^2.0.3",
@@ -24,10 +25,12 @@
     "nunjucks": "^3.2.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@vercel/ncc": "0.38.4",
-    "eslint": "9.39.4",
+    "eslint": "^10.1.0",
     "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-security": "^3.0.1",
+    "eslint-plugin-security": "^4.0.0",
+    "globals": "^17.4.0",
     "husky": "9.1.7",
     "jest": "30.2.0",
     "jest-when": "3.7.0",
