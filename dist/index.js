@@ -64242,24 +64242,18 @@ const action = async () => {
     },
     {
       key: "show",
-      exec: `${binary}${terragruntRun}${terragruntSep} show -no-color -json plan.tfplan`,
-      depends: "plan",
-      output: false,
-    },
-    {
-      key: "show-json-out",
-      exec: `${binary}${terragruntRun}${terragruntSep} show -no-color -json plan.tfplan > plan.json`,
+      exec: `${binary}${terragruntRun}${terragruntSep} show -no-color -json plan.tfplan | tee plan.json`,
       depends: "plan",
       output: false,
     },
     {
       key: "summary",
       exec: `cat plan.json | ${summarizeBinary} -md`,
-      depends: "show-json-out",
+      depends: "show",
     },
     {
       key: "conftest",
-      depends: "show-json-out",
+      depends: "show",
       exec: `conftest test plan.json --no-color --update ${conftestChecks}`,
       output: true,
     },
@@ -64294,7 +64288,6 @@ const action = async () => {
         case "plan":
         case "summary":
         case "show":
-        case "show-json-out":
         case "conftest":
           results[command.key] = { isSuccess: true, output: "" };
           continue;

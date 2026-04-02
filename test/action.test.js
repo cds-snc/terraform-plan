@@ -61,7 +61,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -94,16 +94,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terraform show -no-color -json plan.tfplan",
-          depends: "plan",
-          output: false,
-        },
-        "foo",
-      ],
-      [
-        {
-          key: "show-json-out",
-          exec: "terraform show -no-color -json plan.tfplan > plan.json",
+          exec: "terraform show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
@@ -112,7 +103,7 @@ describe("action", () => {
       [
         {
           key: "summary",
-          depends: "show-json-out",
+          depends: "show",
           exec: "cat plan.json | tf-summarize -md",
         },
         "foo",
@@ -120,7 +111,7 @@ describe("action", () => {
       [
         {
           key: "conftest",
-          depends: "show-json-out",
+          depends: "show",
           exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
@@ -186,7 +177,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -219,16 +210,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan",
-          depends: "plan",
-          output: false,
-        },
-        "bar",
-      ],
-      [
-        {
-          key: "show-json-out",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan > plan.json",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
@@ -237,7 +219,7 @@ describe("action", () => {
       [
         {
           key: "summary",
-          depends: "show-json-out",
+          depends: "show",
           exec: "cat plan.json | tf-summarize -md",
         },
         "bar",
@@ -245,7 +227,7 @@ describe("action", () => {
       [
         {
           key: "conftest",
-          depends: "show-json-out",
+          depends: "show",
           exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
@@ -270,7 +252,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -303,16 +285,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan",
-          depends: "plan",
-          output: false,
-        },
-        "bar",
-      ],
-      [
-        {
-          key: "show-json-out",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan > plan.json",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
@@ -321,7 +294,7 @@ describe("action", () => {
       [
         {
           key: "summary",
-          depends: "show-json-out",
+          depends: "show",
           exec: "cat plan.json | tf-summarize -md",
         },
         "bar",
@@ -329,7 +302,7 @@ describe("action", () => {
       [
         {
           key: "conftest",
-          depends: "show-json-out",
+          depends: "show",
           exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
@@ -354,7 +327,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -387,16 +360,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terraform show -no-color -json plan.tfplan",
-          depends: "plan",
-          output: false,
-        },
-        "bar",
-      ],
-      [
-        {
-          key: "show-json-out",
-          exec: "terraform show -no-color -json plan.tfplan > plan.json",
+          exec: "terraform show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
@@ -405,7 +369,7 @@ describe("action", () => {
       [
         {
           key: "summary",
-          depends: "show-json-out",
+          depends: "show",
           exec: "cat plan.json | tf-summarize -md",
         },
         "bar",
@@ -413,7 +377,7 @@ describe("action", () => {
       [
         {
           key: "conftest",
-          depends: "show-json-out",
+          depends: "show",
           exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
@@ -449,7 +413,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -482,16 +446,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan",
-          depends: "plan",
-          output: false,
-        },
-        "bar",
-      ],
-      [
-        {
-          key: "show-json-out",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan > plan.json",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
@@ -500,7 +455,7 @@ describe("action", () => {
       [
         {
           key: "summary",
-          depends: "show-json-out",
+          depends: "show",
           exec: "cat plan.json | tf-summarize -md",
         },
         "bar",
@@ -508,7 +463,7 @@ describe("action", () => {
       [
         {
           key: "conftest",
-          depends: "show-json-out",
+          depends: "show",
           exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
@@ -544,7 +499,7 @@ describe("action", () => {
 
     await action();
 
-    expect(execCommand.mock.calls.length).toBe(8);
+    expect(execCommand.mock.calls.length).toBe(7);
     expect(execCommand.mock.calls).toEqual([
       [
         {
@@ -577,16 +532,7 @@ describe("action", () => {
       [
         {
           key: "show",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan",
-          depends: "plan",
-          output: false,
-        },
-        "bar",
-      ],
-      [
-        {
-          key: "show-json-out",
-          exec: "terragrunt run -- show -no-color -json plan.tfplan > plan.json",
+          exec: "terragrunt run -- show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
@@ -595,7 +541,7 @@ describe("action", () => {
       [
         {
           key: "summary",
-          depends: "show-json-out",
+          depends: "show",
           exec: "cat plan.json | tf-summarize -md",
         },
         "bar",
@@ -603,7 +549,7 @@ describe("action", () => {
       [
         {
           key: "conftest",
-          depends: "show-json-out",
+          depends: "show",
           exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
           output: true,
         },
@@ -684,7 +630,6 @@ describe("action", () => {
         show: { isSuccess: true, output: "{}" },
         summary: { isSuccess: true, output: "{}" },
         validate: { isSuccess: true, output: "{}" },
-        "show-json-out": { isSuccess: true, output: "{}" },
         conftest: { isSuccess: true, output: "{}" },
       },
       { isChanges: true },
@@ -730,7 +675,6 @@ describe("action", () => {
         show: { isSuccess: true, output: "{}" },
         summary: { isSuccess: true, output: "{}" },
         validate: { isSuccess: true, output: "{}" },
-        "show-json-out": { isSuccess: true, output: "{}" },
         conftest: { isSuccess: true, output: "{}" },
       },
       { isChanges: true },
@@ -758,8 +702,7 @@ terraform init -no-color
 terraform validate -no-color
 terraform fmt -check
 terraform plan -no-color -input=false -out=plan.tfplan
-terraform show -no-color -json plan.tfplan
-terraform show -no-color -json plan.tfplan > plan.json
+terraform show -no-color -json plan.tfplan | tee plan.json
 cat plan.json | tf-summarize -md
 conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform`);
   });
@@ -853,7 +796,6 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
         plan: { isSuccess: true, output: "" },
         show: { isSuccess: true, output: "" },
         validate: { isSuccess: true, output: "{}" },
-        "show-json-out": { isSuccess: true, output: "" },
         summary: { isSuccess: true, output: "" },
         conftest: { isSuccess: true, output: "" },
       },
