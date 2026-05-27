@@ -8,6 +8,10 @@ const { execCommand } = require("./command.js");
 const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
 const { buildDriftData } = require("./drift.js");
+const {
+  getTerragruntVersion,
+  useNewTerragruntCli,
+} = require("./terragrunt.js");
 
 // Sanitize input to prevent command injection
 function sanitizeInput(input, options = {}) {
@@ -143,11 +147,32 @@ const action = async () => {
   }
   const summarizeBinary = "tf-summarize";
 
-  // Terragrunt: terragrunt run [terragrunt-options] -- <terraform-command> [terraform-options]
-  // Non-Terragrunt: terraform <terraform-command> [terraform-options]
-  const terragruntRun = isTerragrunt ? " run" : "";
-  const terragruntSep = isTerragrunt ? " --" : "";
-  const terragruntInitOption = isTerragrunt && initRunAll ? " --all" : "";
+  // Terragrunt: determine CLI syntax based on installed version.
+  // New (>= 0.98.0): terragrunt run [--all] [options] -- <tf-command> [tf-options]
+  // Legacy (< 0.98.0): terragrunt [options] <tf-command> [tf-options]
+  //                    terragrunt run-all <tf-command>  (for init-run-all)
+  let terragruntRun = "";
+  let terragruntSep = "";
+  let terragruntInitOption = "";
+  if (isTerragrunt) {
+    const tgVersion = getTerragruntVersion();
+    const isNewCli = useNewTerragruntCli(tgVersion);
+    const versionStr = tgVersion
+      ? `v${tgVersion.major}.${tgVersion.minor}.${tgVersion.patch}`
+      : "unknown";
+    core.info(
+      `Detected Terragrunt version: ${versionStr}. Using ${
+        isNewCli ? "new (>= 0.98.0)" : "legacy (< 0.98.0)"
+      } CLI syntax.`,
+    );
+    if (isNewCli) {
+      terragruntRun = " run";
+      terragruntSep = " --";
+      terragruntInitOption = initRunAll ? " --all" : "";
+    } else {
+      terragruntInitOption = initRunAll ? " run-all" : "";
+    }
+  }
   const terraformInitOption = terraformInit
     ? terraformInit.map((item) => sanitizeInput(item)).join(" ")
     : "";

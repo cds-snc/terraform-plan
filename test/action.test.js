@@ -8,6 +8,10 @@ const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
 const {
+  getTerragruntVersion,
+  useNewTerragruntCli,
+} = require("../src/terragrunt.js");
+const {
   action,
   sanitizeInput,
   scanPlanForSecrets,
@@ -19,6 +23,7 @@ jest.mock("@actions/github");
 jest.mock("../src/command.js");
 jest.mock("../src/github.js");
 jest.mock("../src/opa.js");
+jest.mock("../src/terragrunt.js");
 
 describe("action", () => {
   afterEach(() => {
@@ -28,6 +33,9 @@ describe("action", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    // Default terragrunt version detection to new CLI (>= 0.98.0)
+    getTerragruntVersion.mockReturnValue({ major: 0, minor: 99, patch: 0 });
+    useNewTerragruntCli.mockReturnValue(true);
     process.env.GITHUB_WORKSPACE = "/mock/workspace";
     mock_fs({
       foo: {
@@ -286,6 +294,162 @@ describe("action", () => {
         {
           key: "show",
           exec: "terragrunt run -- show -no-color -json plan.tfplan | tee plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "summary",
+          depends: "show",
+          exec: "cat plan.json | tf-summarize -md",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "conftest",
+          depends: "show",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
+        },
+        "bar",
+      ],
+    ]);
+    expect(getPlanChanges.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls.length).toBe(0);
+    expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
+  test("terragrunt flow (legacy < 0.98.0)", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      );
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
+    when(core.getBooleanInput)
+      .calledWith("init-run-all")
+      .mockReturnValue(false);
+    getTerragruntVersion.mockReturnValue({ major: 0, minor: 97, patch: 0 });
+    useNewTerragruntCli.mockReturnValue(false);
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(7);
+    expect(execCommand.mock.calls).toEqual([
+      [
+        {
+          key: "init",
+          exec: "terragrunt init -no-color",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terragrunt validate -no-color",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terragrunt fmt -check",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terragrunt show -no-color -json plan.tfplan | tee plan.json",
+          depends: "plan",
+          output: false,
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "summary",
+          depends: "show",
+          exec: "cat plan.json | tf-summarize -md",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "conftest",
+          depends: "show",
+          exec: "conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+          output: true,
+        },
+        "bar",
+      ],
+    ]);
+    expect(getPlanChanges.mock.calls.length).toBe(1);
+    expect(addComment.mock.calls.length).toBe(0);
+    expect(deleteComment.mock.calls.length).toBe(0);
+  });
+
+  test("terragrunt flow with init-run-all (legacy < 0.98.0)", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    when(core.getInput).calledWith("directory").mockReturnValue("bar");
+    when(core.getInput)
+      .calledWith("conftest-checks")
+      .mockReturnValue(
+        "git::https://github.com/cds-snc/opa_checks.git//aws_terraform",
+      );
+    when(core.getBooleanInput).calledWith("terragrunt").mockReturnValue(true);
+    when(core.getBooleanInput).calledWith("init-run-all").mockReturnValue(true);
+    getTerragruntVersion.mockReturnValue({ major: 0, minor: 97, patch: 0 });
+    useNewTerragruntCli.mockReturnValue(false);
+
+    await action();
+
+    expect(execCommand.mock.calls.length).toBe(7);
+    expect(execCommand.mock.calls).toEqual([
+      [
+        {
+          key: "init",
+          exec: "terragrunt run-all init -no-color",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "validate",
+          exec: "terragrunt validate -no-color",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "fmt",
+          exec: "terragrunt fmt -check",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "plan",
+          exec: "terragrunt plan -no-color -input=false -out=plan.tfplan",
+        },
+        "bar",
+      ],
+      [
+        {
+          key: "show",
+          exec: "terragrunt show -no-color -json plan.tfplan | tee plan.json",
           depends: "plan",
           output: false,
         },
