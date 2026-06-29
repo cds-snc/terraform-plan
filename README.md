@@ -144,13 +144,13 @@ By default, the action uses the `secrets.yml` config file located in the action'
 # Contributing
 To setup your local dev environment:
 ```sh
-npm install
-npm run prepare
+pnpm install
+pnpm prepare
 ```
 Husky provides a pre-commit hook that builds the `dist/index.js` used by the action.  To test locally, [nektos/act](https://github.com/nektos/act) works well.
 
 # Policy
-[Open Policy Agent](https://www.openpolicyagent.org/) is used to check the `terraform plan` for changes.  [Policies](./policy) are written in Rego and then compiled into a WebAssembly module using `npm run policy`.
+[Open Policy Agent](https://www.openpolicyagent.org/) is used to check the `terraform plan` for changes.
 
 # Drift detection
 
