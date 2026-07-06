@@ -4,7 +4,7 @@
     "features": {
         "node": {
             "version": "24.14.1",
-            "pnpmVersion": "11.8.0",
+            "pnpmVersion": "11.9.0",
             "nodeGypDependencies": true
         },
         "terraform": {
