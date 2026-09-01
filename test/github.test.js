@@ -479,6 +479,94 @@ General Kenobi
     });
   });
 
+  test("add a comment listing resources without alarm coverage", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "Hello there" },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "" },
+    };
+    const changes = { isChanges: false, isDeletes: false, resources: {} };
+    const alarmCoverage = {
+      hasGaps: true,
+      total: 3,
+      covered: [{ address: "aws_lambda_function.api" }],
+      uncovered: [
+        {
+          address: "aws_sqs_queue.jobs",
+          type: "aws_sqs_queue",
+          service: "SQS",
+        },
+        {
+          address: "module.api.aws_lb.this",
+          type: "aws_lb",
+          service: "Load balancer",
+        },
+      ],
+    };
+
+    await addComment(
+      octomock,
+      context,
+      "Bambaz",
+      ".",
+      results,
+      changes,
+      10000,
+      2000,
+      false,
+      false,
+      false,
+      true,
+      alarmCoverage,
+    );
+
+    const body = octomock.rest.issues.createComment.mock.calls[0][0].body;
+    expect(body).toContain(
+      "**⚠️ &nbsp; Alarm coverage:** `2 of 3 new resources have no alarms`",
+    );
+    expect(body).toContain("| `aws_sqs_queue.jobs` | SQS |");
+    expect(body).toContain("| `module.api.aws_lb.this` | Load balancer |");
+    // the table must be separated from the preceding block to render
+    expect(body).toContain("\n\n**⚠️ &nbsp; Alarm coverage:** the following");
+  });
+
+  test("report full alarm coverage without listing resources", async () => {
+    const results = {
+      init: { isSuccess: true, output: "" },
+      validate: { isSuccess: true, output: "" },
+      fmt: { isSuccess: true, output: "" },
+      plan: { isSuccess: true, output: "Hello there" },
+      summary: { isSuccess: true, output: "" },
+      conftest: { isSuccess: true, output: "" },
+    };
+    const changes = { isChanges: false, isDeletes: false, resources: {} };
+
+    await addComment(
+      octomock,
+      context,
+      "Bambaz",
+      ".",
+      results,
+      changes,
+      10000,
+      2000,
+      false,
+      false,
+      false,
+      true,
+      { hasGaps: false, total: 4, covered: [], uncovered: [] },
+    );
+
+    const body = octomock.rest.issues.createComment.mock.calls[0][0].body;
+    expect(body).toContain(
+      "**✅ &nbsp; Alarm coverage:** `all 4 new resources covered`",
+    );
+    expect(body).not.toContain("| Resource | Service |");
+  });
+
   test("hide conftest details if outputs is empty", async () => {
     const results = {
       init: { isSuccess: true, output: "" },

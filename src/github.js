@@ -10,6 +10,9 @@ const commentTemplate = `<!-- terraform-plan: {{ title }}::{{ directory }} -->
 {% endif -%}
 {% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
+{% if alarms -%}
+**{{ "⚠️" if alarmCoverage.hasGaps else "✅" }} &nbsp; Alarm coverage:** \`{{ (alarmCoverage.uncovered|length ~ " of " ~ alarmCoverage.total ~ " new resources have no alarms") if alarmCoverage.hasGaps else ("all " ~ alarmCoverage.total ~ " new resources covered") }}\`
+{% endif -%}
 {% if not skipConftest -%}
 **{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\` 
 
@@ -87,6 +90,15 @@ Plan: {{ changesLine }}
 
 </details>
 {% endif -%}
+{% if alarms and alarmCoverage.hasGaps %}
+**⚠️ &nbsp; Alarm coverage:** the following new resources have no CloudWatch alarm pointing at them.
+
+| Resource | Service |
+| --- | --- |
+{% for resource in alarmCoverage.uncovered -%}
+| \`{{ resource.address }}\` | {{ resource.service }} |
+{% endfor %}
+{% endif -%}
 {% endif -%}`;
 
 /**
@@ -127,6 +139,8 @@ const generateChangesLine = (changes) => {
  * @param {boolean} skipFormat Skip runnting terraform fmt check
  * @param {boolean} skipPlan Skip the rendering of the plan output
  * @param {boolean} skipConftest Skip the conftest step
+ * @param {boolean} alarms Render the CloudWatch alarm coverage check
+ * @param {Object} alarmCoverage Alarm coverage summary from getAlarmCoverage
  */
 const addComment = async (
   octokit,
@@ -140,6 +154,8 @@ const addComment = async (
   skipFormat,
   skipPlan,
   skipConftest,
+  alarms,
+  alarmCoverage,
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
@@ -156,6 +172,8 @@ const addComment = async (
     skipFormat: skipFormat,
     skipPlan: skipPlan,
     skipConftest: skipConftest,
+    alarms: alarms,
+    alarmCoverage: alarmCoverage || {},
     runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
   });
   await octokit.rest.issues.createComment({
