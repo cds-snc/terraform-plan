@@ -168,7 +168,7 @@ By default, the action uses the `secrets.yml` config file located in the action'
   with:
     alarms: true
     alarms-ignore: |
-      aws_instance
+      aws_sqs_queue
       module.legacy
       module.api.aws_lb.internal
     github-token: ${{ secrets.GITHUB_TOKEN }}
