@@ -64787,6 +64787,7 @@ const ALARM_CAPABLE_RESOURCES = {
   aws_elasticache_replication_group: "ElastiCache",
   aws_kinesis_stream: "Kinesis",
   aws_lambda_function: "Lambda",
+  aws_lb: "Load balancer",
   aws_nat_gateway: "NAT Gateway",
   aws_rds_cluster: "RDS",
   aws_rds_cluster_instance: "RDS",
