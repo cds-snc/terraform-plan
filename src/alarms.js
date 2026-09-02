@@ -7,7 +7,6 @@
  */
 const ALARM_CAPABLE_RESOURCES = {
   aws_alb: "Load balancer",
-  aws_alb_target_group: "Load balancer",
   aws_api_gateway_stage: "API Gateway",
   aws_apigatewayv2_stage: "API Gateway",
   aws_cloudfront_distribution: "CloudFront",
@@ -18,11 +17,8 @@ const ALARM_CAPABLE_RESOURCES = {
   aws_efs_file_system: "EFS",
   aws_elasticache_cluster: "ElastiCache",
   aws_elasticache_replication_group: "ElastiCache",
-  aws_kinesis_firehose_delivery_stream: "Kinesis Firehose",
   aws_kinesis_stream: "Kinesis",
   aws_lambda_function: "Lambda",
-  aws_lb: "Load balancer",
-  aws_lb_target_group: "Load balancer",
   aws_nat_gateway: "NAT Gateway",
   aws_rds_cluster: "RDS",
   aws_rds_cluster_instance: "RDS",
