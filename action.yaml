@@ -7,6 +7,14 @@ inputs:
     description: 'Allow the action to fail'
     required: false
     default: 'false'
+  alarms:
+    description: 'Warn in the PR comment when newly created resources have no CloudWatch alarm coverage'
+    required: false
+    default: 'false'
+  alarms-ignore:
+    description: 'Resource types or addresses to exclude from the alarm coverage check, one per line'
+    required: false
+    default: ''
   comment:
     description: 'Add comment with changes to the PR'
     required: false
