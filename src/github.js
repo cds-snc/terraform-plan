@@ -190,19 +190,22 @@ const addComment = async (
  * @param {String} title Heading of the comment to delete
  */
 const deleteComment = async (octokit, context, title, directory) => {
-  // Get existing comments.
-  const { data: comments } = await octokit.rest.issues.listComments({
+  // Get all existing comments: this must be paginated since a PR can easily
+  // have more than one page of comments, which would hide the bot's comments.
+  const comments = await octokit.paginate(octokit.rest.issues.listComments, {
     ...context.repo,
     issue_number: context.payload.pull_request.number,
+    per_page: 100,
   });
 
-  // Find the bot's comment
+  // Find the bot's comments.  There can be more than one if a previous run
+  // failed to delete them, so all matches are removed.
   const marker = `<!-- terraform-plan: ${title}::${directory} -->`;
-  const comment = comments.find(
+  const staleComments = comments.filter(
     (comment) =>
       comment.user.type === "Bot" && comment.body.indexOf(marker) > -1,
   );
-  if (comment) {
+  for (const comment of staleComments) {
     console.log(`Deleting comment '${title}: ${comment.id}'`);
     await octokit.rest.issues.deleteComment({
       ...context.repo,

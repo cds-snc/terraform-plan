@@ -14,6 +14,7 @@ global.console = { log: jest.fn() };
 
 // Mock octokit object and return values
 const octomock = {
+  paginate: jest.fn(),
   rest: {
     issues: {
       createComment: jest.fn(),
@@ -23,24 +24,23 @@ const octomock = {
   },
 };
 
-octomock.rest.issues.listComments.mockReturnValue({
-  data: [
-    {
-      id: 1,
-      body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
-      user: {
-        type: "Bot",
-      },
+// `octokit.paginate` returns the flattened list of comments, not a response object
+octomock.paginate.mockResolvedValue([
+  {
+    id: 1,
+    body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+    user: {
+      type: "Bot",
     },
-    {
-      id: 2,
-      body: "<!-- terraform-plan: Bort::. -->\n## Bort",
-      user: {
-        type: "User",
-      },
+  },
+  {
+    id: 2,
+    body: "<!-- terraform-plan: Bort::. -->\n## Bort",
+    user: {
+      type: "User",
     },
-  ],
-});
+  },
+]);
 
 // Mock GitHub workflow context
 const context = {
@@ -881,11 +881,15 @@ describe("cleanFormatOutput", () => {
 describe("deleteComment", () => {
   test("delete an existing bot comment", async () => {
     await deleteComment(octomock, context, "Foobar", ".");
-    expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
-    expect(octomock.rest.issues.listComments.mock.calls[0][0]).toEqual({
+    expect(octomock.paginate.mock.calls.length).toBe(1);
+    expect(octomock.paginate.mock.calls[0][0]).toBe(
+      octomock.rest.issues.listComments,
+    );
+    expect(octomock.paginate.mock.calls[0][1]).toEqual({
       issue_number: 42,
       owner: "foo",
       repo: "bar",
+      per_page: 100,
     });
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls[0][0]).toEqual({
@@ -896,24 +900,22 @@ describe("deleteComment", () => {
   });
   test("do nothing for non-bot comments", async () => {
     await deleteComment(octomock, context, "Bort", ".");
-    expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
+    expect(octomock.paginate.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(0);
   });
   test("delete a bot comment matching a non-root directory", async () => {
-    octomock.rest.issues.listComments.mockReturnValueOnce({
-      data: [
-        {
-          id: 10,
-          body: "<!-- terraform-plan: Foobar::environments/prod -->\n## Foobar",
-          user: { type: "Bot" },
-        },
-        {
-          id: 11,
-          body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
-          user: { type: "Bot" },
-        },
-      ],
-    });
+    octomock.paginate.mockResolvedValueOnce([
+      {
+        id: 10,
+        body: "<!-- terraform-plan: Foobar::environments/prod -->\n## Foobar",
+        user: { type: "Bot" },
+      },
+      {
+        id: 11,
+        body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+        user: { type: "Bot" },
+      },
+    ]);
     await deleteComment(octomock, context, "Foobar", "environments/prod");
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls[0][0]).toEqual({
@@ -923,18 +925,42 @@ describe("deleteComment", () => {
     });
   });
   test("do not delete a bot comment with same title but different directory", async () => {
-    octomock.rest.issues.listComments.mockReturnValueOnce({
-      data: [
-        {
-          id: 11,
-          body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
-          user: { type: "Bot" },
-        },
-      ],
-    });
+    octomock.paginate.mockResolvedValueOnce([
+      {
+        id: 11,
+        body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+        user: { type: "Bot" },
+      },
+    ]);
     await deleteComment(octomock, context, "Foobar", "environments/prod");
-    expect(octomock.rest.issues.listComments.mock.calls.length).toBe(1);
+    expect(octomock.paginate.mock.calls.length).toBe(1);
     expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(0);
+  });
+  test("delete all duplicate bot comments left by previous runs", async () => {
+    octomock.paginate.mockResolvedValueOnce([
+      {
+        id: 20,
+        body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+        user: { type: "Bot" },
+      },
+      {
+        id: 21,
+        body: "<!-- terraform-plan: Bort::. -->\n## Bort",
+        user: { type: "Bot" },
+      },
+      {
+        id: 22,
+        body: "<!-- terraform-plan: Foobar::. -->\n## Foobar",
+        user: { type: "Bot" },
+      },
+    ]);
+    await deleteComment(octomock, context, "Foobar", ".");
+    expect(octomock.rest.issues.deleteComment.mock.calls.length).toBe(2);
+    expect(
+      octomock.rest.issues.deleteComment.mock.calls.map(
+        (call) => call[0].comment_id,
+      ),
+    ).toEqual([20, 22]);
   });
 });
 
