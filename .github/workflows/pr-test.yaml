@@ -61,6 +61,9 @@ jobs:
           - test: plan-options
             allow-failure: false
             terraform-plan: -var-file='plan_options.tfvars'
+          - test: alarms
+            allow-failure: false
+            alarms: true
           # Terragrunt tests
           - test: terragrunt
             allow-failure: false
@@ -160,6 +163,7 @@ jobs:
         with:
           directory: test/${{ matrix.test }}
           allow-failure: ${{ matrix.allow-failure }}
+          alarms: ${{ matrix.alarms || 'false' }}
           comment-title: Test ${{ matrix.test }}
           comment-delete: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -199,6 +203,10 @@ jobs:
               { exist: true, title: /Test validate-fail/g, state: /Terraform Validate:\*\* `failed`\n/gm },
               { exist: true, title: /Test import/g, state: /`success`[^`]+`success`/g },
               { exist: true, title: /Test plan-options/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /Test alarms/g, state: /Alarm coverage:\*\* `1 of 2 new resources have no alarms`/gm },
+              { exist: true, title: /Test alarms/g, state: /\| `aws_sqs_queue.uncovered` \| SQS \|/gm },
+              { exist: false, title: /Test alarms/g, state: /`aws_dynamodb_table.covered` \| DynamoDB/gm },
+              { exist: false, title: /Test changes/g, state: /Alarm coverage:\*\*/gm },
               { exist: true, title: /Test secret-scan/g, state: /api_key = "\*\*\*"/g },
               { exist: true, title: /Test secret-config/g, state: /custom = "\*\*\*"/g },
               // Terragrunt

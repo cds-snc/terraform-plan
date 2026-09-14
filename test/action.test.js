@@ -2,7 +2,7 @@
 
 const core = require("@actions/core");
 const github = require("@actions/github");
-const { when } = require("jest-when");
+const { when, resetAllWhenMocks } = require("jest-when");
 const mock_fs = require("mock-fs");
 const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
@@ -33,6 +33,9 @@ describe("action", () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    // jest.resetAllMocks() does not clear jest-when's calledWith registry,
+    // which would leak input mocks between tests
+    resetAllWhenMocks();
     // Default terragrunt version detection to new CLI (>= 0.98.0)
     getTerragruntVersion.mockReturnValue({ major: 0, minor: 99, patch: 0 });
     useNewTerragruntCli.mockReturnValue(true);
@@ -802,6 +805,8 @@ describe("action", () => {
       false,
       false,
       false,
+      undefined,
+      {},
     ]);
   });
 
@@ -847,6 +852,8 @@ describe("action", () => {
       false,
       false,
       false,
+      undefined,
+      {},
     ]);
   });
 
@@ -928,6 +935,71 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
     );
   });
 
+  test("alarms flow warns and passes coverage to the comment", async () => {
+    const planJson = {
+      resource_changes: [
+        {
+          address: "aws_sqs_queue.jobs",
+          mode: "managed",
+          type: "aws_sqs_queue",
+          change: { actions: ["create"] },
+        },
+      ],
+    };
+    execCommand.mockReturnValue({
+      isSuccess: true,
+      output: JSON.stringify(planJson),
+    });
+    getPlanChanges.mockReturnValue({ isChanges: true });
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getBooleanInput).calledWith("alarms").mockReturnValue(true);
+    when(core.getMultilineInput)
+      .calledWith("alarms-ignore")
+      .mockReturnValue([]);
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    github.getOctokit.mockReturnValue("octokit");
+    github.context = "context";
+
+    await action();
+
+    expect(core.setFailed.mock.calls.length).toBe(0);
+    expect(core.warning.mock.calls[0][0]).toBe(
+      "No CloudWatch alarm coverage for aws_sqs_queue.jobs (SQS)",
+    );
+    expect(addComment.mock.calls[0][11]).toBe(true);
+    expect(addComment.mock.calls[0][12]).toEqual(
+      expect.objectContaining({
+        hasGaps: true,
+        total: 1,
+        uncovered: [
+          {
+            address: "aws_sqs_queue.jobs",
+            type: "aws_sqs_queue",
+            service: "SQS",
+          },
+        ],
+      }),
+    );
+  });
+
+  test("alarms are not checked when the option is off", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    getPlanChanges.mockReturnValue({ isChanges: true });
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getBooleanInput).calledWith("alarms").mockReturnValue(false);
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    github.getOctokit.mockReturnValue("octokit");
+    github.context = "context";
+
+    await action();
+
+    expect(core.warning.mock.calls.length).toBe(0);
+    expect(addComment.mock.calls[0][11]).toBe(false);
+    expect(addComment.mock.calls[0][12]).toEqual({});
+  });
+
   test("skip-plan", async () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
     getPlanChanges.mockReturnValue({ isChanges: false });
@@ -969,6 +1041,8 @@ conftest test plan.json --no-color --update git::https://github.com/cds-snc/opa_
       false,
       true,
       false,
+      undefined,
+      {},
     ]);
   });
 });

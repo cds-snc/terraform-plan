@@ -8,6 +8,7 @@ const { execCommand } = require("./command.js");
 const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
 const { buildDriftData } = require("./drift.js");
+const { getAlarmCoverage } = require("./alarms.js");
 const {
   getTerragruntVersion,
   useNewTerragruntCli,
@@ -122,6 +123,8 @@ const action = async () => {
   const skipPlan = core.getBooleanInput("skip-plan");
   const skipConftest = core.getBooleanInput("skip-conftest");
   const initRunAll = core.getBooleanInput("init-run-all");
+  const isAlarms = core.getBooleanInput("alarms");
+  const alarmsIgnore = core.getMultilineInput("alarms-ignore");
   const isSecretScan = core.getBooleanInput("secret-scan");
   const secretConfig = core.getInput("secret-config");
   const enableDriftOutput = core.getBooleanInput("enable-drift-output");
@@ -287,9 +290,24 @@ const action = async () => {
 
   // Check for changes
   let changes = {};
+  let alarmCoverage = {};
   if (results.show.isSuccess && !skipPlan) {
     const planJson = JSON.parse(results.show.output);
     changes = await getPlanChanges(planJson);
+
+    // Check that newly created resources have CloudWatch alarms
+    if (isAlarms) {
+      try {
+        alarmCoverage = getAlarmCoverage(planJson, { ignore: alarmsIgnore });
+        for (const resource of alarmCoverage.uncovered) {
+          core.warning(
+            `No CloudWatch alarm coverage for ${resource.address} (${resource.service})`,
+          );
+        }
+      } catch (e) {
+        core.warning(`Failed to check alarm coverage: ${e}`);
+      }
+    }
   }
 
   // Comment on PR if changes or errors
@@ -323,6 +341,8 @@ const action = async () => {
       skipFormat,
       skipPlan,
       skipConftest,
+      isAlarms,
+      alarmCoverage,
     );
   }
 

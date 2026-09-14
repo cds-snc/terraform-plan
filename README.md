@@ -14,6 +14,8 @@ Use the following settings to control the action:
 
 | Setting          |      Description                                                   |  Default     |
 |------------------|--------------------------------------------------------------------|--------------|
+| `alarms`         | Warn when newly created resources have no CloudWatch alarm coverage | false       |
+| `alarms-ignore`  | Resource types or addresses to exclude from the alarm check, one per line |       |
 | `allow-failure`  | Allow the action to fail                                           | false        |
 | `comment`        | Add comment with changes to the PR                                 | true         |
 | `comment-delete` | Delete previous comments made by the bot on the PR. Comments are deleted based on `comment-title` and `directory`. | false        |
@@ -35,6 +37,17 @@ Use the following settings to control the action:
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
 | `init-run-all`   | Run init across all modules (only applicable for terragrunt).      | false        |
 | `enable-drift-output` | Emit `drift-output` as action output (JSON)                  | true         |
+
+## Alarm coverage
+
+When `alarms` is enabled, the action inspects the plan and warns when a resource that emits CloudWatch metrics is being created without an alarm pointing at it.  Each uncovered resource is listed in the PR comment and logged as a workflow warning.  This never fails the build.
+
+Coverage is established from the plan's `configuration` section: a resource is covered when an `aws_cloudwatch_metric_alarm` or `aws_cloudwatch_composite_alarm` **in the same plan** references it.  Two consequences worth knowing:
+
+- Only resources being **created** are checked.  Existing resources and in-place updates are ignored, so enabling this on a mature project reports gaps as they are introduced rather than all at once.
+- An alarm whose dimensions come from a variable (`var.queue_name`) instead of a direct resource reference cannot be resolved, so it reads as uncovered.  Use `alarms-ignore` for those.
+
+`alarms-ignore` accepts a resource type (`aws_sqs_queue`), an exact address (`module.api.aws_lb.this`), or a module prefix (`module.api`), one per line.
 
 ## Secret Scanning with Trufflehog
 
@@ -139,6 +152,26 @@ By default, the action uses the `secrets.yml` config file located in the action'
     github-token: ${{ secrets.GITHUB_TOKEN }}
     secret-scan: true
     secret-config: path/to/custom-trufflehog-config.yml
+
+# Example 10
+# Warn when new resources are created without CloudWatch alarms
+- name: Terraform plan with alarm coverage
+  uses: cds-snc/terraform-plan
+  with:
+    alarms: true
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+
+# Example 11
+# Alarm coverage with exclusions: a resource type, a module, and one address
+- name: Terraform plan with alarm coverage
+  uses: cds-snc/terraform-plan
+  with:
+    alarms: true
+    alarms-ignore: |
+      aws_sqs_queue
+      module.legacy
+      module.api.aws_lb.internal
+    github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 # Contributing

@@ -10,6 +10,9 @@ const commentTemplate = `<!-- terraform-plan: {{ title }}::{{ directory }} -->
 {% endif -%}
 {% if not skipPlan -%}
 **{{ "✅" if results.plan.isSuccess else "❌" }} &nbsp; Terraform Plan:** \`{{ "success" if results.plan.isSuccess else "failed" }}\`
+{% if alarms -%}
+**{{ "⚠️" if alarmCoverage.hasGaps else "✅" }} &nbsp; Alarm coverage:** \`{{ (alarmCoverage.uncovered|length ~ " of " ~ alarmCoverage.total ~ " new resources have no alarms") if alarmCoverage.hasGaps else ("all " ~ alarmCoverage.total ~ " new resources covered") }}\`
+{% endif -%}
 {% if not skipConftest -%}
 **{{ "✅" if results.conftest.isSuccess else "❌" }} &nbsp; Conftest:** \`{{ "success" if results.conftest.isSuccess else "failed" }}\` 
 
@@ -87,6 +90,15 @@ Plan: {{ changesLine }}
 
 </details>
 {% endif -%}
+{% if alarms and alarmCoverage.hasGaps %}
+**⚠️ &nbsp; Alarm coverage:** the following new resources have no CloudWatch alarm pointing at them.
+
+| Resource | Service |
+| --- | --- |
+{% for resource in alarmCoverage.uncovered -%}
+| \`{{ resource.address }}\` | {{ resource.service }} |
+{% endfor %}
+{% endif -%}
 {% endif -%}`;
 
 /**
@@ -127,6 +139,8 @@ const generateChangesLine = (changes) => {
  * @param {boolean} skipFormat Skip runnting terraform fmt check
  * @param {boolean} skipPlan Skip the rendering of the plan output
  * @param {boolean} skipConftest Skip the conftest step
+ * @param {boolean} alarms Render the CloudWatch alarm coverage check
+ * @param {Object} alarmCoverage Alarm coverage summary from getAlarmCoverage
  */
 const addComment = async (
   octokit,
@@ -140,6 +154,8 @@ const addComment = async (
   skipFormat,
   skipPlan,
   skipConftest,
+  alarms,
+  alarmCoverage,
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
@@ -156,6 +172,8 @@ const addComment = async (
     skipFormat: skipFormat,
     skipPlan: skipPlan,
     skipConftest: skipConftest,
+    alarms: alarms,
+    alarmCoverage: alarmCoverage || {},
     runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
   });
   await octokit.rest.issues.createComment({
@@ -172,19 +190,22 @@ const addComment = async (
  * @param {String} title Heading of the comment to delete
  */
 const deleteComment = async (octokit, context, title, directory) => {
-  // Get existing comments.
-  const { data: comments } = await octokit.rest.issues.listComments({
+  // Get all existing comments: this must be paginated since a PR can easily
+  // have more than one page of comments, which would hide the bot's comments.
+  const comments = await octokit.paginate(octokit.rest.issues.listComments, {
     ...context.repo,
     issue_number: context.payload.pull_request.number,
+    per_page: 100,
   });
 
-  // Find the bot's comment
+  // Find the bot's comments.  There can be more than one if a previous run
+  // failed to delete them, so all matches are removed.
   const marker = `<!-- terraform-plan: ${title}::${directory} -->`;
-  const comment = comments.find(
+  const staleComments = comments.filter(
     (comment) =>
       comment.user.type === "Bot" && comment.body.indexOf(marker) > -1,
   );
-  if (comment) {
+  for (const comment of staleComments) {
     console.log(`Deleting comment '${title}: ${comment.id}'`);
     await octokit.rest.issues.deleteComment({
       ...context.repo,
