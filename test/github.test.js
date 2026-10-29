@@ -869,8 +869,8 @@ describe("AI summary", () => {
       "Replaces &lt;b&gt;the&lt;/b&gt; database.",
     ],
     [
-      '![image](https://attacker.example/secret)\n[link](https://attacker.example)\n```html\n</pre><img src="https://attacker.example/secret">\n```',
-      "![image](https://attacker.example/secret)\n[link](https://attacker.example)\n```html\n&lt;/pre&gt;&lt;img src=&quot;https://attacker.example/secret&quot;&gt;\n```",
+      '![image](https://attacker.example/secret)\r\n\n[link](https://attacker.example)\n```html\n</p><img src="https://attacker.example/secret">\n```',
+      "![image](https://attacker.example/secret) [link](https://attacker.example) ```html &lt;/p&gt;&lt;img src=&quot;https://attacker.example/secret&quot;&gt; ```",
     ],
   ])(
     "renders AI summary as HTML-escaped literal text: %s",
@@ -901,10 +901,10 @@ describe("AI summary", () => {
       );
       const body = octomock.rest.issues.createComment.mock.calls[0][0].body;
       expect(body).toMatch(
-        /^<!-- terraform-plan: Foobar::\. -->\n## Foobar\n\*\*🟠 &nbsp; AI risk assessment:\*\* `HIGH`\n\n<pre>/,
+        /^<!-- terraform-plan: Foobar::\. -->\n## Foobar\n\*\*🟠 &nbsp; AI risk assessment:\*\* `HIGH`\n\n<p>/,
       );
-      expect(body).toContain(`<pre>${escaped}</pre>`);
-      expect(body.match(/<\/?pre>/g)).toEqual(["<pre>", "</pre>"]);
+      expect(body).toContain(`<p>${escaped}</p>`);
+      expect(body.match(/<\/?p>/g)).toEqual(["<p>", "</p>"]);
       expect(body).not.toContain("<img");
     },
   );

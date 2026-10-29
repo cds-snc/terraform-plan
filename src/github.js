@@ -6,7 +6,7 @@ const commentTemplate = `<!-- terraform-plan: {{ title }}::{{ directory }} -->
 {% if aiSummary -%}
 **{{ riskIcons[aiSummary.riskLevel] }} &nbsp; AI risk assessment:** \`{{ aiSummary.riskLevel }}\`
 
-<pre>{{ aiSummary.summary }}</pre>
+<p>{{ aiSummary.summary }}</p>
 
 <sub>AI-generated, verify against the plan below.</sub>
 
@@ -184,7 +184,10 @@ const addComment = async (
     skipConftest: skipConftest,
     alarms: alarms,
     alarmCoverage: alarmCoverage || {},
-    aiSummary: aiSummary,
+    aiSummary: aiSummary && {
+      ...aiSummary,
+      summary: aiSummary.summary.replace(/[\r\n]+/g, " "),
+    },
     riskIcons: { LOW: "🟢", MEDIUM: "🟡", HIGH: "🟠", CRITICAL: "🔴" },
     runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
   });
