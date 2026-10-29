@@ -26,6 +26,10 @@ jobs:
           # Standard tests (terraform)
           - test: changes
             allow-failure: false
+          - test: ai-summary
+            directory: changes
+            allow-failure: false
+            summarize-with-ai: true
           - test: no-changes
             allow-failure: false
           - test: format-error
@@ -158,10 +162,17 @@ jobs:
           role-session-name: TFPlan
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Start AI API stub
+        if: matrix.summarize-with-ai == true
+        run: |
+          node test/ai-summary/server.js &
+          echo "AI_STUB_PID=$!" >> "$GITHUB_ENV"
+          curl --fail --retry 10 --retry-connrefused --retry-delay 1 --retry-max-time 15 http://127.0.0.1:8080/health
+
       - name: Test ${{ matrix.test }}
         uses: ./
         with:
-          directory: test/${{ matrix.test }}
+          directory: test/${{ matrix.directory || matrix.test }}
           allow-failure: ${{ matrix.allow-failure }}
           alarms: ${{ matrix.alarms || 'false' }}
           comment-title: Test ${{ matrix.test }}
@@ -177,6 +188,14 @@ jobs:
           init-run-all: ${{ matrix.init-run-all || 'false'}}
           terraform-plan: ${{ matrix.terraform-plan || '' }}
           terragrunt-plan: ${{ matrix.terragrunt-plan || '' }}
+          summarize-with-ai: ${{ matrix.summarize-with-ai || 'false' }}
+          ai-base-url: http://127.0.0.1:8080
+          ai-model: test-model
+          ai-api-key: dummy-test-key
+
+      - name: Stop AI API stub
+        if: always() && env.AI_STUB_PID != ''
+        run: kill "$AI_STUB_PID"
 
   test-action-comments:
     needs: terraform-plan
@@ -191,6 +210,7 @@ jobs:
             const testComments = [
               // Terraform
               { exist: true, title: /Test changes/g, state: /`success`[^`]+`success`/g },
+              { exist: true, title: /^## Test ai-summary$/m, state: /AI risk assessment:\*\* `LOW`\n\n<p>Creates a random ID for testing\.<\/p>/ },
               { exist: true, title: /Test format-error/g, state: /`failed`[^`]+`success`/g },
               { exist: true, title: /Test invalid/g, state: /`failed`[^`]+`failed`/g },
               { exist: false, title: /Test no-changes/g, state: /./g },
