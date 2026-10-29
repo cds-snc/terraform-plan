@@ -5,7 +5,7 @@ const { removeRefreshOutput } = require("./github.js");
 const RISK_LEVELS = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
 const PLAN_CHAR_LIMIT = 150000;
 const SUMMARY_CHAR_LIMIT = 2000;
-const TIMEOUT_MS = 120000;
+const TIMEOUT_MS = 10000;
 
 const SYSTEM_PROMPT = `You review Terraform plans on pull requests. Assess the risk of applying the plan and explain its effect in plain English for a reviewer.
 
