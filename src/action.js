@@ -40,7 +40,7 @@ function parseInputInt(str, def) {
  * Scans a Terraform plan with trufflehog for secrets
  * @param {string} planOutput The Terraform plan output to scan
  * @param {string} configPath Path to the TruffleHog config file (relative to workspace root)
- * @returns {Array} Array of detected secrets
+ * @returns {{isSuccess: boolean, secrets: string[]}} Scan status and detected secrets
  */
 function scanPlanForSecrets(planOutput, configPath) {
   try {
@@ -56,18 +56,23 @@ function scanPlanForSecrets(planOutput, configPath) {
       exec: `trufflehog filesystem plan.tf --no-verification --config=${resolvedConfigPath} --json --no-update`,
       output: false,
     };
-    const result = execCommand(scanCommand, __dirname);
-    fs.unlinkSync(tempPlanFile);
+    let result;
+    try {
+      result = execCommand(scanCommand, __dirname);
+    } finally {
+      fs.unlinkSync(tempPlanFile);
+    }
 
     if (!result.isSuccess) {
       core.warning(
         "Trufflehog scan failed, continuing without secret redaction",
       );
-      return [];
+      return { isSuccess: false, secrets: [] };
     }
 
     // Parse JSON output - each line is a separate JSON object
     const secrets = [];
+    let isSuccess = true;
     const lines = result.output
       .trim()
       .split("\n")
@@ -76,20 +81,22 @@ function scanPlanForSecrets(planOutput, configPath) {
     for (const line of lines) {
       try {
         const secretData = JSON.parse(line);
-        if (secretData.Raw) {
+        if (typeof secretData.Raw === "string" && secretData.Raw) {
           secrets.push(secretData.Raw);
+        } else {
+          isSuccess = false;
+          core.warning("Trufflehog output is missing a non-empty Raw string");
         }
-      } catch (parseError) {
-        core.warning(
-          `Failed to parse trufflehog output line: ${line} - ${parseError.message}`,
-        );
+      } catch {
+        isSuccess = false;
+        core.warning("Failed to parse trufflehog output");
       }
     }
 
-    return secrets;
+    return { isSuccess, secrets };
   } catch (error) {
     core.warning(`Error during trufflehog scan: ${error.message}`);
-    return [];
+    return { isSuccess: false, secrets: [] };
   }
 }
 
@@ -324,15 +331,21 @@ const action = async () => {
     const conftestLimit = parseInputInt(conftestCharLimit, 2000);
 
     // Scan for secrets and redact if secret scanning is enabled
-    if (isSecretScan && !skipPlan && results.plan.output) {
-      const detectedSecrets = scanPlanForSecrets(
-        results.plan.output,
+    let secretScanSuccess = !isSecretScan;
+    if (isSecretScan && !skipPlan) {
+      const scan = scanPlanForSecrets(
+        `${results.plan.output}\n${results.summary.output}`,
         secretConfig,
       );
-      if (detectedSecrets.length > 0) {
+      secretScanSuccess = scan.isSuccess;
+      if (scan.secrets.length > 0) {
         results.plan.output = redactSecretsFromPlan(
           results.plan.output,
-          detectedSecrets,
+          scan.secrets,
+        );
+        results.summary.output = redactSecretsFromPlan(
+          results.summary.output,
+          scan.secrets,
         );
       }
     }
@@ -344,6 +357,8 @@ const action = async () => {
         core.warning(
           "summarize-with-ai requires ai-base-url, ai-model and ai-api-key, skipping AI summary",
         );
+      } else if (!secretScanSuccess) {
+        core.warning("Secret scan failed, skipping AI summary");
       } else {
         try {
           aiSummary = await summarizePlan({

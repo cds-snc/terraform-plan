@@ -6,7 +6,7 @@ const commentTemplate = `<!-- terraform-plan: {{ title }}::{{ directory }} -->
 {% if aiSummary -%}
 **{{ riskIcons[aiSummary.riskLevel] }} &nbsp; AI risk assessment:** \`{{ aiSummary.riskLevel }}\`
 
-{{ aiSummary.summary }}
+<pre>{{ aiSummary.summary }}</pre>
 
 <sub>AI-generated, verify against the plan below.</sub>
 

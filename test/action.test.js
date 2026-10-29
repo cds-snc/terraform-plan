@@ -1,5 +1,7 @@
 "use strict";
 
+const fs = require("fs");
+const path = require("path");
 const core = require("@actions/core");
 const github = require("@actions/github");
 const { when, resetAllWhenMocks } = require("jest-when");
@@ -18,6 +20,7 @@ const {
   scanPlanForSecrets,
   redactSecretsFromPlan,
 } = require("../src/action.js");
+const actionDirectory = path.dirname(require.resolve("../src/action.js"));
 
 jest.mock("@actions/core");
 jest.mock("@actions/github");
@@ -913,6 +916,117 @@ describe("action", () => {
     expect(addComment.mock.calls[0][13]).toBeUndefined();
   });
 
+  describe("AI summary with secret scanning", () => {
+    beforeEach(() => {
+      mock_fs({
+        foo: {},
+        [actionDirectory]: {},
+      });
+      getPlanChanges.mockReturnValue({ isChanges: true });
+      when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+      when(core.getBooleanInput)
+        .calledWith("secret-scan")
+        .mockReturnValue(true);
+      when(core.getBooleanInput)
+        .calledWith("summarize-with-ai")
+        .mockReturnValue(true);
+      when(core.getInput).calledWith("directory").mockReturnValue("foo");
+      when(core.getInput).calledWith("github-token").mockReturnValue("token");
+      github.getOctokit.mockReturnValue("octokit");
+      when(core.getInput)
+        .calledWith("ai-base-url")
+        .mockReturnValue("https://ai");
+      when(core.getInput).calledWith("ai-model").mockReturnValue("model");
+      when(core.getInput).calledWith("ai-api-key").mockReturnValue("sk-test");
+      summarizePlan.mockResolvedValue({
+        riskLevel: "LOW",
+        summary: "Adds a tag.",
+      });
+    });
+
+    test.each([
+      ["command failure", { isSuccess: false, output: "scan failed" }],
+      ["malformed output", { isSuccess: true, output: "invalid json" }],
+      ["invalid finding", { isSuccess: true, output: '{"Raw":123}' }],
+      ["missing finding", { isSuccess: true, output: "{}" }],
+      ["scanner exception", new Error("trufflehog unavailable")],
+    ])("skips AI but posts the normal comment on %s", async (_, scanResult) => {
+      execCommand.mockImplementation((command) => {
+        if (command.key === "secret-scan") {
+          if (scanResult instanceof Error) {
+            throw scanResult;
+          }
+          return scanResult;
+        }
+        return { isSuccess: true, output: "{}" };
+      });
+
+      await action();
+
+      expect(summarizePlan).not.toHaveBeenCalled();
+      expect(core.warning).toHaveBeenCalledWith(
+        "Secret scan failed, skipping AI summary",
+      );
+      expect(addComment).toHaveBeenCalledTimes(1);
+      expect(addComment.mock.calls[0][13]).toBeUndefined();
+      expect(core.setFailed).not.toHaveBeenCalled();
+      expect(fs.existsSync(path.join(actionDirectory, "plan.tf"))).toBe(false);
+    });
+
+    test("allows AI after a successful scan with no findings", async () => {
+      execCommand.mockImplementation((command) => ({
+        isSuccess: true,
+        output: command.key === "secret-scan" ? "" : "{}",
+      }));
+
+      await action();
+
+      expect(summarizePlan).toHaveBeenCalledWith(
+        expect.objectContaining({ plan: "{}", summary: "{}" }),
+      );
+    });
+
+    test("scans both inputs and redacts findings from both outputs", async () => {
+      const plan = "plan-only-secret shared-secret";
+      const summary = "summary-only-secret shared-secret";
+      execCommand.mockImplementation((command) => {
+        if (command.key === "secret-scan") {
+          const scanInput = fs.readFileSync(
+            path.join(actionDirectory, "plan.tf"),
+            "utf8",
+          );
+          expect(scanInput).toBe(`${plan}\n${summary}`);
+          return {
+            isSuccess: true,
+            output: [
+              '{"Raw":"plan-only-secret"}',
+              '{"Raw":"summary-only-secret"}',
+              '{"Raw":"shared-secret"}',
+            ].join("\n"),
+          };
+        }
+        return {
+          isSuccess: true,
+          output:
+            command.key === "plan"
+              ? plan
+              : command.key === "summary"
+                ? summary
+                : "{}",
+        };
+      });
+
+      await action();
+
+      expect(summarizePlan).toHaveBeenCalledWith(
+        expect.objectContaining({ plan: "*** ***", summary: "*** ***" }),
+      );
+      const results = addComment.mock.calls[0][4];
+      expect(results.plan.output).toBe("*** ***");
+      expect(results.summary.output).toBe("*** ***");
+    });
+  });
+
   test("failed command", async () => {
     execCommand.mockReturnValue({ isSuccess: false, output: "" });
     when(core.getInput).calledWith("directory").mockReturnValue("foo");
@@ -1158,12 +1272,12 @@ describe("scanPlanForSecrets", () => {
     delete process.env.GITHUB_WORKSPACE;
   });
 
-  test("returns empty array when no secrets detected", () => {
+  test("returns successful status when no secrets detected", () => {
     execCommand.mockReturnValue({ isSuccess: true, output: "" });
 
     const secrets = scanPlanForSecrets("terraform plan output", undefined);
 
-    expect(secrets).toEqual([]);
+    expect(secrets).toEqual({ isSuccess: true, secrets: [] });
     expect(execCommand).toHaveBeenCalledWith(
       {
         key: "secret-scan",
@@ -1186,10 +1300,13 @@ describe("scanPlanForSecrets", () => {
       "config/secrets.yml",
     );
 
-    expect(secrets).toEqual([
-      "gcntfy-1234567890123456789012345678901234567890",
-      "secret-key-abc123",
-    ]);
+    expect(secrets).toEqual({
+      isSuccess: true,
+      secrets: [
+        "gcntfy-1234567890123456789012345678901234567890",
+        "secret-key-abc123",
+      ],
+    });
   });
 
   test("handles trufflehog scan failure gracefully", () => {
@@ -1197,7 +1314,7 @@ describe("scanPlanForSecrets", () => {
 
     const secrets = scanPlanForSecrets("terraform plan output", undefined);
 
-    expect(secrets).toEqual([]);
+    expect(secrets).toEqual({ isSuccess: false, secrets: [] });
   });
 
   test("uses custom config path when provided", () => {
@@ -1208,7 +1325,7 @@ describe("scanPlanForSecrets", () => {
       "custom-config.yml",
     );
 
-    expect(secrets).toEqual([]);
+    expect(secrets).toEqual({ isSuccess: true, secrets: [] });
     expect(execCommand).toHaveBeenCalledWith(
       {
         key: "secret-scan",
