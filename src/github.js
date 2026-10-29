@@ -3,6 +3,14 @@
 const nunjucks = require("nunjucks");
 const commentTemplate = `<!-- terraform-plan: {{ title }}::{{ directory }} -->
 ## {{ title }}
+{% if aiSummary -%}
+**{{ riskIcons[aiSummary.riskLevel] }} &nbsp; AI risk assessment:** \`{{ aiSummary.riskLevel }}\`
+
+<p>{{ aiSummary.summary }}</p>
+
+<sub>AI-generated, verify against the plan below.</sub>
+
+{% endif -%}
 **{{ "✅" if results.init.isSuccess else "❌" }} &nbsp; Terraform Init:** \`{{ "success" if results.init.isSuccess else "failed" }}\`
 **{{ "✅" if results.validate.isSuccess else "❌" }} &nbsp; Terraform Validate:** \`{{ "success" if results.validate.isSuccess else "failed" }}\`
 {% if not skipFormat -%}
@@ -141,6 +149,7 @@ const generateChangesLine = (changes) => {
  * @param {boolean} skipConftest Skip the conftest step
  * @param {boolean} alarms Render the CloudWatch alarm coverage check
  * @param {Object} alarmCoverage Alarm coverage summary from getAlarmCoverage
+ * @param {Object} aiSummary Optional AI risk assessment from summarizePlan
  */
 const addComment = async (
   octokit,
@@ -156,6 +165,7 @@ const addComment = async (
   skipConftest,
   alarms,
   alarmCoverage,
+  aiSummary,
 ) => {
   const format = cleanFormatOutput(results.fmt.output);
   const plan = skipPlan ? "" : removePlanRefresh(results.plan.output);
@@ -174,6 +184,11 @@ const addComment = async (
     skipConftest: skipConftest,
     alarms: alarms,
     alarmCoverage: alarmCoverage || {},
+    aiSummary: aiSummary && {
+      ...aiSummary,
+      summary: aiSummary.summary.replace(/[\r\n]+/g, " "),
+    },
+    riskIcons: { LOW: "🟢", MEDIUM: "🟡", HIGH: "🟠", CRITICAL: "🔴" },
     runLink: `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
   });
   await octokit.rest.issues.createComment({

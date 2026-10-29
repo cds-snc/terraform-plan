@@ -9,6 +9,7 @@ const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
 const { buildDriftData } = require("./drift.js");
 const { getAlarmCoverage } = require("./alarms.js");
+const { summarizePlan } = require("./ai.js");
 const {
   getTerragruntVersion,
   useNewTerragruntCli,
@@ -39,7 +40,7 @@ function parseInputInt(str, def) {
  * Scans a Terraform plan with trufflehog for secrets
  * @param {string} planOutput The Terraform plan output to scan
  * @param {string} configPath Path to the TruffleHog config file (relative to workspace root)
- * @returns {Array} Array of detected secrets
+ * @returns {{isSuccess: boolean, secrets: string[]}} Scan status and detected secrets
  */
 function scanPlanForSecrets(planOutput, configPath) {
   try {
@@ -55,18 +56,23 @@ function scanPlanForSecrets(planOutput, configPath) {
       exec: `trufflehog filesystem plan.tf --no-verification --config=${resolvedConfigPath} --json --no-update`,
       output: false,
     };
-    const result = execCommand(scanCommand, __dirname);
-    fs.unlinkSync(tempPlanFile);
+    let result;
+    try {
+      result = execCommand(scanCommand, __dirname);
+    } finally {
+      fs.unlinkSync(tempPlanFile);
+    }
 
     if (!result.isSuccess) {
       core.warning(
         "Trufflehog scan failed, continuing without secret redaction",
       );
-      return [];
+      return { isSuccess: false, secrets: [] };
     }
 
     // Parse JSON output - each line is a separate JSON object
     const secrets = [];
+    let isSuccess = true;
     const lines = result.output
       .trim()
       .split("\n")
@@ -75,20 +81,22 @@ function scanPlanForSecrets(planOutput, configPath) {
     for (const line of lines) {
       try {
         const secretData = JSON.parse(line);
-        if (secretData.Raw) {
+        if (typeof secretData.Raw === "string" && secretData.Raw) {
           secrets.push(secretData.Raw);
+        } else {
+          isSuccess = false;
+          core.warning("Trufflehog output is missing a non-empty Raw string");
         }
-      } catch (parseError) {
-        core.warning(
-          `Failed to parse trufflehog output line: ${line} - ${parseError.message}`,
-        );
+      } catch {
+        isSuccess = false;
+        core.warning("Failed to parse trufflehog output");
       }
     }
 
-    return secrets;
+    return { isSuccess, secrets };
   } catch (error) {
     core.warning(`Error during trufflehog scan: ${error.message}`);
-    return [];
+    return { isSuccess: false, secrets: [] };
   }
 }
 
@@ -128,6 +136,13 @@ const action = async () => {
   const isSecretScan = core.getBooleanInput("secret-scan");
   const secretConfig = core.getInput("secret-config");
   const enableDriftOutput = core.getBooleanInput("enable-drift-output");
+  const isSummarizeWithAi = core.getBooleanInput("summarize-with-ai");
+  const aiBaseUrl = core.getInput("ai-base-url");
+  const aiModel = core.getInput("ai-model");
+  const aiApiKey = core.getInput("ai-api-key");
+  if (aiApiKey) {
+    core.setSecret(aiApiKey);
+  }
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
@@ -316,16 +331,49 @@ const action = async () => {
     const conftestLimit = parseInputInt(conftestCharLimit, 2000);
 
     // Scan for secrets and redact if secret scanning is enabled
-    if (isSecretScan && !skipPlan && results.plan.output) {
-      const detectedSecrets = scanPlanForSecrets(
-        results.plan.output,
+    let secretScanSuccess = !isSecretScan;
+    if (isSecretScan && !skipPlan) {
+      const scan = scanPlanForSecrets(
+        `${results.plan.output}\n${results.summary.output}`,
         secretConfig,
       );
-      if (detectedSecrets.length > 0) {
+      secretScanSuccess = scan.isSuccess;
+      if (scan.secrets.length > 0) {
         results.plan.output = redactSecretsFromPlan(
           results.plan.output,
-          detectedSecrets,
+          scan.secrets,
         );
+        results.summary.output = redactSecretsFromPlan(
+          results.summary.output,
+          scan.secrets,
+        );
+      }
+    }
+
+    // Summarize the (redacted) plan with AI if enabled and configured
+    let aiSummary;
+    if (isSummarizeWithAi && changes.isChanges && results.plan.isSuccess) {
+      if (!aiBaseUrl || !aiModel || !aiApiKey) {
+        core.warning(
+          "summarize-with-ai requires ai-base-url, ai-model and ai-api-key, skipping AI summary",
+        );
+      } else if (!secretScanSuccess) {
+        core.warning("Secret scan failed, skipping AI summary");
+      } else {
+        try {
+          aiSummary = await summarizePlan({
+            baseUrl: aiBaseUrl,
+            apiKey: aiApiKey,
+            model: aiModel,
+            plan: results.plan.output,
+            summary: results.summary.output,
+          });
+          if (!aiSummary) {
+            core.warning("AI response was not valid, skipping AI summary");
+          }
+        } catch (e) {
+          core.warning(`Failed to get AI summary: ${e.message}`);
+        }
       }
     }
 
@@ -343,6 +391,7 @@ const action = async () => {
       skipConftest,
       isAlarms,
       alarmCoverage,
+      aiSummary,
     );
   }
 

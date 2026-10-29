@@ -91,6 +91,22 @@ inputs:
     description: 'Initialize all terragrunt modules by passing the run --all command to init. Only applicable when using terragrunt'
     required: false
     default: 'false'
+  summarize-with-ai:
+    description: 'Add an AI risk level and plain-English summary of the plan to the PR comment. Requires ai-base-url, ai-model and ai-api-key'
+    required: false
+    default: 'false'
+  ai-base-url:
+    description: 'Base URL of an OpenAI-compatible API (e.g. LiteLLM), including any version path such as `/v1`'
+    required: false
+    default: ''
+  ai-model:
+    description: 'Model to use for the AI summary'
+    required: false
+    default: ''
+  ai-api-key:
+    description: 'API key for the OpenAI-compatible API'
+    required: false
+    default: ''
   enable-drift-output:
     description: 'Enable generation of the drift-output structured data object'
     required: false

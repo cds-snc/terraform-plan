@@ -862,6 +862,54 @@ Plan: 1 to add, 0 to change, 0 to destroy
   });
 });
 
+describe("AI summary", () => {
+  test.each([
+    [
+      "Replaces <b>the</b> database.",
+      "Replaces &lt;b&gt;the&lt;/b&gt; database.",
+    ],
+    [
+      '![image](https://attacker.example/secret)\r\n\n[link](https://attacker.example)\n```html\n</p><img src="https://attacker.example/secret">\n```',
+      "![image](https://attacker.example/secret) [link](https://attacker.example) ```html &lt;/p&gt;&lt;img src=&quot;https://attacker.example/secret&quot;&gt; ```",
+    ],
+  ])(
+    "renders AI summary as HTML-escaped literal text: %s",
+    async (summary, escaped) => {
+      const results = {
+        init: { isSuccess: true, output: "" },
+        validate: { isSuccess: true, output: "" },
+        fmt: { isSuccess: true, output: "" },
+        plan: { isSuccess: true, output: "" },
+        summary: { isSuccess: true, output: "" },
+        conftest: { isSuccess: true, output: "" },
+      };
+      await addComment(
+        octomock,
+        context,
+        "Foobar",
+        ".",
+        results,
+        {},
+        30000,
+        2000,
+        false,
+        false,
+        false,
+        false,
+        {},
+        { riskLevel: "HIGH", summary },
+      );
+      const body = octomock.rest.issues.createComment.mock.calls[0][0].body;
+      expect(body).toMatch(
+        /^<!-- terraform-plan: Foobar::\. -->\n## Foobar\n\*\*🟠 &nbsp; AI risk assessment:\*\* `HIGH`\n\n<p>/,
+      );
+      expect(body).toContain(`<p>${escaped}</p>`);
+      expect(body.match(/<\/?p>/g)).toEqual(["<p>", "</p>"]);
+      expect(body).not.toContain("<img");
+    },
+  );
+});
+
 describe("cleanFormatOutput", () => {
   test("does not change output that is just filenames", () => {
     const output = "one.tf\n/path/to/two.tf\n/longer/path/to/three.tf";
