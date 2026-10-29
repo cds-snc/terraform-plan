@@ -37,6 +37,10 @@ Use the following settings to control the action:
 | `skip-plan`      | Skip the Terraform plan for projects without a remote state        | false        |
 | `init-run-all`   | Run init across all modules (only applicable for terragrunt).      | false        |
 | `enable-drift-output` | Emit `drift-output` as action output (JSON)                  | true         |
+| `summarize-with-ai` | Add an AI risk level and plain-English summary to the PR comment | false       |
+| `ai-base-url`    | Base URL of an OpenAI-compatible API, including `/v1` if needed     |              |
+| `ai-model`       | Model to use for the AI summary                                    |              |
+| `ai-api-key`     | API key for the OpenAI-compatible API                              |              |
 
 ## Alarm coverage
 
@@ -48,6 +52,24 @@ Coverage is established from the plan's `configuration` section: a resource is c
 - An alarm whose dimensions come from a variable (`var.queue_name`) instead of a direct resource reference cannot be resolved, so it reads as uncovered.  Use `alarms-ignore` for those.
 
 `alarms-ignore` accepts a resource type (`aws_sqs_queue`), an exact address (`module.api.aws_lb.this`), or a module prefix (`module.api`), one per line.
+
+## AI summary
+
+When `summarize-with-ai` is enabled and `ai-base-url`, `ai-model` and `ai-api-key` are all set, the action sends the plan to an OpenAI-compatible chat completions API (such as [LiteLLM](https://docs.litellm.ai/)) and adds a risk level (`LOW`, `MEDIUM`, `HIGH` or `CRITICAL`) and a short plain-English summary to the top of the PR comment.  If any value is missing, the request fails or the response is invalid, the action logs a warning and posts the comment without the summary.  This never fails the build.
+
+- Only the text plan and the TF Summarize output are sent.  Terraform masks sensitive values in the text plan, and if `secret-scan` is enabled, detected secrets are redacted before the plan is sent.
+- The summary is generated from content the pull request author controls, so treat it as a hint and review the plan itself.
+
+```yaml
+- name: Terraform plan
+  uses: cds-snc/terraform-plan
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    summarize-with-ai: true
+    ai-base-url: ${{ vars.AI_BASE_URL }}
+    ai-model: ${{ vars.AI_MODEL }}
+    ai-api-key: ${{ secrets.AI_API_KEY }}
+```
 
 ## Secret Scanning with Trufflehog
 

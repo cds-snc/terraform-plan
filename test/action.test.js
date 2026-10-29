@@ -7,6 +7,7 @@ const mock_fs = require("mock-fs");
 const { execCommand } = require("../src/command.js");
 const { addComment, deleteComment } = require("../src/github.js");
 const { getPlanChanges } = require("../src/opa.js");
+const { summarizePlan } = require("../src/ai.js");
 const {
   getTerragruntVersion,
   useNewTerragruntCli,
@@ -23,6 +24,7 @@ jest.mock("@actions/github");
 jest.mock("../src/command.js");
 jest.mock("../src/github.js");
 jest.mock("../src/opa.js");
+jest.mock("../src/ai.js");
 jest.mock("../src/terragrunt.js");
 
 describe("action", () => {
@@ -855,6 +857,60 @@ describe("action", () => {
       undefined,
       {},
     ]);
+  });
+
+  test("add comment with AI summary", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    getPlanChanges.mockReturnValue({ isChanges: true });
+    summarizePlan.mockResolvedValue({
+      riskLevel: "LOW",
+      summary: "Adds a tag.",
+    });
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getBooleanInput)
+      .calledWith("summarize-with-ai")
+      .mockReturnValue(true);
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    github.getOctokit.mockReturnValue("octokit");
+    when(core.getInput).calledWith("ai-base-url").mockReturnValue("https://ai");
+    when(core.getInput).calledWith("ai-model").mockReturnValue("model");
+    when(core.getInput).calledWith("ai-api-key").mockReturnValue("sk-test");
+
+    await action();
+
+    expect(core.setSecret).toHaveBeenCalledWith("sk-test");
+    expect(summarizePlan).toHaveBeenCalledWith({
+      baseUrl: "https://ai",
+      apiKey: "sk-test",
+      model: "model",
+      plan: "{}",
+      summary: "{}",
+    });
+    expect(addComment.mock.calls[0][13]).toEqual({
+      riskLevel: "LOW",
+      summary: "Adds a tag.",
+    });
+  });
+
+  test("skip AI summary when credentials are missing", async () => {
+    execCommand.mockReturnValue({ isSuccess: true, output: "{}" });
+    getPlanChanges.mockReturnValue({ isChanges: true });
+    when(core.getBooleanInput).calledWith("comment").mockReturnValue(true);
+    when(core.getBooleanInput)
+      .calledWith("summarize-with-ai")
+      .mockReturnValue(true);
+    when(core.getInput).calledWith("directory").mockReturnValue("foo");
+    when(core.getInput).calledWith("github-token").mockReturnValue("mellow");
+    github.getOctokit.mockReturnValue("octokit");
+
+    await action();
+
+    expect(summarizePlan).not.toHaveBeenCalled();
+    expect(core.warning).toHaveBeenCalledWith(
+      expect.stringContaining("summarize-with-ai requires"),
+    );
+    expect(addComment.mock.calls[0][13]).toBeUndefined();
   });
 
   test("failed command", async () => {

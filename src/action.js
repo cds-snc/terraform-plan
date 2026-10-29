@@ -9,6 +9,7 @@ const { addComment, deleteComment } = require("./github.js");
 const { getPlanChanges } = require("./opa.js");
 const { buildDriftData } = require("./drift.js");
 const { getAlarmCoverage } = require("./alarms.js");
+const { summarizePlan } = require("./ai.js");
 const {
   getTerragruntVersion,
   useNewTerragruntCli,
@@ -128,6 +129,13 @@ const action = async () => {
   const isSecretScan = core.getBooleanInput("secret-scan");
   const secretConfig = core.getInput("secret-config");
   const enableDriftOutput = core.getBooleanInput("enable-drift-output");
+  const isSummarizeWithAi = core.getBooleanInput("summarize-with-ai");
+  const aiBaseUrl = core.getInput("ai-base-url");
+  const aiModel = core.getInput("ai-model");
+  const aiApiKey = core.getInput("ai-api-key");
+  if (aiApiKey) {
+    core.setSecret(aiApiKey);
+  }
 
   const commentTitle = core.getInput("comment-title");
   const directory = core.getInput("directory");
@@ -329,6 +337,31 @@ const action = async () => {
       }
     }
 
+    // Summarize the (redacted) plan with AI if enabled and configured
+    let aiSummary;
+    if (isSummarizeWithAi && changes.isChanges && results.plan.isSuccess) {
+      if (!aiBaseUrl || !aiModel || !aiApiKey) {
+        core.warning(
+          "summarize-with-ai requires ai-base-url, ai-model and ai-api-key, skipping AI summary",
+        );
+      } else {
+        try {
+          aiSummary = await summarizePlan({
+            baseUrl: aiBaseUrl,
+            apiKey: aiApiKey,
+            model: aiModel,
+            plan: results.plan.output,
+            summary: results.summary.output,
+          });
+          if (!aiSummary) {
+            core.warning("AI response was not valid, skipping AI summary");
+          }
+        } catch (e) {
+          core.warning(`Failed to get AI summary: ${e.message}`);
+        }
+      }
+    }
+
     await addComment(
       octokit,
       github.context,
@@ -343,6 +376,7 @@ const action = async () => {
       skipConftest,
       isAlarms,
       alarmCoverage,
+      aiSummary,
     );
   }
 
